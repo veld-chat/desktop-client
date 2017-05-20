@@ -1,0 +1,79 @@
+body
+{
+    overflow: hidden !important;
+    margin: 0px 0px;
+    padding: 0px 0px;
+    background: url('https://img.clipartfox.com/ac5b77df012188f6e663beadeda5f9c9_desert-sunset-desert-sunset-clipart_4800-3200.png');
+    background-size: 100% auto;
+    font-family: 'Roboto', sans-serif;
+}
+
+li 
+{
+    list-style-type: none;
+}
+
+#msg-container
+{
+    overflow-y: scroll;
+    height: 95vh;
+    width: 100vh;
+}
+
+.msg-instance-avatar
+{
+  float: left;
+  width:48px;
+  height: 48px;
+  background: url('https://68.media.tumblr.com/avatar_555d1e678bd3_128.png');
+  background-size: cover;
+  border-radius: 90px;
+  margin-right: 16px;
+  margin-left: 4px;
+}
+
+.msg-instance-container
+{
+  background-color: #00000022;
+  margin: 5px 5px;
+  padding: 5px 5px;
+  border-radius: 5px;
+}
+
+.msg-instance-title
+{
+  font-weight: 400;
+  font-size: 20px;
+  
+  margin: 2px 8px;
+}
+
+.msg-instance
+{
+    margin: 0px 0px;
+    font-weight: 100;
+    font-size: 12px;
+    padding: 5px 5px;
+    word-wrap: break-word;
+}
+
+.ui-bottom
+{
+    z-index: 1;
+    width: 100vh;
+    background-color: #00000066;
+}
+
+#ui-input-field 
+{
+  padding: 2px 2px;
+  border: none;
+  border-radius: 5px;
+  transition: 0.4s;
+}
+#ui-input-field:hover
+{
+   border-radius: 0px;
+}
+
+
