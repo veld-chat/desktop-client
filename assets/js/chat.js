@@ -38,7 +38,7 @@ function TrySendMessage(e)
 
     if (charCode == 13) 
     {
-        socket.emit('chat message', inputWindow.value);
+        socket.emit('usr-msg', inputWindow.value);
         inputWindow.value = "";
     }
 }
