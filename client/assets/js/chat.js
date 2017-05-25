@@ -1,7 +1,7 @@
 var messageContainer;
 var inputWindow;
 
-//*
+/*
     var socket = new io("37.97.187.157:1234");
 /*/
     var socket = new io();
