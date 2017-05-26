@@ -1,25 +1,48 @@
 <head> 
     <link rel="stylesheet" type="text/css" href="/assets/css/style.css">
-    <link rel="stylesheet" type="text/css" href="http://0x16.cf/elk-css/css/main.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
     <script src="/assets/js/chat.js"></script>
 </head>
 
 <body onload="Init()">
-    <div class="container">
-        <header class="row">
-            Veld IRC - web edition
-        </header>
-        <!-- messages appear here -->
-        <ul class = "pages">
-            <div class="row">
-                <li id='msg-container'> 
-                </li>
+    <div class="row">
+        <div class="col-sx-4 col-sm-4 col-md-4">
+            <header>
+                Veld IRC - web edition
+            </header>
+        </div>
+        <div class="col-sx-8 col-sm-8 col-md-8">
+            <div class="profile">
             </div>
-            
-            <div class='row ui-bottom'>
-                <input id='ui-input-field' type='text' placeholder='type your message here!' />
-            </div>
-        </ul>
+            <!-- messages appear here -->
+            <li id='msg-container'>
+                <div class="msg system-message">
+                    <div class="media-content">
+                        <div class="content">
+                            <p> <strong>System</strong> <br> Veld joined </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="msg msg-container-instance">
+                    <div class="media-left">
+                        <figure class="image is-48x48">
+                            <img src="http://bulma.io/images/placeholders/128x128.png" alt="Image">
+                        </figure>
+                    </div>
+                    <div class="media-content">
+                        <div class="content">
+                            <p> <strong>John Smith</strong> <br> Yo man </p>
+                        </div>
+                    </div>
+                </div>                
+            </li>
+            <div id='ui-typing'>
+                * is typing...
+            </div>    
+            <input id='ui-input-field' type='text' placeholder='type your message here!' />
+        </div>
     </div>
 </body> 
