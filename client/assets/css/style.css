@@ -1,90 +1,75 @@
+
 @keyframes fadein {
     from { opacity: 0; }
     to   { opacity: 1; }
 }
 
-/* Firefox < 16 */
 @-moz-keyframes fadein {
     from { opacity: 0; }
     to   { opacity: 1; }
 }
 
-/* Safari, Chrome and Opera > 12.1 */
 @-webkit-keyframes fadein {
     from { opacity: 0; }
     to   { opacity: 1; }
 }
 
-/* Internet Explorer */
 @-ms-keyframes fadein {
     from { opacity: 0; }
     to   { opacity: 1; }
 }
 
-/* Opera < 12.1 */
 @-o-keyframes fadein {
     from { opacity: 0; }
     to   { opacity: 1; }
 }
 
+.sidebar
+{
+    background-color: rgb(24, 24, 24);
+    color: rgb(200, 200, 200);
+}
+
 .fadein
 {
-    -webkit-animation: fadein 0.3s; /* Safari, Chrome and Opera > 12.1 */
-       -moz-animation: fadein 0.3s; /* Firefox < 16 */
-        -ms-animation: fadein 0.3s; /* Internet Explorer */
-         -o-animation: fadein 0.3s; /* Opera < 12.1 */
+    -webkit-animation: fadein 0.3s;
+       -moz-animation: fadein 0.3s; 
+        -ms-animation: fadein 0.3s;
+         -o-animation: fadein 0.3s; 
             animation: fadein 0.3s;
 }
 
 body
 {
-    overflow: hidden !important;
     background: url('http://chat.veld.one/assets/img/bg.jpg');
     background-size: contain;
     font-family: 'Roboto', sans-serif;
-}
-
-header 
-{
-  width: 100%;
+    overflow: hidden;
 }
 
 li 
 {
     list-style-type: none;
 }
-
-.container 
-{
-  width: 100vh;
-}
-
 #msg-container
 {
-  overflow-y: auto;
-  height: 92vh;
-  width: 100vw;
+    overflow-y: auto;
 }
 
 .msg-instance-avatar
 {
   float: left;
-  width:48px;
+  width: 48px;
   height: 48px;
   border-radius: 90px;
   margin-right: 16px;
   margin-left: 4px;
 }
 
-.msg-instance-container
+.msg-container
 {
-  background-color: rgba(255,255,255,0.5);
   margin: 5px 5px;
-  padding: 5px 5px;
-  border-radius: 5px;
-  width: 50vw;
 }
-
 .msg-instance-title
 {
   font-weight: 400;
@@ -102,10 +87,29 @@ li
     word-wrap: break-word;
 }
 
+.msg 
+{
+
+}
+
+.system
+{
+
+}
+
 .ui-bottom
 {
     z-index: 1;
-    width: 50vw;
+    margin-top: 0.5vw;
+}
+
+#ui-typing
+{
+    background-color: rgba(255,255,255,0.5);
+    border-radius: 5px;
+
+    padding: 0.5vh 0.75vw;
+    
 }
 
 #ui-input-field 
@@ -113,7 +117,8 @@ li
   margin: -5px -5px;
   background-color: transparent;
   color: black;
-  width: 100vw;
+
+
   height: 30px;
   border-color: rgba(0,0,0,0.5);
   border-width: 3px;
@@ -121,10 +126,9 @@ li
   transition: 0.1s;
   padding: 0px 0px;
 }
+
 #ui-input-field:hover
 {
    border-radius: 0px;
    padding: 10px 10px;
 }
-
-

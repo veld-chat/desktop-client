@@ -58,7 +58,7 @@ module.exports = class ClientManager
         messageEventArgs.name = this.clients[socket.id].name;
         messageEventArgs.message = msg.replace(/</g, "&lt;").replace(/>/g, "&gt;");
         messageEventArgs.avatarurl = this.clients[socket.id].GetAvatarUrl();
-        messageEventArgs.color = this.client[socket.id].GetColorHex();
+        //messageEventArgs.color = this.client[socket.id].GetColorHex();
 
     	this.io.emit('usr-msg', messageEventArgs);
     }
