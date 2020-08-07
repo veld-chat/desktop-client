@@ -83,6 +83,10 @@ li
   font-size: 12px;
   padding: 5px 5px;
   word-wrap: break-word;
+
+  a {
+    color: inherit;
+  }
 }
 
 .msg

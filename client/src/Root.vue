@@ -56,7 +56,9 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Ref } from "vue-property-decorator";
+import * as marked from "marked";
 import * as io from "socket.io-client";
+import * as DOMPurify from "dompurify";
 
 @Component
 export default class Root extends Vue {
@@ -66,16 +68,36 @@ export default class Root extends Vue {
   messages: Message[] = [];
   message = "";
 
-  mounted() {
-    this.connection = io();
+  mounted(): void {
+    this.connection = io("gerard.pw:1234");
     this.connection.on("usr-msg", this.onMessage.bind(this));
+
+    this.onMessage({
+      userid: "xnIo8sSGYJS7fGZ8AADN",
+      name: "anon-xnIo8s",
+      message: "t",
+      avatarurl: "https://cdn.miki.ai/ext/imgh/12Dt4xwCugt.jpeg",
+    });
   }
 
-  beforeDestroy() {
+  beforeDestroy(): void {
     this.connection.close();
   }
 
-  onMessage(message: Message) {
+  processMessage(input: string): string {
+    return DOMPurify.sanitize(
+      marked(input, {
+        headerIds: false,
+        breaks: true,
+      }),
+      {
+        ALLOWED_TAGS: ["b", "i", "em", "strong", "a"],
+        ALLOWED_ATTR: ["href"],
+      }
+    );
+  }
+
+  onMessage(message: Message): void {
     const lastMessageId = this.messages.length - 1;
     const lastMessage = this.messages[lastMessageId];
     const container = this.container;
@@ -85,10 +107,14 @@ export default class Root extends Vue {
     if (lastMessage && lastMessage.userid === message.userid) {
       Vue.set(this.messages, lastMessageId, {
         ...message,
-        message: lastMessage.message + "<br />" + message.message,
+        message:
+          lastMessage.message + "<br />" + this.processMessage(message.message),
       });
     } else {
-      this.messages.push(message);
+      this.messages.push({
+        ...message,
+        message: this.processMessage(message.message),
+      });
     }
 
     if (scroll) {
@@ -98,7 +124,7 @@ export default class Root extends Vue {
     }
   }
 
-  sendMessage() {
+  sendMessage(): void {
     this.connection.emit("usr-msg", this.message);
     this.message = "";
   }

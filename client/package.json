@@ -7,14 +7,18 @@
     "build": "webpack --config config/webpack.prod.js"
   },
   "dependencies": {
-    "@types/socket.io-client": "^1.4.33",
-    "@types/webpack-env": "^1.15.2",
+    "dompurify": "^2.0.12",
+    "marked": "^1.1.1",
     "socket.io-client": "^2.3.0",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.5",
     "vue-property-decorator": "^9.0.0"
   },
   "devDependencies": {
+    "@types/marked": "^1.1.0",
+    "@types/socket.io-client": "^1.4.33",
+    "@types/webpack-env": "^1.15.2",
+    "@types/dompurify": "^2.0.3",
     "@typescript-eslint/eslint-plugin": "^3.7.0",
     "@typescript-eslint/parser": "^3.7.0",
     "@vue/eslint-config-prettier": "^6.0.0",
