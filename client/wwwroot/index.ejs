@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <title>Application</title>
+    <% files.css.forEach(function (src) { %>
+    <link rel="stylesheet" href="<%= src %>">
+    <% }) %>
+    <% files.js.filter(src => src.indexOf('head') !== -1).forEach(function (src) { %>
+    <script src="<%= src %>"></script>
+    <% }) %>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <% files.js.filter(src => src.indexOf('head') === -1).forEach(function(src) { %>
+    <script src="<%= src %>"></script>
+    <% }) %>
+  </body>
+</html>
