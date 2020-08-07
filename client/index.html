@@ -1,5 +1,8 @@
 <head> 
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
     <link rel="stylesheet" type="text/css" href="/assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css">
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
@@ -7,42 +10,21 @@
 </head>
 
 <body onload="Init()">
-    <div class="row">
-        <div class="col-sx-4 col-sm-4 col-md-4">
-            <header>
-                Veld IRC - web edition
-            </header>
-        </div>
-        <div class="col-sx-8 col-sm-8 col-md-8">
-            <div class="profile">
-            </div>
-            <!-- messages appear here -->
-            <li id='msg-container'>
-                <div class="msg system-message">
-                    <div class="media-content">
-                        <div class="content">
-                            <p> <strong>System</strong> <br> Veld joined </p>
-                        </div>
-                    </div>
+    <div class="row main">
+        <div class="col-sx-8 col-sm-8 col-md-8 wrapper">
+            <div class="intern-container">               
+                <div class="col-sx-4 col-sm-4 col-md-4 heading-wrapper">
+                    <header class="heading">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="height:2rem" viewBox="0 0 674.731 463.131"><path d="M8433.373,1216.334l236.061-406.322,161.628,286.636,67.489,119.687H9051.3l-205.974-362.35-68.206,120.93" transform="translate(-8400.564 -786.011)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="48"></path></svg>
+                    </header>
                 </div>
-                
-                <div class="msg msg-container-instance">
-                    <div class="media-left">
-                        <figure class="image is-48x48">
-                            <img src="http://bulma.io/images/placeholders/128x128.png" alt="Image">
-                        </figure>
-                    </div>
-                    <div class="media-content">
-                        <div class="content">
-                            <p> <strong>John Smith</strong> <br> Yo man </p>
-                        </div>
-                    </div>
-                </div>                
-            </li>
-            <div id='ui-typing'>
-                * is typing...
-            </div>    
-            <input id='ui-input-field' type='text' placeholder='type your message here!' />
+                <div class="messages" id='msg-container'>
+                </div>
+            </div>
+            <div class="controls">
+                <div id='ui-typing' class="typing-display"></div>    
+                <input id='ui-input-field' type='text' placeholder='type your message here!' class="textfield" maxlength="256" />
+            </div>
         </div>
     </div>
 </body> 

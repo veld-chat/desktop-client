@@ -1,0 +1,23 @@
+{
+  "name": "veld-chat-server",
+  "version": "1.0.0",
+  "description": "fun stuff happening",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/velddev/node-chat-server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/velddev/node-chat-server/issues"
+  },
+  "homepage": "https://github.com/velddev/node-chat-server#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  }
+}

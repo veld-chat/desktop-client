@@ -41,7 +41,6 @@
 
 body
 {
-    background: url('http://chat.veld.one/assets/img/bg.jpg');
     background-size: contain;
     font-family: 'Roboto', sans-serif;
     overflow: hidden;
@@ -58,7 +57,6 @@ li
 
 .msg-instance-avatar
 {
-  float: left;
   width: 48px;
   height: 48px;
   border-radius: 90px;
@@ -112,7 +110,7 @@ li
     
 }
 
-#ui-input-field 
+/* #ui-input-field 
 {
   margin: -5px -5px;
   background-color: transparent;
@@ -131,4 +129,4 @@ li
 {
    border-radius: 0px;
    padding: 10px 10px;
-}
+} */

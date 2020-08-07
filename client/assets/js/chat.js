@@ -6,21 +6,24 @@ var myClientId = "";
 var typingusers = {};
 
 var debug = false;
-/*
-    var socket = new io("37.97.187.157:1234");
+//*
+    var socket = new io("gerard.pw:1234");
 /*/
     var socket = new io();
     debug = true;
 //*/
 
-function Init() 
+let latestCreatedMessage = null;
+
+function Init()
 {
+    document.getElementById('ui-input-field').focus();
+
     messageContainer = document.getElementById("msg-container");
 
-    messageContainer.appendChild(CreateSystemMessage("casual reminder you're in debug mode.."));
+    // messageContainer.appendChild(CreateSystemMessage("casual reminder you're in debug mode.."));
 
-    console.log(messageContainer);
-    if(messageContainer === null) 
+    if(messageContainer === null)
     {
         alert("error: messageContainer seems to not have been found?!");
         return;
@@ -49,13 +52,23 @@ function Init()
 
 socket.on('usr-msg', function(msg) 
 {
-    messageContainer.appendChild(CreateMessage(msg));
+    console.log(msg)
+    const newMessage = CreateMessage(msg)
+    if (newMessage) {
+        messageContainer.appendChild(newMessage);
+    }
     messageContainer.scrollTop = messageContainer.scrollHeight - messageContainer.clientHeight;
 });
 
-socket.on('sys-msg', function(msg) 
+socket.on('sys-join', function(msg) 
 {
-    messageContainer.appendChild(CreateSystemMessage(msg));
+    messageContainer.appendChild(CreateSystemMessage(msg, true));
+    messageContainer.scrollTop = messageContainer.scrollHeight - messageContainer.clientHeight;
+});
+
+socket.on('sys-leave', function(msg) 
+{
+    messageContainer.appendChild(CreateSystemMessage(msg, false));
     messageContainer.scrollTop = messageContainer.scrollHeight - messageContainer.clientHeight;
 });
 
@@ -74,7 +87,7 @@ socket.on('sys-typ', function(msg)
         if(element.lastTyped < currentTime - 1000 * 10)
         {
             delete typingusers[element.id];
-            continue;
+            return;
         }
 
         currentTypingUsers.push(element.name);
@@ -105,7 +118,7 @@ socket.on('sys-typ', function(msg)
 function SendTypingState()
 {
     socket.emit('usr-typ');
-    setTimeout(() => { socket.emit('usr-styp') }, milliseconds)
+    setTimeout(() => { socket.emit('usr-styp') }, 100)
 }
 
 function TrySendMessage(e) 
@@ -123,47 +136,71 @@ function TrySendMessage(e)
 }
 
 function CreateMessage(msg)
-{
-    var messageInstanceContainer = document.createElement("ul");
+{    
+    if (latestCreatedMessage && latestCreatedMessage.uid === msg.userid) {
+        var addedMessageInstance = document.createElement("p");
+        addedMessageInstance.className = "msg-instance";
+        addedMessageInstance.textContent = msg.message;
+        latestCreatedMessage.el.appendChild(addedMessageInstance)
+        return
+    }
+
+    var messageInstanceContainer = document.createElement("div");
     messageInstanceContainer.className = "msg-instance-container fadein";
 
     var messageInstanceAvatar = document.createElement("div");
     messageInstanceAvatar.className = "msg-instance-avatar";
-    messageInstanceAvatar.style = "background: url('" + msg.avatarurl + "'); background-position: center; background-size: contain;";
+    messageInstanceAvatar.style = "background: url('" + msg.avatarurl + "'); background-position: center; background-size: cover;";
     messageInstanceContainer.appendChild(messageInstanceAvatar);
 
-    var messageInstanceTitle = document.createElement("div");
+    var messageContentWrapper = document.createElement("div");
+    messageContentWrapper.className = "msg-content-wrapper"
+
+    var messageInstanceTitle = document.createElement("span");
     messageInstanceTitle.className = "msg-instance-title";
     messageInstanceTitle.textContent = msg.name;
-    messageInstanceContainer.appendChild(messageInstanceTitle);
+    messageContentWrapper.appendChild(messageInstanceTitle);
 
-    var messageInstance = document.createElement("div");
+    var messageInstance = document.createElement("p");
     messageInstance.className = "msg-instance";
     messageInstance.textContent = msg.message;
-    messageInstanceContainer.appendChild(messageInstance);
+    messageContentWrapper.appendChild(messageInstance);
+
+    messageInstanceContainer.appendChild(messageContentWrapper);
+
+    latestCreatedMessage = {
+        el: messageContentWrapper,
+        uid: msg.userid
+    };
 
     return messageInstanceContainer;
 }
 
-function CreateSystemMessage(msg)
+function CreateSystemMessage(msg, isJoin)
 {
-    var messageInstanceContainer = document.createElement("ul");
+    var messageInstanceContainer = document.createElement("div");
     messageInstanceContainer.className = "msg-instance-container fadein";
 
-    var messageInstanceTitle = document.createElement("div");
+    var messageInstanceAvatar = document.createElement("div");
+    messageInstanceAvatar.className = "msg-instance-avatar";
+    messageInstanceAvatar.textContent = isJoin ? "👋" : "🚪";
+    messageInstanceAvatar.style = "font-size: 38px; text-align: center;"
+    messageInstanceContainer.appendChild(messageInstanceAvatar);
+
+    var messageContentWrapper = document.createElement("div");
+    messageContentWrapper.className = "msg-content-wrapper"
+
+    var messageInstanceTitle = document.createElement("span");
     messageInstanceTitle.className = "msg-instance-title";
     messageInstanceTitle.textContent = "system";
-    messageInstanceContainer.appendChild(messageInstanceTitle);
+    messageContentWrapper.appendChild(messageInstanceTitle);
 
-    var messageInstance = document.createElement("div");
+    var messageInstance = document.createElement("p");
     messageInstance.className = "msg-instance";
-    messageInstance.textContent = msg;
-    messageInstanceContainer.appendChild(messageInstance);
+    messageInstance.textContent = `${msg} ${isJoin ? 'joined' : 'left'} the chat server`;
+    messageContentWrapper.appendChild(messageInstance);
+
+    messageInstanceContainer.appendChild(messageContentWrapper)
 
     return messageInstanceContainer;
 }
-
-
-
-
-
