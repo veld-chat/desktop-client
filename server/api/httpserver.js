@@ -16,8 +16,7 @@ module.exports = class HttpServer
             res.sendFile(clientFolder + "/index.html");
         });
 
-        app.use("/assets/css", express.static(clientFolder + "/assets/css"));
-        app.use("/assets/js", express.static(clientFolder + "/assets/js"));
+        app.use("/assets", express.static(clientFolder + "/assets"));
     }
 
     Listen(port)

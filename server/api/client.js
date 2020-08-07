@@ -1,4 +1,5 @@
 const Color = require("../structures/color");
+const axios = require('axios');
 
 module.exports = class Client
 {
@@ -8,6 +9,10 @@ module.exports = class Client
         this.color = new Color(0,0,0);
         this.id = id;
         this.name = "anon-" + this.id;   
+
+        axios.get('https://api.miki.bot/images/random').then((response) => {
+            this.avatar = response.data.url;
+        });
     }
 
     GetColorHex()
@@ -18,6 +23,10 @@ module.exports = class Client
 
     GetAvatarUrl()
     {
-        return "https://randomuser.me/api/portraits/men/" + this.avatarid + ".jpg";
+        if (this.avatar) {
+            return this.avatar;
+        }
+
+        return "https://images.emojiterra.com/twitter/v13.0/512px/1f914.png";
     }
 }

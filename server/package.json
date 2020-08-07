@@ -4,7 +4,7 @@
   "description": "fun stuff happening",
   "main": "index.js",
   "scripts": {
-    "start": "node server/server.js"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -15,9 +15,10 @@
   "bugs": {
     "url": "https://github.com/velddev/node-chat-server/issues"
   },
-  "homepage": "https://github.com/velddev/node-chat-server#readme",
   "dependencies": {
+    "axios": "^0.19.2",
     "express": "^4.17.1",
+    "node-emoji": "^1.10.0",
     "socket.io": "^2.3.0"
   }
 }

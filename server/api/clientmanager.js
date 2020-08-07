@@ -1,4 +1,21 @@
 const Client = require("./client");
+const axios = require('axios');
+const emoji = require('node-emoji')
+
+var nickRegex = /^[a-zA-Z0-9 ]{1,16}$/;
+var ws = /\s+/;
+var rateLimit = {}
+
+setInterval(function() {
+    rateLimit = {}
+}, 5000);
+
+const nickCommand = "nick ";
+const avatarCommand = "avatar ";
+
+function escape(input) {
+    return input.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
 
 module.exports = class ClientManager
 { 
@@ -17,8 +34,8 @@ module.exports = class ClientManager
     {
         console.log("user " + socket.id + " connected");
 
-        this.clients[socket.id] = new Client(socket.id);
-        this.io.emit("sys-msg", this.clients[socket.id].name + " has joined");
+        this.clients[socket.id] = new Client(socket.id.substr(0, 6));
+        //this.io.emit("sys-join", this.clients[socket.id].name);
 
         console.log(this.clients[socket.id]);
 
@@ -31,7 +48,7 @@ module.exports = class ClientManager
     {
         console.log("user " + socket.id + " disconnected");
 
-        this.io.emit("sys-msg", this.clients[socket.id].name + " has left");
+        //this.io.emit("sys-leave", this.clients[socket.id].name);
         delete this.clients[socket.id];
     }
 
@@ -46,17 +63,49 @@ module.exports = class ClientManager
 
     OnClientMessageReceived(socket, msg)
     {
+        if (msg.length > 256) {
+            msg = msg.substr(0, 100);
+        }
+
         if(msg.startsWith("/"))
 		{
-			if(processCommand(socket, msg))
-			{
-				return;
-			}
-		}
+            msg = msg.substr(1);
+
+            if (msg.startsWith(nickCommand)) {
+                var nick = msg.substr(nickCommand.length).replace(ws, ' ');
+                if (nickRegex.test(nick)) {
+                    this.clients[socket.id].name = nick;
+                }
+            } else if (msg.startsWith(avatarCommand)) {
+                this.clients[socket.id].avatar = '//images.weserv.nl/?url=' + encodeURI(msg.substr(avatarCommand.length))
+            } else if (msg === "avatar") {
+                const lastChange = this.clients[socket.id].lastChange;
+
+                if (lastChange && Date.now() - lastChange < 5000) {
+                    // no spam imghoard ok?
+                    return;
+                }
+
+                axios.get('https://api.miki.bot/images/random').then((response) => {
+                    this.clients[socket.id].avatar = response.data.url;
+                });
+            }
+            
+            return;
+        }
+        
+        var messages = rateLimit[socket.id] || 0;
+
+        if (messages > 5) {
+            return;
+        }
+
+        rateLimit[socket.id] = messages + 1;
 
         var messageEventArgs = {};
+        messageEventArgs.userid = socket.id;
         messageEventArgs.name = this.clients[socket.id].name;
-        messageEventArgs.message = msg.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        messageEventArgs.message = escape(emoji.emojify(msg));
         messageEventArgs.avatarurl = this.clients[socket.id].GetAvatarUrl();
         //messageEventArgs.color = this.client[socket.id].GetColorHex();
 
