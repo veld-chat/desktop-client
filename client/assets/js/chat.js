@@ -5,23 +5,18 @@ var typingWindow;
 var myClientId = "";
 var typingusers = {};
 
-var debug = false;
-//*
-    var socket = new io();
-/*/
-    var socket = new io();
-    debug = true;
-//*/
+var socket = new io();
 
 let latestCreatedMessage = null;
+let messageBar = null;
+let members = {};
 
-function Init()
+function init()
 {
-    document.getElementById('ui-input-field').focus();
+    messageBar = document.getElementById('ui-input-field');
+    messageBar.focus();
 
     messageContainer = document.getElementById("msg-container");
-
-    // messageContainer.appendChild(CreateSystemMessage("casual reminder you're in debug mode.."));
 
     if(messageContainer === null)
     {
@@ -43,6 +38,12 @@ function Init()
         return;
     }
 
+    document.onkeypress = () => {
+        if(document.activeElement != messageBar) {
+            messageBar.focus();
+        }
+    };
+
     inputWindow.onkeypress = function(e) 
     {
         SendTypingState();
@@ -50,9 +51,12 @@ function Init()
     };
 }
 
+socket.on('usr-edit', user => {
+    members[user.userid] = user;
+});
+
 socket.on('usr-msg', function(msg) 
 {
-    console.log(msg)
     const newMessage = CreateMessage(msg)
     if (newMessage) {
         messageContainer.appendChild(newMessage);
@@ -60,15 +64,15 @@ socket.on('usr-msg', function(msg)
     messageContainer.scrollTop = messageContainer.scrollHeight - messageContainer.clientHeight;
 });
 
-socket.on('sys-join', function(msg) 
+socket.on('sys-join', function(user) 
 {
-    messageContainer.appendChild(CreateSystemMessage(msg, true));
+    members.push(user);
     messageContainer.scrollTop = messageContainer.scrollHeight - messageContainer.clientHeight;
 });
 
-socket.on('sys-leave', function(msg) 
+socket.on('sys-leave', function(user) 
 {
-    messageContainer.appendChild(CreateSystemMessage(msg, false));
+    delete members[user.userid];
     messageContainer.scrollTop = messageContainer.scrollHeight - messageContainer.clientHeight;
 });
 

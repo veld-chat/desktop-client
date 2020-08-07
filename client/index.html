@@ -9,8 +9,8 @@
     <script src="/assets/js/chat.js?v=1"></script>
 </head>
 
-<body onload="Init()">
-    <div class="row main">
+<body onload="init()">
+    <div id="app" class="row main">
         <div class="col-sx-8 col-sm-8 col-md-8 wrapper">
             <div class="intern-container">               
                 <div class="col-sx-4 col-sm-4 col-md-4 heading-wrapper">
@@ -18,7 +18,13 @@
                         <svg xmlns="http://www.w3.org/2000/svg" style="height:2rem" viewBox="0 0 674.731 463.131"><path d="M8433.373,1216.334l236.061-406.322,161.628,286.636,67.489,119.687H9051.3l-205.974-362.35-68.206,120.93" transform="translate(-8400.564 -786.011)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="48"></path></svg>
                     </header>
                 </div>
-                <div class="messages" id='msg-container'>
+                <div class="chat-wrapper">
+                    <div class="messages" id='msg-container'>
+                        <!-- messages appear here -->
+                    </div>
+                    <div class="members" id="member-container">
+                        
+                    </div>
                 </div>
             </div>
             <div class="controls">
