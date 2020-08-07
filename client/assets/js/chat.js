@@ -6,8 +6,8 @@ var myClientId = "";
 var typingusers = {};
 
 var debug = false;
-//*
-    var socket = new io("gerard.pw:1234");
+/*
+    var socket = new io("localhost:1234");
 /*/
     var socket = new io();
     debug = true;
