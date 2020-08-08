@@ -1,5 +1,7 @@
+$medium: #444444;
 $dark: #333333;
 $darker: #212121;
+$darkest: rgb(20, 20, 20);
 
 @mixin mobile {
     @media only screen and (max-width: 1024px) {

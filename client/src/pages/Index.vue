@@ -18,21 +18,17 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="48"
-              ></path>
+              />
             </svg>
           </header>
         </div>
         <div ref="container" class="messages">
-          <div
-            v-for="(message, id) in messages"
-            :key="id"
-            class="msg-instance-container fadein"
-          >
+          <div v-for="(message, id) in messages" :key="id" class="msg-instance-container fadein">
             <div
               v-if="message.user.avatarUrl"
               class="msg-instance-avatar"
               :style="{ backgroundImage: `url('${message.user.avatarUrl}')` }"
-            ></div>
+            />
             <div class="msg-content-wrapper">
               <div class="msg-instance-title">{{ message.user.name }}</div>
               <p
@@ -44,18 +40,7 @@
           </div>
         </div>
       </div>
-      <div class="controls">
-        <input
-          id="ui-input-field"
-          v-model="message"
-          type="text"
-          :placeholder="ready ? `type your message here!` : `connecting...`"
-          class="textfield"
-          maxlength="256"
-          :disabled="!ready"
-          @keydown.enter.prevent="sendMessage()"
-        />
-      </div>
+      <chat-bar :ready="connected" @send="sendMessage" />
     </div>
   </div>
 </template>
@@ -63,26 +48,34 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Ref } from "vue-property-decorator";
-import * as marked from "marked";
-import * as io from "socket.io-client";
-import * as DOMPurify from "dompurify";
+import marked from "marked";
+import io from "socket.io-client";
+import DOMPurify from "dompurify";
 import { MessageCreateEvent, Message, User } from "../models/events";
+import { UserStore } from "../store/user-store";
+import { MentionParser } from "../utils/mention-parser";
+import twemoji from "twemoji";
 
-@Component
+import ChatBar from "../components/chat-bar.vue";
+
+@Component({
+  components: { ChatBar },
+})
 export default class Root extends Vue {
   private connection: SocketIOClient.Socket;
 
   @Ref() container: HTMLDivElement;
   messages: MessageCreateEvent[] = [];
-  users: User[] = [];
+  users: UserStore = new UserStore();
+  mentionParser: MentionParser = new MentionParser(this.users);
 
   currentUserId = "";
   message = "";
   token = "";
-  ready = false;
+  connected = false;
 
-  mounted() {
-    this.ready = false;
+  mounted(): void {
+    this.connected = false;
     this.connection = io(":1234");
 
     this.connection.on("connect", () => {
@@ -91,7 +84,7 @@ export default class Root extends Vue {
         this.token = options.token;
         this.currentUserId = options.user.id;
         console.log(`Logged in as ${options.user.name} (${options.user.id})`);
-        this.ready = true;
+        this.connected = true;
       });
 
       this.connection.emit("login", {
@@ -99,6 +92,7 @@ export default class Root extends Vue {
       });
     });
 
+    this.connection.on("usr-typ", this.onUserStartTyping.bind(this));
     this.connection.on("usr-msg", this.publishMessage.bind(this));
     this.connection.on("user-edit", this.onUserEdit.bind(this));
     this.connection.on("sys-join", this.onUserAdd.bind(this));
@@ -109,17 +103,21 @@ export default class Root extends Vue {
     }
   }
 
-  beforeDestroy() {
+  beforeDestroy(): void {
     this.connection.close();
   }
 
-  onUserAdd(user: any) {
-    this.users[user.id] = user;
+  onUserStartTyping(user: User): void {
+    // TODO(veld): add modal to show typing users above text bar.
   }
 
-  onUserEdit(user: any) {
+  onUserAdd(user: User): void {
+    this.users.upsert(user);
+  }
+
+  onUserEdit(user: User): void {
     if (!Object.keys(this.users).includes(user.id)) {
-      this.users[user.id] = user;
+      this.users.upsert(user);
     }
 
     if (user.id == this.currentUserId) {
@@ -139,24 +137,26 @@ export default class Root extends Vue {
     this.users[user.id] = user;
   }
 
-  onUserLeave(user: any) {
-    delete this.users[user.id];
+  onUserLeave(user: User): void {
+    this.users.delete(user.id);
   }
 
   processMessage(input: string): string {
-    return DOMPurify.sanitize(
-      marked(input, {
-        headerIds: false,
-        breaks: true,
-      }),
-      {
-        ALLOWED_TAGS: ["b", "i", "em", "strong", "a"],
-        ALLOWED_ATTR: ["href"],
-      }
+    return twemoji.parse(
+      DOMPurify.sanitize(
+        marked(input, {
+          headerIds: false,
+          breaks: true,
+        }),
+        {
+          ALLOWED_TAGS: ["b", "i", "em", "strong", "a"],
+          ALLOWED_ATTR: ["href"],
+        }
+      )
     );
   }
 
-  publishMessage(message: Message) {
+  publishMessage(message: Message): void {
     const lastMessageId = this.messages.length - 1;
     const lastMessage = this.messages[lastMessageId];
     const container = this.container;
@@ -197,21 +197,11 @@ export default class Root extends Vue {
     }
   }
 
-  sendMessage() {
-    let mentionables = this.message
-      .split(" ")
-      .filter((x) => x.startsWith("@"))
-      .map((x) => x.substr(1));
-
-    let cachedUsers = mentionables.map((x) =>
-      Object.values(this.users).find((y) => x == y.name)
-    );
-
+  sendMessage(message: string): void {
     this.connection.emit("usr-msg", {
-      message: this.message,
-      mentions: cachedUsers.map((x) => x.id),
+      message: message,
+      mentions: this.mentionParser.fromString(message),
     });
-    this.message = "";
   }
 }
 </script>

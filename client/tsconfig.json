@@ -7,6 +7,7 @@
     "target": "es5",
     "experimentalDecorators": true,
     "downlevelIteration": true,
+    "esModuleInterop": true,
     "noImplicitReturns": false,
     "lib": [
       "dom",
@@ -15,11 +16,14 @@
       "es2015.iterable"
     ],
     "paths": {
-      "@/*": ["*"]
+      "@/*": [
+        "*"
+      ]
     }
   },
   "include": [
     "./src/**/*",
-    "./typings/*.d.ts", "gridsome.config.js"
+    "./typings/*.d.ts",
+    "gridsome.config.js"
   ]
 }

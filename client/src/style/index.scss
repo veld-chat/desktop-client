@@ -1,4 +1,5 @@
 @import "variables";
+@import "emoji";
 
 @include mobile {
   * {
@@ -185,7 +186,12 @@ html, body {
   align-items: flex-start;
   padding: 8px 0;
   flex-grow: 1;
-  overflow-y: scroll;
+}
+
+@include desktop {
+  .intern-container .messages {
+    overflow-y: scroll;
+  }
 }
 
 @include mobile {
@@ -196,8 +202,12 @@ html, body {
 
 .controls {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   margin: 0.5rem;
+  background: $medium;
+  color: white;
+  border-radius: 4px;
+  padding: 16px 12px;
 }
 
 @include mobile {
@@ -215,22 +225,43 @@ html, body {
   color: dark;
 }
 
+.sendbutton {
+  height: 100%;
+  width: 2rem;
+  background-color: $medium;
+  text-align: center;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 .typing-display {
   display: none;
 }
 
 .textfield {
+  height: 100%;
   font-size: 1.25rem;
-  background: $darker;
   border: 0;
-  color: white;
-  border-radius: 4px;
-  padding: 16px 12px;
   flex: 1;
+  background-color: transparent;
+  color: white;
 }
 
-.textfield:hover, .textfield:active, .textfield:focus {
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus
+.textfield:hover, 
+.textfield:active, 
+.textfield:focus {
   outline: none;
+  -webkit-text-fill-color: white;
+  -webkit-box-shadow: 0 0 0px 100px $medium inset;
 }
 
 .msg-instance-title {

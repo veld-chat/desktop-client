@@ -4,8 +4,8 @@ import { Server } from 'http';
 import io from 'socket.io';
 import fs from "fs";
 
-import {HttpServer} from './api/http-server';
-import {ClientManager} from './api/client-manager';
+import { HttpServer } from './api/http-server';
+import { ClientManager } from './api/client-manager';
 
 const app = express();
 const httpServer = new Server(app);
