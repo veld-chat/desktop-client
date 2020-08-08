@@ -60,3 +60,4 @@ typings/
 config.json
 dist/
 .temp/
+secret.yml
