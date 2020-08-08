@@ -25,14 +25,17 @@
           <div
             v-for="(message, id) in messages"
             :key="id"
-            class="msg-instance-container fadein">
+            class="msg-instance-container fadein"
+          >
             <div v-if="message.user.avatarUrl"
               class="msg-instance-avatar"
               :style="{ backgroundImage: `url('${message.user.avatarUrl}')` }"
             ></div>
             <div class="msg-content-wrapper">
               <div class="msg-instance-title">{{ message.user.name }}</div>
-              <p class="msg-instance" v-html="message.message" />
+              <p class="msg-instance"
+                :class="message.mentionsSelf ? 'mention' : ''"
+                v-html="message.message" />
             </div>
           </div>
         </div>
@@ -67,14 +70,23 @@ export default class Root extends Vue {
   messages: Message[] = [];
   users: any[] = [];
 
+  currentUserId = "";
   message = "";
 
   mounted() {
     this.connection = io(":1234");
+
+    this.connection.on("connect", () => {
+      this.currentUserId = this.connection.id;
+    });
     this.connection.on("usr-msg", this.publishMessage.bind(this));
     this.connection.on("user-edit", this.onUserEdit.bind(this));
     this.connection.on("sys-join", this.onUserAdd.bind(this));
     this.connection.on("sys-leave", this.onUserLeave.bind(this));
+
+    if (Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
   }
 
   beforeDestroy(): void {
@@ -88,6 +100,9 @@ export default class Root extends Vue {
 
   onUserEdit(user: any) {
     console.log("user " + user.id + " mutated");
+    if (!Object.keys(this.users).includes(user.id)) {
+      this.users[user.id] = user;
+    }
 
     this.publishMessage({
       message: `user '${this.users[user.id].name}'' is now '${user.name}'.`,
@@ -118,10 +133,22 @@ export default class Root extends Vue {
   }
 
   publishMessage(message: Message) {
+
+    const lastMessageId = this.messages.length - 1;
     const lastMessage = this.messages[lastMessageId];
     const container = this.container;
     const scroll =
       container.scrollTop >= container.scrollHeight - container.offsetHeight;
+
+    message.mentionsSelf = message.mentions?.includes(this.currentUserId);
+    if(message.mentionsSelf && !document.hasFocus() && Notification.permission == "granted") {
+      var notification = new Notification(
+        message.user.name + " has mentioned you!",
+        {
+          body: message.message,
+        }
+      );
+    }
 
     if (lastMessage && lastMessage.user.id === message.user.id) {
       Vue.set(this.messages, lastMessageId, {
@@ -144,7 +171,19 @@ export default class Root extends Vue {
   }
 
   sendMessage() {
-    this.connection.emit("usr-msg", this.message);
+    let mentionables = this.message
+      .split(" ")
+      .filter((x) => x.startsWith("@"))
+      .map((x) => x.substr(1));
+
+    let cachedUsers = mentionables.map((x) =>
+      Object.values(this.users).find((y) => x == y.name)
+    );
+
+    this.connection.emit("usr-msg", {
+      message: this.message,
+      mentions: cachedUsers.map((x) => x.id),
+    });
     this.message = "";
   }
 }

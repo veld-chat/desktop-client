@@ -60,30 +60,32 @@ export class ClientManager
         });
     }
 
-    async OnClientMessageReceived(socket: SocketIO.Socket, msg: string)
+    async OnClientMessageReceived(socket: SocketIO.Socket, msg: any)
     {
-        if (msg.length > 256) {
-            msg = msg.substr(0, 256);
+        console.log(msg);
+
+        if (msg.message.length > 256) {
+            msg.message = msg.message.substr(0, 256);
         }
 
-        if(msg.startsWith("/"))
+        if(msg.message.startsWith("/"))
 		{
-            msg = msg.substr(1);
+            msg.message = msg.message.substr(1);
 
-            if (msg.startsWith(nickCommand)) {
-                var nick = msg.substr(nickCommand.length).replace(ws, ' ');
+            if (msg.message.startsWith(nickCommand)) {
+                var nick = msg.message.substr(nickCommand.length).replace(ws, ' ');
                 if (nickRegex.test(nick)) {
                     let user = this.clients.get(socket.id);
                     user.name = nick;
                     this.clients.set(user.id, user);
                     this.io.emit("user-edit", user);
                 }
-            } else if (msg.startsWith(avatarCommand)) {
+            } else if (msg.message.startsWith(avatarCommand)) {
                 let user = this.clients.get(socket.id);
-                user.avatar = '//images.weserv.nl/?url=' + encodeURI(msg.substr(avatarCommand.length));
+                user.avatar = '//images.weserv.nl/?url=' + encodeURI(msg.message.substr(avatarCommand.length));
                 this.clients.set(user.id, user);
                 this.io.emit("user-edit", user);
-            } else if (msg === "avatar") {
+            } else if (msg.message === "avatar") {
                 let avatarRateLimit = rateLimit[`${socket.id}:avatar`];
                 if (avatarRateLimit && Date.now() - avatarRateLimit < 5000) {
                     // no spam imghoard ok?
@@ -111,7 +113,8 @@ export class ClientManager
         rateLimit[socket.id] = messages + 1;
 
     	this.io.emit('usr-msg', {
-            message: escape(emoji.emojify(msg)),
+            message: escape(emoji.emojify(msg.message)),
+            mentions: msg.mentions,
             user: this.clients.get(socket.id).toJSON()
         });
     }

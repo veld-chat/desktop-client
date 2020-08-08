@@ -55,18 +55,15 @@ body {
   font-family: 'Roboto', sans-serif;
   background-color: $dark;
 }
+@include desktop {
+  body {
+    height: 100vh;
+    overflow-y: hidden;
+  }
+}
 
 li {
   list-style-type: none;
-}
-
-#msg-container {
-  overflow-y: scroll;
-}
-@include mobile {
-  #msg-container {
-    overflow-y: none;
-  }
 }
 
 .msg-instance-avatar {
@@ -123,6 +120,11 @@ html, body {
   flex-direction: column;
 }
 
+@include desktop {
+  .main {
+    height: 100vh;
+  }
+}
 
 .wrapper {
   display: flex;
@@ -130,6 +132,13 @@ html, body {
   justify-content: space-between;
   color: white;
 }
+
+@include desktop {
+  .wrapper {
+    height: 100vh;
+  }
+}
+
 @include mobile {
   .wrapper {
     margin-bottom: 4rem;
@@ -140,6 +149,12 @@ html, body {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+}
+
+@include desktop {
+  .intern-container {
+    overflow: hidden;
+  }
 }
 
 .heading-wrapper {
@@ -170,6 +185,7 @@ html, body {
   align-items: flex-start;
   padding: 8px 0;
   flex-grow: 1;
+  overflow-y: scroll;
 }
 
 @include mobile {
@@ -241,6 +257,11 @@ html, body {
   min-width: 120px;
   display: flex;
   flex-direction: row;
+}
+
+.mention {
+  background-color: rgb(29, 136, 185);
+  padding: 0 4px;
 }
 
 .msg-content-wrapper {
