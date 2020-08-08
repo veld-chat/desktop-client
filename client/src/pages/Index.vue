@@ -1,3 +1,4 @@
+/* eslint-disable vue/no-v-html */
 <template>
   <div class="row main">
     <div class="wrapper">
@@ -27,15 +28,18 @@
             :key="id"
             class="msg-instance-container fadein"
           >
-            <div v-if="message.user.avatarUrl"
+            <div
+              v-if="message.user.avatarUrl"
               class="msg-instance-avatar"
               :style="{ backgroundImage: `url('${message.user.avatarUrl}')` }"
             ></div>
             <div class="msg-content-wrapper">
               <div class="msg-instance-title">{{ message.user.name }}</div>
-              <p class="msg-instance"
+              <p
+                class="msg-instance"
                 :class="message.mentionsSelf ? 'mention' : ''"
-                v-html="message.message" />
+                v-html="message.message"
+              />
             </div>
           </div>
         </div>
@@ -45,9 +49,10 @@
           id="ui-input-field"
           v-model="message"
           type="text"
-          placeholder="type your message here!"
+          :placeholder="ready ? `type your message here!` : `connecting...`"
           class="textfield"
           maxlength="256"
+          :disabled="!ready"
           @keydown.enter.prevent="sendMessage()"
         />
       </div>
@@ -61,24 +66,39 @@ import { Component, Ref } from "vue-property-decorator";
 import * as marked from "marked";
 import * as io from "socket.io-client";
 import * as DOMPurify from "dompurify";
+import { MessageCreateEvent, Message, User } from "../models/events";
 
 @Component
 export default class Root extends Vue {
   private connection: SocketIOClient.Socket;
 
   @Ref() container: HTMLDivElement;
-  messages: Message[] = [];
-  users: any[] = [];
+  messages: MessageCreateEvent[] = [];
+  users: User[] = [];
 
   currentUserId = "";
   message = "";
+  token = "";
+  ready = false;
 
   mounted() {
+    this.ready = false;
     this.connection = io(":1234");
 
     this.connection.on("connect", () => {
       this.currentUserId = this.connection.id;
+      this.connection.on("ready", (options) => {
+        this.token = options.token;
+        this.currentUserId = options.user.id;
+        console.log(`Logged in as ${options.user.name} (${options.user.id})`);
+        this.ready = true;
+      });
+
+      this.connection.emit("login", {
+        name: localStorage.getItem("name"),
+      });
     });
+
     this.connection.on("usr-msg", this.publishMessage.bind(this));
     this.connection.on("user-edit", this.onUserEdit.bind(this));
     this.connection.on("sys-join", this.onUserAdd.bind(this));
@@ -89,19 +109,21 @@ export default class Root extends Vue {
     }
   }
 
-  beforeDestroy(): void {
+  beforeDestroy() {
     this.connection.close();
   }
 
   onUserAdd(user: any) {
-    console.log("user " + user.id + " joined");
     this.users[user.id] = user;
   }
 
   onUserEdit(user: any) {
-    console.log("user " + user.id + " mutated");
     if (!Object.keys(this.users).includes(user.id)) {
       this.users[user.id] = user;
+    }
+
+    if (user.id == this.currentUserId) {
+      localStorage.setItem("name", user.name);
     }
 
     this.publishMessage({
@@ -110,12 +132,14 @@ export default class Root extends Vue {
         id: "system",
         name: "system",
       },
+      mentionsSelf: false,
+      mentions: [],
     });
 
     this.users[user.id] = user;
   }
 
-  onUserLeave(user:any) {
+  onUserLeave(user: any) {
     delete this.users[user.id];
   }
 
@@ -133,7 +157,6 @@ export default class Root extends Vue {
   }
 
   publishMessage(message: Message) {
-
     const lastMessageId = this.messages.length - 1;
     const lastMessage = this.messages[lastMessageId];
     const container = this.container;
@@ -141,7 +164,11 @@ export default class Root extends Vue {
       container.scrollTop >= container.scrollHeight - container.offsetHeight;
 
     message.mentionsSelf = message.mentions?.includes(this.currentUserId);
-    if(message.mentionsSelf && !document.hasFocus() && Notification.permission == "granted") {
+    if (
+      message.mentionsSelf &&
+      !document.hasFocus() &&
+      Notification.permission == "granted"
+    ) {
       var notification = new Notification(
         message.user.name + " has mentioned you!",
         {

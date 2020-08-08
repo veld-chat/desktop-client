@@ -1,6 +1,8 @@
 import { Client } from "./client";
 import axios from 'axios';
+import { ClientAuthOptions } from "@/models/gateway-payloads";
 const emoji = require('node-emoji')
+import * as jwt from "jsonwebtoken";
 
 var nickRegex = /^[a-zA-Z0-9 ]{1,16}$/;
 var ws = /\s+/;
@@ -20,29 +22,50 @@ function escape(input: string) {
 export class ClientManager
 { 
     clients: Map<string, Client>;
-    io: SocketIO.EngineSocket;
+    options: any;
+    io: SocketIO.Server;
 
-    constructor(io: SocketIO.EngineSocket)
+    constructor(io: SocketIO.Server, serverOptions: any)
     {
         this.clients = new Map();
+        this.options = serverOptions;
         this.io = io;
     }
 
     Start()
     {
-        this.io.on("connection", (socket) => { this.OnClientConnected(socket) });
+        this.io.on("connection", (socket) => this.OnClientConnected(socket));
     }
 
     OnClientConnected(socket: SocketIO.Socket) 
     {
         console.log("user " + socket.id + " connected");
-        let newClient = new Client(socket.id);
-        this.clients.set(socket.id, newClient);
-        this.io.emit("sys-join", newClient);
+        this.clients.set(socket.id, new Client(socket.id));
 
-        socket.on("disconnect", () => { this.OnClientDisconnect(socket) });
-        socket.on("usr-typ", () => { this.OnClientStartTyping(socket) });
-        socket.on("usr-msg", (msg) => { this.OnClientMessageReceived(socket, msg) });
+        socket.on("disconnect", () => this.OnClientDisconnect(socket));
+        socket.on("login", (options) => this.OnClientAuthenticated(socket, options));
+    }
+
+    OnClientAuthenticated(socket: SocketIO.Socket, options: ClientAuthOptions) {
+        let currentUser = this.clients.get(socket.id);
+        if(!currentUser) {
+            console.log("error: user tried to authenticate with invalid socket.");
+            socket.error("invalid session");
+            socket.disconnect(true);
+            return;
+        }
+
+        currentUser.name = options.name || currentUser.name;
+        this.clients.set(socket.id, currentUser);
+               
+        socket.emit("ready", {
+            user: currentUser,
+            token: jwt.sign(currentUser.id, this.options.secret),
+        });
+
+        socket.on("usr-typ", () => this.OnClientStartTyping(socket));
+        socket.on("usr-msg", (msg) => this.OnClientMessageReceived(socket, msg));
+        this.io.emit("sys-join", currentUser);
     }
 
     OnClientDisconnect(socket: SocketIO.Socket)
@@ -62,8 +85,6 @@ export class ClientManager
 
     async OnClientMessageReceived(socket: SocketIO.Socket, msg: any)
     {
-        console.log(msg);
-
         if (msg.message.length > 256) {
             msg.message = msg.message.substr(0, 256);
         }
@@ -105,7 +126,6 @@ export class ClientManager
         }
         
         var messages = rateLimit[socket.id] || 0;
-
         if (messages > 5) {
             return;
         }

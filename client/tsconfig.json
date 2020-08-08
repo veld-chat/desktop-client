@@ -7,7 +7,7 @@
     "target": "es5",
     "experimentalDecorators": true,
     "downlevelIteration": true,
-    "noImplicitAny": true,
+    "noImplicitReturns": false,
     "lib": [
       "dom",
       "es2015",
@@ -20,6 +20,6 @@
   },
   "include": [
     "./src/**/*",
-    "./typings/*.d.ts"
+    "./typings/*.d.ts", "gridsome.config.js"
   ]
 }

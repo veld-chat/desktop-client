@@ -1,13 +1,19 @@
 import express from 'express';
-const app = express();
 
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+import { Server } from 'http';
+import io from 'socket.io';
+import fs from "fs";
 
 import {HttpServer} from './api/http-server';
-const httpserverinstance = new HttpServer(express, app, http);
+import {ClientManager} from './api/client-manager';
+
+const app = express();
+const httpServer = new Server(app);
+
+const config = JSON.parse(fs.readFileSync("config/config.json").toString());
+
+const httpserverinstance = new HttpServer(express, app, httpServer);
 httpserverinstance.Listen(1234);
 
-import {ClientManager} from './api/client-manager';
-const clientmanagerinstance = new ClientManager(io);
+const clientmanagerinstance = new ClientManager(new io(httpServer), { secret: config.secret });
 clientmanagerinstance.Start();
