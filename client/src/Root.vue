@@ -55,7 +55,9 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Ref } from "vue-property-decorator";
+import * as marked from "marked";
 import * as io from "socket.io-client";
+import * as DOMPurify from "dompurify";
 
 @Component
 export default class Root extends Vue {
@@ -75,7 +77,7 @@ export default class Root extends Vue {
     this.connection.on("sys-leave", this.onUserLeave.bind(this));
   }
 
-  beforeDestroy() {
+  beforeDestroy(): void {
     this.connection.close();
   }
 
@@ -102,13 +104,20 @@ export default class Root extends Vue {
     delete this.users[user.id];
   }
 
-  sendMessage() {
-    this.connection.emit("usr-msg", this.message);
-    this.message = "";
+  processMessage(input: string): string {
+    return DOMPurify.sanitize(
+      marked(input, {
+        headerIds: false,
+        breaks: true,
+      }),
+      {
+        ALLOWED_TAGS: ["b", "i", "em", "strong", "a"],
+        ALLOWED_ATTR: ["href"],
+      }
+    );
   }
 
   publishMessage(message: Message) {
-  const lastMessageId = this.messages.length - 1;
     const lastMessage = this.messages[lastMessageId];
     const container = this.container;
     const scroll =
@@ -117,10 +126,14 @@ export default class Root extends Vue {
     if (lastMessage && lastMessage.user.id === message.user.id) {
       Vue.set(this.messages, lastMessageId, {
         ...message,
-        message: lastMessage.message + "<br/>" + message.message,
+        message:
+          lastMessage.message + "<br />" + this.processMessage(message.message),
       });
     } else {
-      this.messages.push(message);
+      this.messages.push({
+        ...message,
+        message: this.processMessage(message.message),
+      });
     }
 
     if (scroll) {
@@ -128,6 +141,11 @@ export default class Root extends Vue {
         window.scroll(0, document.body.scrollHeight);
       });
     }
+  }
+
+  sendMessage() {
+    this.connection.emit("usr-msg", this.message);
+    this.message = "";
   }
 }
 </script>
