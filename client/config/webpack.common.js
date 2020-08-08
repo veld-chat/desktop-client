@@ -10,6 +10,9 @@ const { getTsAlias } = require("./utils");
 const root = join(__dirname, "..");
 
 module.exports = {
+  devServer: {
+    host: "0.0.0.0",
+  },
   entry: {
     main: join(root, "src/index.ts"),
   },

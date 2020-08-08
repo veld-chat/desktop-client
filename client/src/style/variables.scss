@@ -1,0 +1,14 @@
+$dark: #333333;
+$darker: #212121;
+
+@mixin mobile {
+    @media only screen and (max-width: 1024px) {
+        @content;
+    }
+}
+
+@mixin desktop {
+    @media only screen and (min-width: 1025px) {
+        @content;
+    }
+}

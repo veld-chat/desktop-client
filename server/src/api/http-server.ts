@@ -1,17 +1,19 @@
 const clientFolder = __dirname.substring(0, __dirname.length - 10) + "client";
 
-module.exports = class HttpServer
+export class HttpServer
 {
+    http: any;
+    app: any;
+    express: any;
 
-
-    constructor(express, app, http)
+    constructor(express: any, app: any, http: any)
     {
         console.log(clientFolder);
         this.http = http;
         this.app = app;
         this.express = express;
 
-        app.get('/', function(req, res)
+        app.get('/', function(req: any, res: any)
         {
             res.sendFile(clientFolder + "/index.html");
         });
@@ -19,7 +21,7 @@ module.exports = class HttpServer
         app.use("/assets", express.static(clientFolder + "/assets"));
     }
 
-    Listen(port)
+    Listen(port: number)
     {
         this.http.listen(port, function()
         {

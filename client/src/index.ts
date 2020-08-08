@@ -4,5 +4,5 @@ import "./style/index.scss";
 
 new Vue({
   el: "#app",
-  render: (h) => h(Root),
+  render: (h: any) => h(Root),
 });

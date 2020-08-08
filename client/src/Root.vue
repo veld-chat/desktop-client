@@ -25,15 +25,14 @@
           <div
             v-for="(message, id) in messages"
             :key="id"
-            class="msg-instance-container fadein"
-          >
-            <div
+            class="msg-instance-container fadein">
+            <div v-if="message.user.avatarUrl"
               class="msg-instance-avatar"
-              :style="{ backgroundImage: `url('${message.avatarurl}')` }"
+              :style="{ backgroundImage: `url('${message.user.avatarUrl}')` }"
             ></div>
             <div class="msg-content-wrapper">
-              <div class="msg-instance-title">{{ message.name }}</div>
-              <p class="msg-instance" v-html="message.message"></p>
+              <div class="msg-instance-title">{{ message.user.name }}</div>
+              <p class="msg-instance" v-html="message.message" />
             </div>
           </div>
         </div>
@@ -64,28 +63,61 @@ export default class Root extends Vue {
 
   @Ref() container: HTMLDivElement;
   messages: Message[] = [];
+  users: any[] = [];
+
   message = "";
 
   mounted() {
-    this.connection = io();
-    this.connection.on("usr-msg", this.onMessage.bind(this));
+    this.connection = io(":1234");
+    this.connection.on("usr-msg", this.publishMessage.bind(this));
+    this.connection.on("user-edit", this.onUserEdit.bind(this));
+    this.connection.on("sys-join", this.onUserAdd.bind(this));
+    this.connection.on("sys-leave", this.onUserLeave.bind(this));
   }
 
   beforeDestroy() {
     this.connection.close();
   }
 
-  onMessage(message: Message) {
-    const lastMessageId = this.messages.length - 1;
+  onUserAdd(user: any) {
+    console.log("user " + user.id + " joined");
+    this.users[user.id] = user;
+  }
+
+  onUserEdit(user: any) {
+    console.log("user " + user.id + " mutated");
+
+    this.publishMessage({
+      message: `user '${this.users[user.id].name}'' is now '${user.name}'.`,
+      user: {
+        id: "system",
+        name: "system",
+      },
+    });
+
+    this.users[user.id] = user;
+  }
+
+  onUserLeave(user:any) {
+    delete this.users[user.id];
+  }
+
+  sendMessage() {
+    this.connection.emit("usr-msg", this.message);
+    this.message = "";
+  }
+
+  publishMessage(message: Message) {
+  const lastMessageId = this.messages.length - 1;
     const lastMessage = this.messages[lastMessageId];
     const container = this.container;
     const scroll =
       container.scrollTop >= container.scrollHeight - container.offsetHeight;
 
-    if (lastMessage && lastMessage.userid === message.userid) {
+    if (lastMessage && lastMessage.user.id === message.user.id) {
       Vue.set(this.messages, lastMessageId, {
         ...message,
-        message: lastMessage.message + "<br />" + message.message,
+        message: lastMessage.message + "<br/>" + message.message,
       });
     } else {
       this.messages.push(message);
@@ -93,14 +125,9 @@ export default class Root extends Vue {
 
     if (scroll) {
       this.$nextTick(() => {
-        container.scrollTop = container.scrollHeight;
+        window.scroll(0, document.body.scrollHeight);
       });
     }
-  }
-
-  sendMessage() {
-    this.connection.emit("usr-msg", this.message);
-    this.message = "";
   }
 }
 </script>
