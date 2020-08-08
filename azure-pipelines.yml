@@ -36,7 +36,7 @@ stages:
 
     - task: replacetokens@3
       inputs:
-        rootDirectory: '$(Build.SourcesDirectory)/manifests'
+        rootDirectory: '$(Build.SourcesDirectory)/server/manifests'
         targetFiles: '*.yml'
         encoding: 'auto'
         writeBOM: true
@@ -53,9 +53,9 @@ stages:
 
     - task: CopyFiles@2
       inputs:
-        SourceFolder: '$(Build.SourcesDirectory)/manifests'
+        SourceFolder: '$(Build.SourcesDirectory)/server/manifests'
         Contents: '**'
-        TargetFolder: '$(Build.ArtifactStagingDirectory)/manifests'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/server/manifests'
         OverWrite: true
 
     - task: PublishBuildArtifacts@1
