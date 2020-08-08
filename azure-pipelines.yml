@@ -55,7 +55,7 @@ stages:
       inputs:
         SourceFolder: '$(Build.SourcesDirectory)/server/manifests'
         Contents: '**'
-        TargetFolder: '$(Build.ArtifactStagingDirectory)/server/manifests'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/manifests'
         OverWrite: true
 
     - task: PublishBuildArtifacts@1
