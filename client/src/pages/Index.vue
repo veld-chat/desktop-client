@@ -76,7 +76,7 @@ export default class Root extends Vue {
 
   mounted(): void {
     this.connected = false;
-    this.connection = io("chat.gateway.veld.dev");
+    this.connection = io("chat-gateway.veld.dev");
 
     this.connection.on("connect", () => {
       this.currentUserId = this.connection.id;

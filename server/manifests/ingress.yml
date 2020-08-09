@@ -4,6 +4,10 @@ metadata:
   name: chat-gateway-ingress
   annotations:
     kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/preserve-host: "true"
 spec:
   rules:
-    - host: "chat.gateway.veld.dev"
+    - host: "chat-gateway.veld.dev"
+  backend:
+    serviceName: chat-gateway
+    servicePort: 80

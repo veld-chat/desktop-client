@@ -6,5 +6,5 @@ spec:
   selector:
     app: chat-gateway
   ports:
-    - port: 80
-      targetPort: 1234
+    - port: 1234
+      targetPort: 80
