@@ -1113,6 +1113,11 @@
   resolved "https://registry.yarnpkg.com/@types/trusted-types/-/trusted-types-1.0.6.tgz#569b8a08121d3203398290d602d84d73c8dcf5da"
   integrity sha512-230RC8sFeHoT6sSUlRO6a8cAnclO06eeiq1QDfiv2FGCLWFvvERWgwIQD4FWqD9A69BN7Lzee4OXwoMVnnsWDw==
 
+"@types/twemoji@^12.1.1":
+  version "12.1.1"
+  resolved "https://registry.yarnpkg.com/@types/twemoji/-/twemoji-12.1.1.tgz#34c5dcecff438b5be173889a6ee8ad51ba90445f"
+  integrity sha512-dW1B1WHTfrWmEzXb/tp8xsZqQHAyMB9JwLwbBqkIQVzmNUI02R7lJqxUpKFM114ygNZHKA1r74oPugCAiYHt1A==
+
 "@types/uglify-js@*":
   version "3.9.3"
   resolved "https://registry.yarnpkg.com/@types/uglify-js/-/uglify-js-3.9.3.tgz#d94ed608e295bc5424c9600e6b8565407b6b4b6b"
