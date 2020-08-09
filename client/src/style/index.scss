@@ -200,6 +200,7 @@ html, body {
 }
 
 .controls {
+  position: relative;
   background: $medium;
   color: white;
   display: flex;
@@ -260,7 +261,7 @@ html, body {
 }
 
 input:-webkit-autofill,
-input:-webkit-autofill:hover, 
+input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 textarea:-webkit-autofill,
 textarea:-webkit-autofill:hover,
@@ -268,8 +269,8 @@ textarea:-webkit-autofill:focus,
 select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus
-.textfield:hover, 
-.textfield:active, 
+.textfield:hover,
+.textfield:active,
 .textfield:focus {
   outline: none;
   -webkit-text-fill-color: white;
@@ -322,4 +323,43 @@ select:-webkit-autofill:focus
   flex-shrink: 0;
   background-size: cover;
   background-position: center;
+}
+
+.CodeMirror {
+  height: auto !important;
+  width: 100%;
+}
+
+.CodeMirror-gutters {
+  display: none !important;
+}
+
+.controls .CodeMirror {
+  background: none;
+  color: inherit;
+  font: inherit;
+
+  span.cm-builtin {
+    color: darkgray;
+  }
+}
+
+.autocomplete {
+  position: absolute;
+  bottom: 100%;
+  background: #333333;
+  width: 100%;
+  left: 0;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,0.2);
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+
+  &-item {
+    padding: 0.75em 0.5em;
+
+    &.active {
+      background: rgba(0, 0, 0, .25);
+    }
+  }
 }

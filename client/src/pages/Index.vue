@@ -151,15 +151,15 @@ export default class Root extends Vue {
     );
   }
 
-  shouldScroll() {
-    this.container.scrollTop >=
-      this.container.scrollHeight - this.container.offsetHeight;
-  }
-
   publishMessage(message: Message): void {
     const lastMessageId = this.messages.length - 1;
     const lastMessage = this.messages[lastMessageId];
     const container = this.container;
+    const scroll =
+      container.scrollTop >= container.scrollHeight - container.offsetHeight;
+
+    console.log(container.scrollHeight - container.offsetHeight)
+    console.log(container.scrollTop >= container.scrollHeight - container.offsetHeight);
 
     message.mentionsSelf = message.mentions?.includes(this.currentUserId);
     if (
@@ -188,10 +188,9 @@ export default class Root extends Vue {
       });
     }
 
-    if (this.shouldScroll) {
+    if (scroll) {
       this.$nextTick(() => {
-        window.scroll(0, document.body.scrollHeight);
-        container.scroll(0, container.scrollTop);
+        container.scroll(0, container.scrollHeight);
       });
     }
   }

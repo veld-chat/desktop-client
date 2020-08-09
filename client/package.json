@@ -7,8 +7,10 @@
     "build": "gridsome build"
   },
   "dependencies": {
+    "codemirror": "^5.56.0",
     "dompurify": "^2.0.12",
     "gridsome": "^0.7.19",
+    "hypermd": "^0.3.11",
     "marked": "^1.1.1",
     "socket.io-client": "^2.3.0",
     "ts-events": "^3.4.0",
@@ -19,6 +21,7 @@
     "vuex": "^3.5.1"
   },
   "devDependencies": {
+    "@types/codemirror": "^0.0.97",
     "@types/dompurify": "^2.0.3",
     "@types/marked": "^1.1.0",
     "@types/socket.io-client": "^1.4.33",
