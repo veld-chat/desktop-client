@@ -117,6 +117,9 @@ export default class Root extends Vue {
     this.connection.on("connect", () => {
       this.currentUserId = this.connection.id;
       this.connection.on("ready", (options) => {
+        userStore.clear();
+        userTypingStore.clear();
+
         this.token = options.token;
         this.currentUserId = options.user.id;
         userStore.upsert(options.user);

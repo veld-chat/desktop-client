@@ -40,6 +40,10 @@ export abstract class Store<TKey, TValue> {
     return Array.from(this.values.values());
   }
 
+  clear(): void {
+    this.values.clear();
+  }
+
   keys(): TKey[] {
     return Array.from(this.values.keys());
   }
