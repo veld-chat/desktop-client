@@ -1,7 +1,7 @@
 <template>
   <div class="controls-wrapper">
     <div class="controls">
-      <div class="autocomplete">
+      <div ref="container" class="autocomplete">
         <div
           v-for="(item, index) in autoComplete"
           :key="item.text"
@@ -75,6 +75,7 @@ dictionary.push({
 })
 export default class ChatBar extends Vue {
   @Ref() input: HTMLTextAreaElement;
+  @Ref() container: HTMLDivElement;
   message = "";
   lastTimeTyping = 0;
   editor: CodeMirror.Editor;
@@ -153,6 +154,8 @@ export default class ChatBar extends Vue {
     if (this.autoCompleteIndex >= this.autoComplete.length) {
       this.autoCompleteIndex = 0;
     }
+
+    this.moveToItem();
   }
 
   moveUp() {
@@ -165,6 +168,18 @@ export default class ChatBar extends Vue {
     if (this.autoCompleteIndex < 0) {
       this.autoCompleteIndex = this.autoComplete.length - 1;
     }
+
+    this.moveToItem();
+  }
+
+  moveToItem() {
+    this.$nextTick(() => {
+       const element = this.container.querySelector(".active");
+
+       if (element) {
+         element.scrollIntoView({ block: "center" });
+       }
+    })
   }
 
   handleHint(cm: CodeMirror.Editor) {
@@ -197,7 +212,7 @@ export default class ChatBar extends Vue {
       if (wordEmpty || emoji.value.slice(0, word.length) === word) {
         result.list.push(emoji);
 
-        if (result.list.length >= 5) {
+        if (result.list.length >= 50) {
           break;
         }
       }
@@ -219,7 +234,7 @@ export default class ChatBar extends Vue {
             value: "@" + item,
           });
 
-          if (result.list.length >= 5) {
+          if (result.list.length >= 50) {
             break;
           }
         }
