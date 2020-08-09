@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "webpack-dev-server --config config/webpack.dev.js",
+    "start": "gridsome develop",
     "build": "gridsome build"
   },
   "dependencies": {
