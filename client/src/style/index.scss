@@ -1,14 +1,12 @@
 @import "variables";
 @import "emoji";
 
-@include mobile {
-  * {
-    -webkit-tap-highlight-color:  rgba(255, 255, 255, 0);
-    -webkit-overflow-scrolling: touch;
-    -webkit-user-drag: none;
-    margin: 0;
-    padding: 0;
-  }
+* {
+  -webkit-tap-highlight-color:  rgba(255, 255, 255, 0);
+  -webkit-overflow-scrolling: touch;
+  -webkit-user-drag: none;
+  margin: 0;
+  padding: 0;
 }
 
 @keyframes fadein {
@@ -250,12 +248,14 @@ html, body {
 }
 
 .textfield {
-  height: 100%;
-  font-size: 1.25rem;
+  font-size: 1rem;
+  vertical-align: middle;
   border: 0;
   flex: 1;
   background-color: transparent;
   color: white;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 input:-webkit-autofill,
@@ -299,6 +299,12 @@ select:-webkit-autofill:focus
   min-width: 120px;
   display: flex;
   flex-direction: row;
+}
+
+@include mobile {
+  .msg-instance-container {
+    margin: 4px 8px;
+  }
 }
 
 .mention {
