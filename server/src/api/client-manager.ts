@@ -56,6 +56,7 @@ export class ClientManager {
 
         socket.emit("ready", {
             user: currentUser,
+            members: Array.from(this.clients.values()).map(x => x.toJSON()),
             token: jwt.sign(currentUser.id, this.options.secret),
         });
 
