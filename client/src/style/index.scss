@@ -235,7 +235,7 @@ html, body {
 
 .member-list-item {
   padding-bottom: 0.5rem;
-  display: flex;  
+  display: flex;
   justify-items: center;
 }
 
@@ -421,6 +421,11 @@ select:-webkit-autofill:focus
 
   &-item {
     padding: 0.75em 0.5em;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(0, 0, 0, .15);
+    }
 
     &.active {
       background: rgba(0, 0, 0, .25);

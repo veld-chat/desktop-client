@@ -6,6 +6,7 @@
           v-for="(item, index) in autoComplete"
           :key="item.text"
           :class="['autocomplete-item', autoCompleteIndex === index && 'active']"
+          @click="handleAutoComplete(index)"
         >
           {{ item.emoji }} {{ item.text }}
           <span
@@ -116,12 +117,12 @@ export default class ChatBar extends Vue {
     this.startTyping();
   }
 
-  handleAutoComplete() {
+  handleAutoComplete(index?: number) {
     if (this.autoComplete.length === 0) {
       return false;
     }
 
-    const item = this.autoComplete[this.autoCompleteIndex];
+    const item = this.autoComplete[index ?? this.autoCompleteIndex];
 
     this.editor.replaceRange(item.value + " ", this.from, this.to);
     this.editor.setCursor(this.to.ch + item.value.length + 1);
@@ -211,7 +212,7 @@ export default class ChatBar extends Vue {
       );
 
       for (const item of names) {
-        if (item.slice(0, name.length) === name) {
+        if (item.slice(0, name.length).toLowerCase() === name) {
           result.list.push({
             text: item,
             value: "@" + item,
