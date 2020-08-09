@@ -326,19 +326,24 @@ select:-webkit-autofill:focus
   background-position: center;
 }
 
-.CodeMirror {
-  height: auto !important;
-  width: 100%;
-}
-
-.CodeMirror-gutters {
-  display: none !important;
-}
-
 .controls .CodeMirror {
   background: none;
   color: inherit;
   font: inherit;
+  height: auto;
+  width: 100%;
+
+  &-gutters {
+    display: none;
+  }
+
+  &-lines {
+    padding: 0;
+  }
+
+  &-sizer {
+    min-height: auto !important;
+  }
 
   span.cm-builtin {
     color: darkgray;
