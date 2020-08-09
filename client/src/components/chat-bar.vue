@@ -39,7 +39,7 @@ import userStore from "@/store/user-store";
 const HyperMD = process.isClient ? require("hypermd") : null;
 const CodeMirror = process.isClient ? require("codemirror") : null;
 
-const dictionary: Emoji[] = [];
+const dictionary: any[] = [];
 
 interface AutoComplete {
   text: string;
