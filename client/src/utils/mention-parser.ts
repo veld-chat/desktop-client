@@ -1,12 +1,6 @@
-import { UserStore } from "@/store/user-store";
+import userStore from "../store/user-store";
 
 export class MentionParser {
-  users: UserStore;
-
-  constructor(userStore: UserStore) {
-    this.users = userStore;
-  }
-
   fromString(content: string): string[] {
     const mentionables = content
       .split(" ")
@@ -14,7 +8,8 @@ export class MentionParser {
       .map((x) => x.substr(1));
 
     return mentionables
-      .map((x) => this.users.list().find((y) => x == y.name))
+      .map((x) => userStore.list().find((y) => x == y.name))
+      .filter(x => x)
       .map((x) => x.id);
   }
 }

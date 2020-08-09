@@ -197,21 +197,32 @@ html, body {
 @include mobile {
   .intern-container .messages {
     align-items: stretch;
+    margin-bottom: 18px;
   }
 }
 
 .controls {
-  display: flex;
-  flex-direction: row;
-  margin: 0.5rem;
   background: $medium;
   color: white;
+  display: flex;
   border-radius: 4px;
   padding: 16px 12px;
+  flex-direction: row;
+}
+
+.typing-bar {
+  margin: 0.25rem;
+  font-size: 12px;
+  color: $light;
+}
+
+.controls-wrapper {
+  background-color: $dark;
+  margin: 0.5rem;
 }
 
 @include mobile {
-  .controls {
+  .controls-wrapper {
     position: fixed;
     bottom: 0px;
     left: 0px;

@@ -1,35 +1,16 @@
 import { User } from "@/models/events";
+import { Store } from "./store";
 
-export class UserStore {
-  users: Map<string, User>;
-
+export class UserStore extends Store<string, User> {
   constructor() {
-    this.users = new Map<string, User>();
+    super();
   }
 
-  upsert(user: User): void {
-    this.users.set(user.id, user);
-  }
-
-  upsertAll(users: User[]): void {
-    for (const u of users) {
-      this.upsert(u);
-    }
-  }
-
-  get(id: string): User {
-    return this.users.get(id);
-  }
-
-  getAll(ids: string[]): User[] {
-    return this.list().filter((x) => ids.includes(x.id));
-  }
-
-  delete(id: string): void {
-    this.users.delete(id);
-  }
-
-  list(): User[] {
-    return Array.from(this.users.values());
+  getEntityKey(value: User): string {
+    return value.id;
   }
 }
+
+// Singleton pattern
+const instance = new UserStore();
+export default instance;

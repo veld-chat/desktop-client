@@ -13,3 +13,8 @@ export type MessageCreateEvent = {
 export type Message = {
   mentionsSelf: boolean;
 } & MessageCreateEvent;
+
+export type UserTyping = {
+  id: string;
+  lastTypingTime: number;
+}

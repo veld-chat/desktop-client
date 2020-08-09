@@ -1,13 +1,13 @@
-apiVersion: extensions/v1beta1
-kind: Ingress
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
   name: chat-gateway-ingress
-  annotations:
-    kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/preserve-host: "true"
+  namespace: default
 spec:
-  rules:
-    - host: "chat-gateway.veld.dev"
-  backend:
-    serviceName: chat-gateway
-    servicePort: 80
+  routes:
+    - kind: Rule
+      match: Host(`chat-gateway.veld.dev`)
+      services:
+        - name: chat-gateway
+          namespace: default
+          port: 1234

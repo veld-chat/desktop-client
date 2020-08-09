@@ -1,46 +1,56 @@
 /* eslint-disable vue/no-v-html */
 <template>
-  <div class="row main">
-    <div class="wrapper">
-      <div class="intern-container">
-        <div class="heading-wrapper">
-          <header class="heading">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              style="height: 2rem;"
-              viewBox="0 0 674.731 463.131"
-            >
-              <path
-                d="M8433.373,1216.334l236.061-406.322,161.628,286.636,67.489,119.687H9051.3l-205.974-362.35-68.206,120.93"
-                transform="translate(-8400.564 -786.011)"
-                fill="none"
-                stroke="#fff"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="48"
+  <div>
+    <div v-if="connected" class="row main">
+      <div class="wrapper">
+        <div class="intern-container">
+          <div class="heading-wrapper">
+            <header class="heading">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                style="height: 2rem;"
+                viewBox="0 0 674.731 463.131"
+              >
+                <path
+                  d="M8433.373,1216.334l236.061-406.322,161.628,286.636,67.489,119.687H9051.3l-205.974-362.35-68.206,120.93"
+                  transform="translate(-8400.564 -786.011)"
+                  fill="none"
+                  stroke="#fff"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="48"
+                />
+              </svg>
+            </header>
+          </div>
+          <div ref="container" class="messages">
+            <div v-for="(message, id) in messages" :key="id" class="msg-instance-container fadein">
+              <div
+                v-if="message.user.avatarUrl"
+                class="msg-instance-avatar"
+                :style="{ backgroundImage: `url('${message.user.avatarUrl}')` }"
               />
-            </svg>
-          </header>
-        </div>
-        <div ref="container" class="messages">
-          <div v-for="(message, id) in messages" :key="id" class="msg-instance-container fadein">
-            <div
-              v-if="message.user.avatarUrl"
-              class="msg-instance-avatar"
-              :style="{ backgroundImage: `url('${message.user.avatarUrl}')` }"
-            />
-            <div class="msg-content-wrapper">
-              <div class="msg-instance-title">{{ message.user.name }}</div>
-              <p
-                class="msg-instance"
-                :class="message.mentionsSelf ? 'mention' : ''"
-                v-html="message.message"
-              />
+              <div class="msg-content-wrapper">
+                <div class="msg-instance-title">{{ message.user.name }}</div>
+                <p
+                  class="msg-instance"
+                  :class="message.mentionsSelf ? 'mention' : ''"
+                  v-html="message.message"
+                />
+              </div>
             </div>
           </div>
         </div>
+        <chat-bar
+          :ready="connected"
+          @send="sendMessage"
+          @startTyping="startTyping"
+          :current-user-id="this.currentUserId"
+        />
       </div>
-      <chat-bar :ready="connected" @send="sendMessage" />
+    </div>
+    <div v-if="!connected">
+      <p>Loading...</p>
     </div>
   </div>
 </template>
@@ -52,9 +62,11 @@ import marked from "marked";
 import io from "socket.io-client";
 import DOMPurify from "dompurify";
 import { MessageCreateEvent, Message, User } from "../models/events";
-import { UserStore } from "../store/user-store";
 import { MentionParser } from "../utils/mention-parser";
 import twemoji from "twemoji";
+
+import userStore from "../store/user-store";
+import userTypingStore from "../store/user-typing-store";
 
 import ChatBar from "../components/chat-bar.vue";
 
@@ -66,8 +78,8 @@ export default class Root extends Vue {
 
   @Ref() container: HTMLDivElement;
   messages: MessageCreateEvent[] = [];
-  users: UserStore = new UserStore();
-  mentionParser: MentionParser = new MentionParser(this.users);
+
+  mentionParser: MentionParser = new MentionParser();
 
   currentUserId = "";
   message = "";
@@ -78,11 +90,17 @@ export default class Root extends Vue {
     this.connected = false;
     this.connection = io("chat-gateway.veld.dev");
 
+    this.connection.on("usr-join", userStore.upsert);
+    this.connection.on("usr-leave", (x) => userStore.delete(x.id));
+    this.connection.on("user-edit", this.onUserEdit);
+
     this.connection.on("connect", () => {
       this.currentUserId = this.connection.id;
       this.connection.on("ready", (options) => {
         this.token = options.token;
         this.currentUserId = options.user.id;
+        userStore.upsert(options.user);
+
         console.log(`Logged in as ${options.user.name} (${options.user.id})`);
         this.connected = true;
       });
@@ -92,11 +110,15 @@ export default class Root extends Vue {
       });
     });
 
-    this.connection.on("usr-typ", this.onUserStartTyping.bind(this));
+    this.connection.on("usr-typ", (user) => {
+      console.log("typing " + user.name);
+      userTypingStore.upsert({
+        id: user.id,
+        lastTypingTime: Date.now(),
+      });
+    });
+
     this.connection.on("usr-msg", this.publishMessage.bind(this));
-    this.connection.on("user-edit", this.onUserEdit.bind(this));
-    this.connection.on("sys-join", this.onUserAdd.bind(this));
-    this.connection.on("sys-leave", this.onUserLeave.bind(this));
 
     if (Notification.permission !== "granted") {
       Notification.requestPermission();
@@ -107,38 +129,11 @@ export default class Root extends Vue {
     this.connection.close();
   }
 
-  onUserStartTyping(user: User): void {
-    // TODO(veld): add modal to show typing users above text bar.
-  }
-
-  onUserAdd(user: User): void {
-    this.users.upsert(user);
-  }
-
   onUserEdit(user: User): void {
-    if (!Object.keys(this.users).includes(user.id)) {
-      this.users.upsert(user);
-    }
-
     if (user.id == this.currentUserId) {
       localStorage.setItem("name", user.name);
     }
-
-    this.publishMessage({
-      message: `user '${this.users[user.id].name}'' is now '${user.name}'.`,
-      user: {
-        id: "system",
-        name: "system",
-      },
-      mentionsSelf: false,
-      mentions: [],
-    });
-
-    this.users[user.id] = user;
-  }
-
-  onUserLeave(user: User): void {
-    this.users.delete(user.id);
+    userStore.upsert(user);
   }
 
   processMessage(input: string): string {
@@ -156,12 +151,15 @@ export default class Root extends Vue {
     );
   }
 
+  shouldScroll() {
+    this.container.scrollTop >=
+      this.container.scrollHeight - this.container.offsetHeight;
+  }
+
   publishMessage(message: Message): void {
     const lastMessageId = this.messages.length - 1;
     const lastMessage = this.messages[lastMessageId];
     const container = this.container;
-    const scroll =
-      container.scrollTop >= container.scrollHeight - container.offsetHeight;
 
     message.mentionsSelf = message.mentions?.includes(this.currentUserId);
     if (
@@ -190,11 +188,16 @@ export default class Root extends Vue {
       });
     }
 
-    if (scroll) {
+    if (this.shouldScroll) {
       this.$nextTick(() => {
         window.scroll(0, document.body.scrollHeight);
+        container.scroll(0, container.scrollTop);
       });
     }
+  }
+
+  startTyping(): void {
+    this.connection.emit("usr-typ");
   }
 
   sendMessage(message: string): void {
