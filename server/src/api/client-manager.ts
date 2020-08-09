@@ -1,28 +1,20 @@
 import { Client } from "./client";
-import axios from 'axios';
 import { ClientAuthOptions } from "@/models/gateway-payloads";
 const emoji = require('node-emoji')
 import * as jwt from "jsonwebtoken";
-
-var nickRegex = /^[a-zA-Z0-9 ]{1,16}$/;
-var ws = /\s+/;
-var rateLimit: any = {}
-
-setInterval(function () {
-    rateLimit = {}
-}, 5000);
-
-const nickCommand = "nick ";
-const avatarCommand = "avatar ";
+import { RateLimit } from "@/utils/rate-limit";
+import { commandManager } from "@/command-manager";
+import SocketIO from "socket.io";
 
 function escape(input: string) {
     return input.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 export class ClientManager {
-    clients: Map<string, Client>;
-    options: any;
-    io: SocketIO.Server;
+    private messageRateLimit = new RateLimit(5, 5000);
+    private clients: Map<string, Client>;
+    private options: any;
+    private io: SocketIO.Server;
 
     constructor(io: SocketIO.Server, serverOptions: any) {
         this.clients = new Map();
@@ -30,19 +22,31 @@ export class ClientManager {
         this.io = io;
     }
 
-    Start() {
-        this.io.on("connection", (socket) => this.OnClientConnected(socket));
+    start() {
+        this.io.on("connection", (socket) => this.onClientConnected(socket));
     }
 
-    OnClientConnected(socket: SocketIO.Socket) {
+    updateUser(user: Client) {
+        this.io.emit("user-edit", user.serialize());
+    }
+
+    get(id: string) {
+        return this.clients.get(id);
+    }
+
+    private onClientConnected(socket: SocketIO.Socket) {
         console.log("user " + socket.id + " connected");
-        this.clients.set(socket.id, new Client(socket.id));
 
-        socket.on("disconnect", () => this.OnClientDisconnect(socket));
-        socket.on("login", (options) => this.OnClientAuthenticated(socket, options));
+        const client = new Client(socket, this);
+        this.clients.set(socket.id, client);
+
+        socket.on("disconnect", () => this.onClientDisconnect(socket));
+        socket.on("login", (options) => this.onClientAuthenticated(socket, options));
+
+        socket.emit("sys-commands", commandManager.commands);
     }
 
-    OnClientAuthenticated(socket: SocketIO.Socket, options: ClientAuthOptions) {
+    private async onClientAuthenticated(socket: SocketIO.Socket, options: ClientAuthOptions) {
         let currentUser = this.clients.get(socket.id);
         if (!currentUser) {
             console.log("error: user tried to authenticate with invalid socket.");
@@ -51,83 +55,52 @@ export class ClientManager {
             return;
         }
 
+        await currentUser.randomAvatar(false);
+
         currentUser.name = options.name || currentUser.name;
         this.clients.set(socket.id, currentUser);
 
         socket.emit("ready", {
-            user: currentUser,
-            members: Array.from(this.clients.values()).map(x => x.toJSON()),
+            user: currentUser.serialize(),
+            members: Array.from(this.clients.values()).map(x => x.serialize()),
             token: jwt.sign(currentUser.id, this.options.secret),
         });
 
-        socket.on("usr-typ", () => this.OnClientStartTyping(socket));
-        socket.on("usr-msg", (msg) => this.OnClientMessageReceived(socket, msg));
-        this.io.emit("sys-join", currentUser);
+        socket.on("usr-typ", () => this.onClientStartTyping(socket));
+        socket.on("usr-msg", (msg) => this.onClientMessageReceived(socket, msg));
+        this.io.emit("sys-join", currentUser.serialize());
     }
 
-    OnClientDisconnect(socket: SocketIO.Socket) {
+    private onClientDisconnect(socket: SocketIO.Socket) {
         console.log("user " + socket.id + " disconnected");
-        this.io.emit("sys-leave", this.clients.get(socket.id));
+        this.io.emit("sys-leave", this.clients.get(socket.id).serialize());
         this.clients.delete(socket.id);
     }
 
-    OnClientStartTyping(socket: SocketIO.Socket) {
+    private onClientStartTyping(socket: SocketIO.Socket) {
         this.io.emit("usr-typ", {
             id: socket.id,
             name: this.clients.get(socket.id).name,
         });
     }
 
-    async OnClientMessageReceived(socket: SocketIO.Socket, msg: any) {
+    private async onClientMessageReceived(socket: SocketIO.Socket, msg: any) {
+        if (commandManager.handle(this, socket.id, msg.message)) {
+            return;
+        }
+
+        if (!this.messageRateLimit.check(socket.id)) {
+            return;
+        }
+
         if (msg.message.length > 256) {
             msg.message = msg.message.substr(0, 256);
         }
 
-        if (msg.message.startsWith("/")) {
-            msg.message = msg.message.substr(1);
-
-            if (msg.message.startsWith(nickCommand)) {
-                var nick = msg.message.substr(nickCommand.length).replace(ws, ' ');
-                if (nickRegex.test(nick)) {
-                    let user = this.clients.get(socket.id);
-                    user.name = nick;
-                    this.clients.set(user.id, user);
-                    this.io.emit("user-edit", user);
-                }
-            } else if (msg.message.startsWith(avatarCommand)) {
-                let user = this.clients.get(socket.id);
-                user.avatar = '//images.weserv.nl/?url=' + encodeURI(msg.message.substr(avatarCommand.length));
-                this.clients.set(user.id, user);
-                this.io.emit("user-edit", user);
-            } else if (msg.message === "avatar") {
-                let avatarRateLimit = rateLimit[`${socket.id}:avatar`];
-                if (avatarRateLimit && Date.now() - avatarRateLimit < 5000) {
-                    return;
-                }
-
-                let response = await axios.get('https://api.miki.bot/images/random')
-                    .catch(err => console.log(err));
-                if (response) {
-                    let user = this.clients.get(socket.id);
-                    user.avatar = response.data.url;
-                    this.io.emit("user-edit", user);
-                }
-            }
-
-            return;
-        }
-
-        var messages = rateLimit[socket.id] || 0;
-        if (messages > 5) {
-            return;
-        }
-
-        rateLimit[socket.id] = messages + 1;
-
         this.io.emit('usr-msg', {
             message: escape(emoji.emojify(msg.message)),
             mentions: msg.mentions,
-            user: this.clients.get(socket.id).toJSON()
+            user: this.clients.get(socket.id).serialize()
         });
     }
 }

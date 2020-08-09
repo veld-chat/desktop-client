@@ -8,6 +8,12 @@
           :class="['autocomplete-item', autoCompleteIndex === index && 'active']"
         >
           {{ item.emoji }} {{ item.text }}
+          <span
+            v-show="item.description"
+            class="autocomplete-description"
+          >
+            - {{ item.description }}
+          </span>
         </div>
       </div>
       <textarea
@@ -44,6 +50,7 @@ interface AutoComplete {
   text: string;
   emoji?: string;
   value: string;
+  description?: string;
 }
 
 for (const n of Object.keys(emojis)) {
@@ -57,11 +64,13 @@ for (const n of Object.keys(emojis)) {
 dictionary.push({
   text: "avatar",
   value: `/avatar`,
+  description: "Changes your avatar to a random avatar."
 });
 
 dictionary.push({
   text: "nick",
   value: `/nick`,
+  description: "Changes your nickname."
 });
 
 @Component({
@@ -197,7 +206,7 @@ export default class ChatBar extends Vue {
 
     if (word[0] === '@') {
       const name = word.substr(1);
-      const names = new Set(userStore.list().map(e => e.name));
+      const names = new Set(userStore.list().map(e => e.name).sort());
 
       for (const item of names) {
         if (item.slice(0, name.length) === name) {
@@ -205,6 +214,10 @@ export default class ChatBar extends Vue {
             text: item,
             value: "@" + item
           });
+
+          if (result.list.length >= 5) {
+            break;
+          }
         }
       }
     }

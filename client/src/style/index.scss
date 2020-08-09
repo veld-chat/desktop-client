@@ -370,6 +370,10 @@ select:-webkit-autofill:focus
   margin-bottom: 0.5rem;
   overflow: hidden;
 
+  &-description {
+    color: #848484;
+  }
+
   &-item {
     padding: 0.75em 0.5em;
 
