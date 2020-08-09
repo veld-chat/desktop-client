@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: chat-gateway-container
-          image: mikiapp.azurecr.io/node-chat-gateway:1096
+          image: mikiapp.azurecr.io/node-chat-gateway:$(tag)
           resources:
             limits:
               memory: "128Mi"
