@@ -214,6 +214,8 @@ html, body {
 
 
 .member-list {
+  height: 100vh;
+  overflow: scroll;
   min-width: 400px;
   padding: 2rem;
   background-color: $dark2;
