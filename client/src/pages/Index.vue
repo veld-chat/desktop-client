@@ -1,6 +1,6 @@
 /* eslint-disable vue/no-v-html */
 <template>
-  <div v-if="connected" class="main">
+  <div class="main">
     <div class="row">
       <div class="col-xs">
         <div class="intern-container wrapper">
@@ -98,7 +98,6 @@ export default class Root extends Vue {
       this.members = userStore.list();
     });
 
-    this.connected = false;
     this.connection = io("chat-gateway.veld.dev");
 
     this.connection.on("sys-join", (x) => userStore.upsert(x));
