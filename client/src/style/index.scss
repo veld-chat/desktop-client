@@ -346,6 +346,14 @@ select:-webkit-autofill:focus
     min-height: auto;
   }
 
+  &-cursor {
+    border-left: solid 1px #848484;
+  }
+
+  &-placeholder {
+    color: #848484 !important;
+  }
+
   span.cm-builtin {
     color: darkgray;
   }

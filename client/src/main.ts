@@ -1,4 +1,5 @@
 import "./style/index.scss";
+import "codemirror/addon/display/placeholder";
 import vuex from "vuex";
 
 export default (Vue, { head }): void => {

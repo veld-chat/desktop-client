@@ -40,5 +40,9 @@ export abstract class Store<TKey, TValue> {
     return Array.from(this.values.values());
   }
 
+  keys(): TKey[] {
+    return Array.from(this.values.keys());
+  }
+
   abstract getEntityKey(value: TValue): TKey;
 }
