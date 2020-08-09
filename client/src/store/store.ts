@@ -9,8 +9,8 @@ export abstract class Store<TKey, TValue> {
     this._onUpdateEvent = new SyncEvent();
   }
 
-  onUpdate(evt: (value: TValue) => void): void {
-    this._onUpdateEvent.attach(evt);
+  onUpdate(evt: (value: TValue) => void): () => void {
+    return this._onUpdateEvent.attach(evt);
   }
 
   upsert(user: TValue): void {
