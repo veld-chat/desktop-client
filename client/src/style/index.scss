@@ -1,3 +1,4 @@
+@import "columns";
 @import "variables";
 @import "emoji";
 
@@ -78,6 +79,23 @@ li {
   margin: 5px 5px;
 }
 
+.main {
+  display: flex;
+  flex-direction: column;
+}
+
+@include desktop {
+  .hide-desktop {
+    display: none;
+  }
+}
+
+@include mobile {
+  .hide-mobile {
+    display: none;
+  }
+}
+
 .msg-instance-title {
   font-weight: 400;
   font-size: 20px;
@@ -112,11 +130,6 @@ li {
 html, body {
   margin: 0;
   padding: 0;
-}
-
-.main {
-  display: flex;
-  flex-direction: column;
 }
 
 @include desktop {
@@ -197,6 +210,38 @@ html, body {
     align-items: stretch;
     margin-bottom: 18px;
   }
+}
+
+
+.member-list {
+  min-width: 400px;
+  padding: 2rem;
+  background-color: $dark2;
+}
+
+.member-list-mobile {
+  display: none;
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  z-index: 100;
+
+  &.active {
+    display: block;
+  }
+}
+
+.member-list-item {
+  padding-bottom: 0.5rem;
+  display: flex;  
+  justify-items: center;
+}
+
+.user-name {
+  color: white;
+  font-size: 18px;
 }
 
 .controls {

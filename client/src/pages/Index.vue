@@ -1,9 +1,9 @@
 /* eslint-disable vue/no-v-html */
 <template>
-  <div>
-    <div v-if="connected" class="row main">
-      <div class="wrapper">
-        <div class="intern-container">
+  <div v-if="connected" class="main">
+    <div class="row">
+      <div class="col-xs">
+        <div class="intern-container wrapper">
           <div class="heading-wrapper">
             <header class="heading">
               <svg
@@ -40,17 +40,19 @@
               </div>
             </div>
           </div>
+          <chat-bar
+            :ready="connected"
+            @send="sendMessage"
+            @startTyping="startTyping"
+            :current-user-id="this.currentUserId"
+          />
         </div>
-        <chat-bar
-          :ready="connected"
-          @send="sendMessage"
-          @startTyping="startTyping"
-          :current-user-id="this.currentUserId"
-        />
       </div>
-    </div>
-    <div v-if="!connected">
-      <p>Loading...</p>
+      <div class="col-xs hide-mobile member-list" style="flex-grow: 0;">
+        <div v-for="(user, id) in members" :key="id">
+          <member-list-item :user="user" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -69,15 +71,17 @@ import userStore from "../store/user-store";
 import userTypingStore from "../store/user-typing-store";
 
 import ChatBar from "../components/chat-bar.vue";
+import MemberListItem from "../components/member-list-item.vue";
 
 @Component({
-  components: { ChatBar },
+  components: { ChatBar, MemberListItem },
 })
 export default class Root extends Vue {
   private connection: SocketIOClient.Socket;
 
   @Ref() container: HTMLDivElement;
   messages: MessageCreateEvent[] = [];
+  members: User[] = [];
 
   mentionParser: MentionParser = new MentionParser();
 
@@ -87,6 +91,10 @@ export default class Root extends Vue {
   connected = false;
 
   mounted(): void {
+    userStore.onUpdate(() => {
+      this.members = userStore.list();
+    });
+
     this.connected = false;
     this.connection = io("chat-gateway.veld.dev");
 
@@ -166,7 +174,7 @@ export default class Root extends Vue {
     const container = this.container;
     const scroll = {
       container: this.shouldScroll(container),
-      document: this.shouldScroll(document.documentElement)
+      document: this.shouldScroll(document.documentElement),
     };
 
     message.mentionsSelf = message.mentions?.includes(this.currentUserId);
@@ -203,7 +211,10 @@ export default class Root extends Vue {
         }
 
         if (scroll.document) {
-          document.documentElement.scroll(0, document.documentElement.scrollHeight);
+          document.documentElement.scroll(
+            0,
+            document.documentElement.scrollHeight
+          );
         }
       });
     }
