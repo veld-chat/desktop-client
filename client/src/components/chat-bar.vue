@@ -1,7 +1,7 @@
 <template>
   <div class="controls-wrapper">
     <div class="controls">
-      <div ref="container" class="autocomplete">
+      <div ref="container" class="autocomplete" v-show="autoComplete.length > 0">
         <div
           v-for="(item, index) in autoComplete"
           :key="item.text"
