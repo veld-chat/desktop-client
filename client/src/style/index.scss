@@ -415,7 +415,8 @@ select:-webkit-autofill:focus
   border-radius: 5px;
   box-shadow: 0 2px 5px 0 rgba(0,0,0,0.2);
   margin-bottom: 0.5rem;
-  overflow: hidden;
+  overflow-y: scroll;
+  max-height: 200px;
 
   &-description {
     color: #848484;
