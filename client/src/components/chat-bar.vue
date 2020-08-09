@@ -126,6 +126,7 @@ export default class ChatBar extends Vue {
 
     this.editor.replaceRange(item.value + " ", this.from, this.to);
     this.editor.setCursor(this.to.ch + item.value.length + 1);
+    this.editor.focus();
 
     return true;
   }
@@ -240,6 +241,7 @@ export default class ChatBar extends Vue {
   send(): void {
     this.$emit("send", this.editor.getValue());
     this.editor.setValue("");
+    this.editor.focus();
   }
 }
 </script>
