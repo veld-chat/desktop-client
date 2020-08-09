@@ -1,6 +1,9 @@
 import "./style/index.scss";
-import "codemirror/addon/display/placeholder";
 import vuex from "vuex";
+
+if (process.isClient) {
+  require("codemirror/addon/display/placeholder");
+}
 
 export default (Vue, { head }): void => {
   Vue.use(vuex);
