@@ -7,6 +7,11 @@ import fs from "fs";
 import { ClientManager } from './api/client-manager';
 
 const app = express();
+app.use((req, res, next) => {
+  res.setHeader("access-control-allow-origin", "*");
+  next();
+})
+
 const httpServer = new Server(app);
 
 const config = JSON.parse(fs.readFileSync("config/config.json").toString());
