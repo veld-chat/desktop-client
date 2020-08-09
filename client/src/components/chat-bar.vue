@@ -10,7 +10,7 @@
         maxlength="256"
         :disabled="!ready"
         @keydown.enter.prevent="send()"
-        @keypress="startTyping()"
+        @keyup="startTyping()"
       />
       <a class="sendbutton flex-end" @click="send()">
         <i class="fas fa-paper-plane" />

@@ -316,6 +316,7 @@ select:-webkit-autofill:focus
 .msg-content-wrapper {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .msg-instance-avatar {

@@ -49,9 +49,8 @@ export default class TypingBar extends Vue {
       return `${this.amountOfUsersTyping} users`;
     }
 
-    let allUsers = userTypingStore.list();
-
-    return allUsers
+    return userTypingStore
+      .list()
       .filter((x: UserTyping) => x.id != this.currentUserId)
       .filter((x: UserTyping) => x.lastTypingTime + 5000 > Date.now())
       .map((x: UserTyping) => userStore.get(x.id)?.name || "{unknown}")

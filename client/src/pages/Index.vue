@@ -90,8 +90,8 @@ export default class Root extends Vue {
     this.connected = false;
     this.connection = io("chat-gateway.veld.dev");
 
-    this.connection.on("usr-join", userStore.upsert);
-    this.connection.on("usr-leave", (x) => userStore.delete(x.id));
+    this.connection.on("sys-join", (x) => userStore.upsert(x));
+    this.connection.on("sys-leave", (x) => userStore.delete(x.id));
     this.connection.on("user-edit", this.onUserEdit);
 
     this.connection.on("connect", () => {
@@ -100,6 +100,12 @@ export default class Root extends Vue {
         this.token = options.token;
         this.currentUserId = options.user.id;
         userStore.upsert(options.user);
+
+        if (options.members) {
+          for (let user of options.members) {
+            userStore.upsert(user);
+          }
+        }
 
         console.log(`Logged in as ${options.user.name} (${options.user.id})`);
         this.connected = true;
@@ -111,7 +117,6 @@ export default class Root extends Vue {
     });
 
     this.connection.on("usr-typ", (user) => {
-      console.log("typing " + user.name);
       userTypingStore.upsert({
         id: user.id,
         lastTypingTime: Date.now(),
@@ -151,7 +156,7 @@ export default class Root extends Vue {
     );
   }
 
-  shouldScroll() {
+  shouldScroll(): void {
     this.container.scrollTop >=
       this.container.scrollHeight - this.container.offsetHeight;
   }
