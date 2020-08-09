@@ -22,7 +22,7 @@ spec:
               memory: "128Mi"
               cpu: "500m"
           ports:
-            - containerPort: 80
+            - containerPort: 1234
           volumeMounts:
             - name: secret
               mountPath: "/app/config"
