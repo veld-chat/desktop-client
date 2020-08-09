@@ -149,7 +149,7 @@ export default class Root extends Vue {
           breaks: true,
         }),
         {
-          ALLOWED_TAGS: ["b", "i", "em", "strong", "a"],
+          ALLOWED_TAGS: ["b", "i", "em", "strong", "a", "br"],
           ALLOWED_ATTR: ["href"],
         }
       )
