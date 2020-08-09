@@ -1,7 +1,7 @@
 export type User = {
   id: string;
   name: string;
-  avatar?: string;
+  avatarUrl?: string;
 };
 
 export type MessageCreateEvent = {

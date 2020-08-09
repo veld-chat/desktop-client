@@ -4,9 +4,15 @@
       <div class="autocomplete">
         <div
           v-for="(item, index) in autoComplete"
-          :key="item.name"
+          :key="item.text"
           :class="['autocomplete-item', autoCompleteIndex === index && 'active']"
-        >{{ item.emoji }} {{ item.name }}</div>
+        >
+          {{ item.emoji }} {{ item.text }}
+          <span
+            v-show="item.description"
+            class="autocomplete-description"
+          >- {{ item.description }}</span>
+        </div>
       </div>
       <textarea
         id="ui-input-field"
@@ -29,25 +35,38 @@ import Vue from "vue";
 import { Component, Ref } from "vue-property-decorator";
 import TypingBar from "./typing-bar.vue";
 import { emojis } from "@/utils/emoji";
-
+import userStore from "@/store/user-store";
 const HyperMD = process.isClient ? require("hypermd") : null;
 const CodeMirror = process.isClient ? require("codemirror") : null;
 
 const dictionary: Emoji[] = [];
 
-interface Emoji {
-  name: string;
-  emoji: string;
+interface AutoComplete {
+  text: string;
+  emoji?: string;
   value: string;
+  description?: string;
 }
 
 for (const n of Object.keys(emojis)) {
   dictionary.push({
-    name: n,
+    text: n,
     emoji: emojis[n],
     value: `:${n}:`,
   });
 }
+
+dictionary.push({
+  text: "avatar",
+  value: `/avatar`,
+  description: "Changes your avatar to a random avatar.",
+});
+
+dictionary.push({
+  text: "nick",
+  value: `/nick`,
+  description: "Changes your nickname.",
+});
 
 @Component({
   props: ["ready", "currentUserId"],
@@ -58,7 +77,7 @@ export default class ChatBar extends Vue {
   message = "";
   lastTimeTyping = 0;
   editor: CodeMirror.Editor;
-  autoComplete: Emoji[] = [];
+  autoComplete: AutoComplete[] = [];
   autoCompleteIndex = 0;
   from: CodeMirror.Position;
   to: CodeMirror.Position;
@@ -66,6 +85,7 @@ export default class ChatBar extends Vue {
   mounted(): void {
     if (process.isClient) {
       this.editor = HyperMD.fromTextArea(this.input, {
+        placeholder: "Send a message",
         theme: "hypermd-light",
         scrollbarStyle: "null",
         lineNumbers: false,
@@ -74,6 +94,7 @@ export default class ChatBar extends Vue {
           Enter: this.handleEnter,
           Up: this.moveUp,
           Down: this.moveDown,
+          Tab: this.handleTab,
         },
       });
 
@@ -95,14 +116,28 @@ export default class ChatBar extends Vue {
     this.startTyping();
   }
 
-  handleEnter() {
-    if (this.autoComplete.length > 0) {
-      const item = this.autoComplete[this.autoCompleteIndex];
+  handleAutoComplete() {
+    if (this.autoComplete.length === 0) {
+      return false;
+    }
 
-      this.editor.replaceRange(item.value + " ", this.from, this.to);
-      this.editor.setCursor(this.to.ch + item.value.length + 1);
-    } else {
+    const item = this.autoComplete[this.autoCompleteIndex];
+
+    this.editor.replaceRange(item.value + " ", this.from, this.to);
+    this.editor.setCursor(this.to.ch + item.value.length + 1);
+
+    return true;
+  }
+
+  handleEnter() {
+    if (!this.handleAutoComplete()) {
       this.send();
+    }
+  }
+
+  handleTab() {
+    if (!this.handleAutoComplete()) {
+      return CodeMirror.Pass;
     }
   }
 
@@ -149,7 +184,7 @@ export default class ChatBar extends Vue {
     const word = line.slice(start, cursor.ch).toLowerCase();
     const wordEmpty = word.length === 0;
     const result = {
-      list: [],
+      list: [] as AutoComplete[],
       from: CodeMirror.Pos(cursor.line, start),
       to: CodeMirror.Pos(cursor.line, end),
     };
@@ -162,6 +197,29 @@ export default class ChatBar extends Vue {
 
         if (result.list.length >= 5) {
           break;
+        }
+      }
+    }
+
+    if (word[0] === "@") {
+      const name = word.substr(1);
+      const names = new Set(
+        userStore
+          .list()
+          .map((e) => e.name)
+          .sort()
+      );
+
+      for (const item of names) {
+        if (item.slice(0, name.length) === name) {
+          result.list.push({
+            text: item,
+            value: "@" + item,
+          });
+
+          if (result.list.length >= 5) {
+            break;
+          }
         }
       }
     }

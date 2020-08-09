@@ -7,6 +7,9 @@
     "start": "yarn build && node dist/server.js",
     "build": "node_modules/.bin/tsc"
   },
+  "_moduleAliases": {
+    "@": "./dist"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/velddev/node-chat-server.git"
@@ -19,6 +22,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "express": "^4.17.1",
+    "module-alias": "^2.2.2",
     "node-emoji": "^1.10.0",
     "socket.io": "^2.3.0"
   },

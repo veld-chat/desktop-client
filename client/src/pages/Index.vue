@@ -28,7 +28,7 @@
               <div
                 v-if="message.user.avatarUrl"
                 class="msg-instance-avatar"
-                :style="{ backgroundImage: `url('${message.user.avatarUrl}')` }"
+                :style="{ backgroundImage: message.user.avatarUrl && `url('${message.user.avatarUrl}')` }"
               />
               <div class="msg-content-wrapper">
                 <div class="msg-instance-title">{{ message.user.name }}</div>
@@ -63,8 +63,8 @@ import { Component, Ref } from "vue-property-decorator";
 import marked from "marked";
 import io from "socket.io-client";
 import DOMPurify from "dompurify";
-import { MessageCreateEvent, Message, User } from "../models/events";
-import { MentionParser } from "../utils/mention-parser";
+import { MessageCreateEvent, Message, User } from "@/models/events";
+import { MentionParser } from "@/utils/mention-parser";
 import twemoji from "twemoji";
 
 import userStore from "../store/user-store";
@@ -72,6 +72,7 @@ import userTypingStore from "../store/user-typing-store";
 
 import ChatBar from "../components/chat-bar.vue";
 import MemberListItem from "../components/member-list-item.vue";
+import { ScrollInformation, shouldScroll } from "@/utils/scroll";
 
 @Component({
   components: { ChatBar, MemberListItem },
@@ -89,6 +90,8 @@ export default class Root extends Vue {
   message = "";
   token = "";
   connected = false;
+  resizeTimer?: number;
+  scroll: ScrollInformation;
 
   mounted(): void {
     userStore.onUpdate(() => {
@@ -100,6 +103,16 @@ export default class Root extends Vue {
 
     this.connection.on("sys-join", (x) => userStore.upsert(x));
     this.connection.on("sys-leave", (x) => userStore.delete(x.id));
+    this.connection.on("sys-error", (x) => {
+      this.messages.push({
+        user: {
+          id: "system",
+          name: "system",
+        },
+        mentions: [],
+        message: this.processMessage(x.message),
+      });
+    });
     this.connection.on("user-edit", this.onUserEdit);
 
     this.connection.on("connect", () => {
@@ -136,10 +149,32 @@ export default class Root extends Vue {
     if (Notification.permission !== "granted") {
       Notification.requestPermission();
     }
+
+    window.addEventListener("resize", this.onResize);
   }
 
   beforeDestroy(): void {
     this.connection.close();
+    window.removeEventListener("resize", this.onResize);
+  }
+
+  onResize() {
+    if (!this.scroll) {
+      this.scroll = this.shouldScroll();
+      this.scroll.container = this.scroll.document =
+        this.scroll.document || this.scroll.container;
+    }
+
+    if (!this.resizeTimer) {
+      window.clearTimeout(this.resizeTimer);
+    }
+
+    this.resizeTimer = window.setTimeout(() => {
+      if (this.scroll) {
+        this.applyScroll(this.scroll);
+        this.scroll = undefined;
+      }
+    }, 250);
   }
 
   onUserEdit(user: User): void {
@@ -164,18 +199,10 @@ export default class Root extends Vue {
     );
   }
 
-  shouldScroll(element: HTMLElement) {
-    return element.scrollTop >= element.scrollHeight - element.clientHeight;
-  }
-
   publishMessage(message: Message): void {
     const lastMessageId = this.messages.length - 1;
     const lastMessage = this.messages[lastMessageId];
-    const container = this.container;
-    const scroll = {
-      container: this.shouldScroll(container),
-      document: this.shouldScroll(document.documentElement),
-    };
+    const scroll = this.shouldScroll();
 
     message.mentionsSelf = message.mentions?.includes(this.currentUserId);
     if (
@@ -204,10 +231,21 @@ export default class Root extends Vue {
       });
     }
 
+    this.applyScroll(scroll);
+  }
+
+  shouldScroll(): ScrollInformation {
+    return {
+      container: shouldScroll(this.container),
+      document: shouldScroll(document.documentElement),
+    };
+  }
+
+  applyScroll(scroll: ScrollInformation): void {
     if (scroll.document || scroll.container) {
       this.$nextTick(() => {
         if (scroll.container) {
-          container.scroll(0, container.scrollHeight);
+          this.container.scroll(0, this.container.scrollHeight);
         }
 
         if (scroll.document) {

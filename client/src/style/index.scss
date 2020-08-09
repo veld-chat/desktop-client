@@ -391,6 +391,14 @@ select:-webkit-autofill:focus
     min-height: auto;
   }
 
+  &-cursor {
+    border-left: solid 1px #848484;
+  }
+
+  &-placeholder {
+    color: #848484 !important;
+  }
+
   span.cm-builtin {
     color: darkgray;
   }
@@ -406,6 +414,10 @@ select:-webkit-autofill:focus
   box-shadow: 0 2px 5px 0 rgba(0,0,0,0.2);
   margin-bottom: 0.5rem;
   overflow: hidden;
+
+  &-description {
+    color: #848484;
+  }
 
   &-item {
     padding: 0.75em 0.5em;
