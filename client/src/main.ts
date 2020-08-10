@@ -13,6 +13,12 @@ export default (Vue, { head, isClient }): void => {
     src: "https://kit.fontawesome.com/19e31512ed.js",
     crossorigin: "anonymous"
   })
+
+  head.link.push({
+    rel: "apple-touch-icon",
+    sizes: "180x180",
+    href: "/apple-touch-icon.png",
+  })
 };
 
 /*
