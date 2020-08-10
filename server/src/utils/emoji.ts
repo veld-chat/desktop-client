@@ -1655,14 +1655,16 @@ for (const name of Object.keys(emojiDefinitions)) {
 
 const emojiPath = path.join(__dirname, "..", "emoji");
 
-for (const file of fs.readdirSync(emojiPath)) {
-  const name = path.basename(file, path.extname(file));
+if (fs.existsSync(emojiPath)) {
+  for (const file of fs.readdirSync(emojiPath)) {
+    const name = path.basename(file, path.extname(file));
 
-  emojis.push({
-    name,
-    value: `:${name}:`,
-    image: `/emoji/${file}`
-  })
+    emojis.push({
+      name,
+      value: `:${name}:`,
+      image: `/emoji/${file}`
+    })
+  }
 }
 
 export function getEmojisForHost(prefix: string) {
