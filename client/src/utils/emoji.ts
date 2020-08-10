@@ -1,4 +1,6 @@
-export const emojis = {
+import twemoji from 'twemoji';
+
+const emojiDefinitions = {
   "100": "💯",
   "1234": "🔢",
   "umbrella_with_rain_drops": "☔",
@@ -1623,3 +1625,34 @@ export const emojis = {
   "congratulations": "㊗️",
   "secret": "㊙️"
 };
+
+interface Emoji {
+  text: string;
+  value: string;
+  emoji: string;
+  image: string
+}
+
+export const emojis: {[name: string]: Emoji} = {};
+export const emojisByValue: {[name: string]: Emoji} = {};
+const attr = /([\w-]+)="(.+?)"/g
+
+for (const name of Object.keys(emojiDefinitions)) {
+  const emojiStr = emojiDefinitions[name]
+  const html = twemoji.parse(emojiStr);
+
+  const options: {[key: string]: string} = {};
+  let t: RegExpMatchArray
+  while (t = attr.exec(html)) options[t[1]] = t[2];
+
+  const emoji = {
+    text: name,
+    value: `:${name}:`,
+    emoji: emojiStr,
+    image: options.src
+  };
+
+  emojis[name] = emoji;
+  emojisByValue[emoji.value] = emoji;
+}
+

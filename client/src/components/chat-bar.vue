@@ -1,13 +1,29 @@
 <template>
   <div class="controls-wrapper">
     <div class="controls">
-      <div ref="container" class="autocomplete" v-show="autoComplete.length > 0">
+      <div
+        v-show="autoComplete.length > 0"
+        ref="container"
+        class="autocomplete"
+      >
         <div
           v-for="(item, index) in autoComplete"
           :key="item.text"
-          :class="['autocomplete-item', autoCompleteIndex === index && 'active']"
+          :class="['autocomplete-item', autoCompleteIndex === index && 'active', item.class]"
           @click="handleAutoComplete(index)"
         >
+          <img
+            v-if="item.image"
+            :src="item.image"
+            class="autocomplete-image"
+            alt="Image"
+          >
+          <div
+            v-if="item.avatar"
+            class="autocomplete-avatar"
+            :style="{backgroundImage: `url('${item.avatar}')`}"
+          />
+
           {{ item.emoji }} {{ item.text }}
           <span
             v-show="item.description"
@@ -23,7 +39,10 @@
         maxlength="256"
         :disabled="!ready"
       />
-      <a class="sendbutton flex-end" @click="send()">
+      <a
+        class="sendbutton flex-end"
+        @click="send()"
+      >
         <i class="fas fa-paper-plane" />
       </a>
     </div>
@@ -37,34 +56,40 @@ import { Component, Ref } from "vue-property-decorator";
 import TypingBar from "./typing-bar.vue";
 import { emojis } from "@/utils/emoji";
 import userStore from "@/store/user-store";
-const HyperMD = process.isClient ? require("hypermd") : null;
+const HyperMD = process.isClient ? require("../hypermd") : null;
 const CodeMirror = process.isClient ? require("codemirror") : null;
-
-const dictionary: any[] = [];
 
 interface AutoComplete {
   text: string;
+  textLowerCased: string;
   emoji?: string;
+  image?: string;
+  avatar?: string;
   value: string;
   description?: string;
 }
 
+const dictionary: AutoComplete[] = [];
+
 for (const n of Object.keys(emojis)) {
   dictionary.push({
     text: n,
-    emoji: emojis[n],
+    textLowerCased: n,
+    image: emojis[n].image,
     value: `:${n}:`,
   });
 }
 
 dictionary.push({
   text: "avatar",
+  textLowerCased: "avatar",
   value: `/avatar`,
   description: "Changes your avatar to a random avatar.",
 });
 
 dictionary.push({
   text: "nick",
+  textLowerCased: "nick",
   value: `/nick`,
   description: "Changes your nickname.",
 });
@@ -87,11 +112,12 @@ export default class ChatBar extends Vue {
   mounted(): void {
     if (process.isClient) {
       this.editor = HyperMD.fromTextArea(this.input, {
-        placeholder: "Send a message",
         theme: "hypermd-light",
+        placeholder: "Send a message",
         scrollbarStyle: "null",
         lineNumbers: false,
         viewportMargin: Infinity,
+        autoCloseBrackets: false,
         extraKeys: {
           Enter: this.handleEnter,
           Up: this.moveUp,
@@ -220,17 +246,22 @@ export default class ChatBar extends Vue {
 
     if (word[0] === "@") {
       const name = word.substr(1);
-      const names = new Set(
-        userStore
-          .list()
-          .map((e) => e.name)
-          .sort()
-      );
+      const visited = [];
 
-      for (const item of names) {
-        if (item.slice(0, name.length).toLowerCase() === name) {
+      for (const item of userStore.list()) {
+        const itemName = item.name.toLowerCase();
+
+        if (visited.indexOf(itemName) !== -1) {
+          continue;
+        }
+
+        visited.push(itemName);
+
+        if (itemName.slice(0, name.length).toLowerCase() === name) {
           result.list.push({
-            text: item,
+            text: item.name,
+            textLowerCased: item.name.toLowerCase(),
+            avatar: item.avatarUrl,
             value: "@" + item,
           });
 
@@ -240,6 +271,10 @@ export default class ChatBar extends Vue {
         }
       }
     }
+
+    result.list = result.list.sort((a,b) => (a.textLowerCased > b.textLowerCased)
+      ? 1
+      : ((b.textLowerCased > a.textLowerCased) ? -1 : 0));
 
     return result;
   }

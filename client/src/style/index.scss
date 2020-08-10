@@ -1,6 +1,7 @@
 @import "columns";
 @import "variables";
 @import "emoji";
+@import "hypermd";
 
 * {
   -webkit-tap-highlight-color:  rgba(255, 255, 255, 0);
@@ -420,11 +421,28 @@ select:-webkit-autofill:focus
 
   &-description {
     color: #848484;
+    margin-left: 0.3em;
+  }
+
+  &-image {
+    height: 1.4em;
+    margin-right: 0.5em;
+  }
+
+  &-avatar {
+    height: 1.75em;
+    width: 1.75em;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    margin-right: 0.5em;
   }
 
   &-item {
+    display: flex;
     padding: 0.75em 0.5em;
     cursor: pointer;
+    align-items: center;
 
     &:hover {
       background: rgba(0, 0, 0, .15);
