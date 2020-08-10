@@ -136,6 +136,7 @@ export default class Root extends Vue {
 
       this.connection.emit("login", {
         name: localStorage.getItem("name"),
+        avatarUrl: localStorage.getItem("avatarUrl"),
       });
     });
 
@@ -182,6 +183,7 @@ export default class Root extends Vue {
   onUserEdit(user: User): void {
     if (user.id == this.currentUserId) {
       localStorage.setItem("name", user.name);
+      localStorage.setItem("avatar", user.avatarUrl);
     }
     userStore.upsert(user);
   }

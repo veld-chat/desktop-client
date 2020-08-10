@@ -55,7 +55,11 @@ export class ClientManager {
             return;
         }
 
-        await currentUser.randomAvatar(false);
+        if (options.avatarUrl) {
+            currentUser.avatar = options.avatarUrl;
+        } else {
+            await currentUser.randomAvatar(false);
+        }
 
         currentUser.name = options.name || currentUser.name;
         this.clients.set(socket.id, currentUser);
