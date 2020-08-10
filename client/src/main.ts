@@ -20,7 +20,3 @@ export default (Vue, { head, isClient }): void => {
     href: "/apple-touch-icon.png",
   })
 };
-
-/*
-<meta name="theme-color" content="#ffffff">
-*/
