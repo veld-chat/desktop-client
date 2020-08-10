@@ -50,12 +50,13 @@ export class ClientManager {
 
     private async onClientAuthenticated(socket: SocketIO.Socket, request: ClientAuthRequest) {
         let token: Token = null;
+        let sendToken = false;
 
         if (request.token) {
             try {
                 token = jwt.decode(request.token) as Token;
             } catch {
-                // ignore: the secret was changed or the token was changed by the user.
+                sendToken = true;
             }
         }
 
@@ -74,6 +75,7 @@ export class ClientManager {
 
         if (!currentUser.avatar) {
             await currentUser.randomAvatar(false);
+            sendToken = true;
         }
 
         this.sockets.set(socket.id, currentUser);
@@ -89,6 +91,10 @@ export class ClientManager {
 
         if (isNew) {
             this.io.emit("sys-join", currentUser.serialize());
+        }
+
+        if (sendToken) {
+            currentUser.updateToken();
         }
     }
 

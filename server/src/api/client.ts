@@ -58,10 +58,11 @@ export class Client {
 
         if (update) {
             this.clientManager.updateUser(this);
+            this.updateToken();
         }
     }
 
-    private updateToken() {
+    updateToken() {
         this.emit("token", this.clientManager.createToken(this));
     }
 
