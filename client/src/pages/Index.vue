@@ -82,13 +82,15 @@ import userTypingStore from "../store/user-typing-store";
 import ChatBar from "../components/chat-bar.vue";
 import MemberListItem from "../components/member-list-item.vue";
 
-DOMPurify.addHook('afterSanitizeAttributes', function (currentNode) {
-  if (currentNode.tagName === "A") {
-    currentNode.textContent = currentNode.getAttribute("href");
-    currentNode.setAttribute("target", "_blank");
-  }
-  return currentNode;
-});
+if (process.isClient) {
+  DOMPurify.addHook('afterSanitizeAttributes', function (currentNode) {
+    if (currentNode.tagName === "A") {
+      currentNode.textContent = currentNode.getAttribute("href");
+      currentNode.setAttribute("target", "_blank");
+    }
+    return currentNode;
+  });
+}
 
 @Component({
   components: { ChatBar, MemberListItem },
