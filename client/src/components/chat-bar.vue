@@ -262,7 +262,7 @@ export default class ChatBar extends Vue {
             text: item.name,
             textLowerCased: item.name.toLowerCase(),
             avatar: item.avatarUrl,
-            value: "@" + item,
+            value: "@" + item.name,
           });
 
           if (result.list.length >= 50) {
