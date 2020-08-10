@@ -1,6 +1,5 @@
 import { Client } from "./client";
 import { ClientAuthRequest, Token } from "@/models/gateway-payloads";
-const emoji = require('node-emoji')
 import * as jwt from "jsonwebtoken";
 import { RateLimit } from "@/utils/rate-limit";
 import { commandManager } from "@/command-manager";
@@ -142,7 +141,7 @@ export class ClientManager {
         }
 
         this.io.emit('usr-msg', {
-            message: escape(emoji.emojify(msg.message)),
+            message: escape(msg.message),
             mentions: msg.mentions,
             user: client.serialize()
         });

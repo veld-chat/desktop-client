@@ -5,7 +5,7 @@
 //
 
 import * as CodeMirror from "codemirror"
-import "codemirror/mode/markdown/markdown"
+import "./markdown"
 
 /**
  * Markdown Extension Tokens

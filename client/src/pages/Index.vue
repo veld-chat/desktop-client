@@ -74,13 +74,13 @@ import io from "socket.io-client";
 import DOMPurify from "dompurify";
 import { MessageCreateEvent, Message, User } from "@/models/events";
 import { MentionParser } from "@/utils/mention-parser";
-import twemoji from "twemoji";
 
 import userStore from "../store/user-store";
 import userTypingStore from "../store/user-typing-store";
 
 import ChatBar from "../components/chat-bar.vue";
 import MemberListItem from "../components/member-list-item.vue";
+import { Emoji, isOnlyEmoji, registerEmoji, replaceEmojis } from "@/utils/emoji";
 
 if (process.isClient) {
   DOMPurify.addHook('afterSanitizeAttributes', function (currentNode) {
@@ -117,7 +117,13 @@ export default class Root extends Vue {
       this.members = userStore.list();
     });
 
-    this.connection = io(localStorage.getItem("gateway") || "chat-gateway.veld.dev");
+    const host = localStorage.getItem("gateway") || "chat-gateway.veld.dev";
+
+    fetch(`//${host}/emojis`)
+      .then(r => r.json())
+      .then((r: Emoji[]) => r.forEach(registerEmoji));
+
+    this.connection = io(host);
 
     this.connection.on("sys-join", (x) => userStore.upsert(x));
     this.connection.on("sys-leave", (x) => userStore.delete(x.id));
@@ -208,8 +214,8 @@ export default class Root extends Vue {
     userStore.upsert(user);
   }
 
-  processMessage(input: string): string {
-    return twemoji.parse(
+  processMessage(input: string, isMention = false): string {
+    const result = replaceEmojis(
       DOMPurify.sanitize(
         marked(input, {
           headerIds: false,
@@ -221,6 +227,8 @@ export default class Root extends Vue {
         }
       )
     );
+
+    return `<div class="msg-instance-item${isOnlyEmoji(result) ? " is-emoji-only" : ""}${isMention ? " is-mention": ""}">${result}</div>`;
   }
 
   publishMessage(message: Message): void {
@@ -246,12 +254,12 @@ export default class Root extends Vue {
       Vue.set(this.messages, lastMessageId, {
         ...message,
         message:
-          lastMessage.message + "<br />" + this.processMessage(message.message),
+          lastMessage.message + "<br />" + this.processMessage(message.message, message.mentionsSelf),
       });
     } else {
       this.messages.push({
         ...message,
-        message: this.processMessage(message.message),
+        message: this.processMessage(message.message, message.mentionsSelf),
       });
     }
 

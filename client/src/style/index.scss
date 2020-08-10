@@ -112,6 +112,21 @@ li {
   a {
     color: inherit;
   }
+
+  &-item {
+    display: inline-block;
+
+    &.is-emoji-only img.emoji {
+      height: 3rem;
+      width: 3rem;
+    }
+
+    &.is-mention {
+      padding: 0 4px;
+      background: var(--message-mention-bg);
+      color: var(--message-mention-color);
+    }
+  }
 }
 
 .ui-bottom {
@@ -229,12 +244,6 @@ $listWidth: 300px;
   z-index: 100;
 }
 
-.mention {
-  padding: 4px;
-  background: var(--message-mention-bg);
-  color: var(--message-mention-color);
-}
-
 .sendbutton {
   height: 100%;
   width: 2rem;
@@ -306,11 +315,6 @@ select:-webkit-autofill:focus
   .msg-instance-container {
     margin: 4px 8px;
   }
-}
-
-.mention {
-  background-color: rgb(29, 136, 185);
-  padding: 0 4px;
 }
 
 .msg-content-wrapper {

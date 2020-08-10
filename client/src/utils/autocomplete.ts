@@ -1,4 +1,3 @@
-import { emojis } from "@/utils/emoji";
 import userStore from "@/store/user-store";
 
 export interface AutoComplete {
@@ -11,17 +10,8 @@ export interface AutoComplete {
   description?: string;
 }
 
-const emojisItems: AutoComplete[] = [];
+export const emojisItems: AutoComplete[] = [];
 const commandItems: AutoComplete[] = [];
-
-for (const n of Object.keys(emojis)) {
-  emojisItems.push({
-    text: n,
-    textLowerCased: n,
-    image: emojis[n].image,
-    value: `:${n}:`,
-  });
-}
 
 commandItems.push({
   text: "avatar",
