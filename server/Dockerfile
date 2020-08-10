@@ -2,7 +2,9 @@ FROM node:buster
 
 WORKDIR /app
 COPY package.json .
+COPY yarn.lock .
 COPY tsconfig.json .
+COPY .babelrc .
 
 RUN yarn
 
