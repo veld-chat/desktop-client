@@ -30,6 +30,6 @@ export function replaceEmojis(text: string) {
   })
 }
 
-export function isOnlyEmoji(text: string) {
+export function isEmojiOnly(text: string) {
   return isOnlyEmojiRegex.test(text);
 }

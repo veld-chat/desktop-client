@@ -4,15 +4,24 @@ export type User = {
   avatarUrl?: string;
 };
 
-export type MessageCreateEvent = {
+type MessageBase = {
   user: User;
-  message: string;
   mentions: string[];
 };
 
+export type MessageCreateEvent = {
+  message: string;
+} & MessageBase
+
+export type MessagePart = {
+  content: string;
+  isEmojiOnly: boolean;
+  isMention: boolean;
+}
+
 export type Message = {
-  mentionsSelf: boolean;
-} & MessageCreateEvent;
+  parts: MessagePart[];
+} & MessageBase;
 
 export type UserTyping = {
   id: string;

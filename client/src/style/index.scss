@@ -113,19 +113,15 @@ li {
     color: inherit;
   }
 
-  &-item {
-    display: inline-block;
+  &.is-emoji-only img.emoji {
+    height: 3rem;
+    width: 3rem;
+  }
 
-    &.is-emoji-only img.emoji {
-      height: 3rem;
-      width: 3rem;
-    }
-
-    &.is-mention {
-      padding: 0 4px;
-      background: var(--message-mention-bg);
-      color: var(--message-mention-color);
-    }
+  &.is-mention {
+    padding: 0 4px;
+    background: var(--message-mention-bg);
+    color: var(--message-mention-color);
   }
 }
 
@@ -176,7 +172,7 @@ html, body {
   }
 }
 
-.intern-container .messages {
+.messages {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -187,7 +183,7 @@ html, body {
 }
 
 @include mobile {
-  .intern-container .messages {
+  .messages {
     align-items: stretch;
     margin-bottom: 18px;
   }
@@ -320,6 +316,7 @@ select:-webkit-autofill:focus
 .msg-content-wrapper {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   overflow: hidden;
 }
 

@@ -13,7 +13,10 @@
     />
 
     <div class="member-list">
-      <div v-for="(user, id) in members" :key="id">
+      <div
+        v-for="(user, id) in members"
+        :key="id"
+      >
         <member-list-item :user="user" />
       </div>
     </div>
@@ -56,9 +59,10 @@
             {{ message.user.name }}
           </div>
           <p
-            class="msg-instance"
-            :class="message.mentionsSelf ? 'mention' : ''"
-            v-html="message.message"
+            v-for="(part, id) in message.parts"
+            :key="id"
+            :class="['msg-instance', part.isMention && 'is-mention', part.isEmojiOnly && 'is-emoji-only']"
+            v-html="part.content"
           />
         </div>
       </div>
@@ -72,7 +76,7 @@ import { Component, Ref } from "vue-property-decorator";
 import marked from "marked";
 import io from "socket.io-client";
 import DOMPurify from "dompurify";
-import { MessageCreateEvent, Message, User } from "@/models/events";
+import { MessageCreateEvent, Message, User, MessagePart } from "@/models/events";
 import { MentionParser } from "@/utils/mention-parser";
 
 import userStore from "../store/user-store";
@@ -80,7 +84,7 @@ import userTypingStore from "../store/user-typing-store";
 
 import ChatBar from "../components/chat-bar.vue";
 import MemberListItem from "../components/member-list-item.vue";
-import { Emoji, isOnlyEmoji, registerEmoji, replaceEmojis } from "@/utils/emoji";
+import { Emoji, isEmojiOnly, registerEmoji, replaceEmojis } from "@/utils/emoji";
 
 if (process.isClient) {
   DOMPurify.addHook('afterSanitizeAttributes', function (currentNode) {
@@ -99,7 +103,7 @@ export default class Root extends Vue {
   private connection: SocketIOClient.Socket;
 
   @Ref() container: HTMLDivElement;
-  messages: MessageCreateEvent[] = [];
+  messages: Message[] = [];
   members: User[] = [];
   barHeight = 0;
 
@@ -134,7 +138,7 @@ export default class Root extends Vue {
           name: "system",
         },
         mentions: [],
-        message: this.processMessage(x.message),
+        parts: [this.processMessage(x.message)]
       });
     });
     this.connection.on("user-edit", this.onUserEdit);
@@ -214,8 +218,8 @@ export default class Root extends Vue {
     userStore.upsert(user);
   }
 
-  processMessage(input: string, isMention = false): string {
-    const result = replaceEmojis(
+  processMessage(input: string, isMention = false): MessagePart {
+    const content = replaceEmojis(
       DOMPurify.sanitize(
         marked(input, {
           headerIds: false,
@@ -228,38 +232,41 @@ export default class Root extends Vue {
       )
     );
 
-    return `<div class="msg-instance-item${isOnlyEmoji(result) ? " is-emoji-only" : ""}${isMention ? " is-mention": ""}">${result}</div>`;
+    return {
+      isMention,
+      content,
+      isEmojiOnly: isEmojiOnly(content)
+    };
   }
 
-  publishMessage(message: Message): void {
+  publishMessage(event: MessageCreateEvent): void {
     const lastMessageId = this.messages.length - 1;
     const lastMessage = this.messages[lastMessageId];
     const scroll = this.shouldScroll();
+    const mentionsSelf = event.mentions?.includes(this.currentUserId);
 
-    message.mentionsSelf = message.mentions?.includes(this.currentUserId);
     if (
-      message.mentionsSelf &&
+      mentionsSelf &&
       !document.hasFocus() &&
       Notification.permission == "granted"
     ) {
-      var notification = new Notification(
-        message.user.name + " has mentioned you!",
+      new Notification(
+        event.user.name + " has mentioned you!",
         {
-          body: message.message,
+          body: event.message,
         }
       );
     }
 
-    if (lastMessage && lastMessage.user.id === message.user.id) {
+    if (lastMessage && lastMessage.user.id === event.user.id) {
       Vue.set(this.messages, lastMessageId, {
-        ...message,
-        message:
-          lastMessage.message + "<br />" + this.processMessage(message.message, message.mentionsSelf),
+        ...event,
+        parts: [...lastMessage.parts, this.processMessage(event.message, mentionsSelf)]
       });
     } else {
       this.messages.push({
-        ...message,
-        message: this.processMessage(message.message, message.mentionsSelf),
+        ...event,
+        parts: [this.processMessage(event.message, mentionsSelf)]
       });
     }
 
