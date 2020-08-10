@@ -9,6 +9,9 @@ module.exports = {
   plugins: [
     {
       use: 'gridsome-plugin-typescript',
-    }
+    },
+    {
+      use: "gridsome-plugin-service-worker",
+    },
   ]
 }

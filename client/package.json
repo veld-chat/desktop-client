@@ -39,6 +39,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-vue": "^6.2.2",
     "friendly-errors-webpack-plugin": "^1.7.0",
+    "gridsome-plugin-service-worker": "^0.1.5",
     "gridsome-plugin-typescript": "^0.4.0",
     "hard-source-webpack-plugin": "^0.13.1",
     "html-webpack-plugin": "^4.3.0",
