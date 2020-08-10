@@ -10,7 +10,7 @@
           v-for="(item, index) in autoComplete"
           :key="item.text"
           :class="['autocomplete-item', autoCompleteIndex === index && 'active']"
-          @click="handleAutoComplete(index)"
+          @click="handleAutoComplete(index, shift)"
         >
           <img
             v-if="item.image"
@@ -71,8 +71,10 @@ export default class ChatBar extends Vue {
   editor: CodeMirror.Editor;
   autoComplete: AutoComplete[] = [];
   autoCompleteIndex = 0;
+  word: string;
   from: CodeMirror.Position;
   to: CodeMirror.Position;
+  shift: boolean;
 
   mounted(): void {
     if (process.isClient) {
@@ -88,6 +90,7 @@ export default class ChatBar extends Vue {
           Up: this.moveUp,
           Down: this.moveDown,
           Tab: this.handleTab,
+          "Shift-Enter": this.handleShiftEnter
         },
       });
 
@@ -95,13 +98,41 @@ export default class ChatBar extends Vue {
 
       new ResizeObserver(() => {
         this.$emit("height", this.wrapper.clientHeight);
-      }).observe(this.wrapper)
+      }).observe(this.wrapper);
+
+      document.addEventListener("click", this.handleClick);
+      document.addEventListener("keyup", this.handleKeyPress);
+      document.addEventListener("keydown", this.handleKeyPress);
     }
   }
 
-  handleCursorChange(cm: CodeMirror.Editor) {
-    const { list, to, from } = this.handleHint(cm);
+  beforeDestroy() {
+    document.removeEventListener("click", this.handleClick);
+    document.removeEventListener("keyup", this.handleKeyPress);
+    document.removeEventListener("keydown", this.handleKeyPress);
+  }
 
+  private handleClick(e: MouseEvent) {
+    const element = e.target as HTMLImageElement;
+
+    if (element && element.tagName === "IMG") {
+      if (!this.editor.hasFocus()) {
+        this.editor.focus();
+      }
+
+      this.editor.replaceSelection(element.alt + " ");
+      this.editor.focus();
+    }
+  }
+
+  private handleKeyPress(e: KeyboardEvent) {
+    this.shift = e.shiftKey;
+  }
+
+  handleCursorChange(cm: CodeMirror.Editor) {
+    const { list, to, from, word } = this.handleHint(cm);
+
+    this.word = word;
     this.from = from;
     this.to = to;
     this.autoComplete = list;
@@ -113,14 +144,19 @@ export default class ChatBar extends Vue {
     this.startTyping();
   }
 
-  handleAutoComplete(index?: number) {
+  handleAutoComplete(index?: number, insert = false) {
     if (this.autoComplete.length === 0) {
       return false;
     }
 
     const item = this.autoComplete[index ?? this.autoCompleteIndex];
+    let result = item.value + " ";
 
-    this.editor.replaceRange(item.value + " ", this.from, this.to);
+    if (insert) {
+      result += this.word;
+    }
+
+    this.editor.replaceRange(result, this.from, this.to);
     this.editor.setCursor(this.to.ch + item.value.length + 1);
     this.editor.focus();
 
@@ -129,6 +165,12 @@ export default class ChatBar extends Vue {
 
   handleEnter() {
     if (!this.handleAutoComplete()) {
+      this.send();
+    }
+  }
+
+  handleShiftEnter() {
+    if (!this.handleAutoComplete(null, true)) {
       this.send();
     }
   }
@@ -196,6 +238,7 @@ export default class ChatBar extends Vue {
     const word = line.slice(start, cursor.ch).toLowerCase();
 
     return {
+      word,
       list: autoComplete(word),
       from: CodeMirror.Pos(cursor.line, start),
       to: CodeMirror.Pos(cursor.line, end),

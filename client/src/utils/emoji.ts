@@ -7,7 +7,7 @@ export interface Emoji {
 }
 
 const isOnlyEmojiRegex = /^(?:<img class="emoji"[^>]+>|\s+)*$/;
-const emojiRegex = /:([A-Za-z_]+):/g;
+const emojiRegex = /:([A-Za-z_0-9]+):/g;
 export const emojis: {[name: string]: Emoji} = {};
 export const emojisByValue: {[name: string]: Emoji} = {};
 
@@ -26,7 +26,7 @@ export function registerEmoji(emoji: Emoji) {
 export function replaceEmojis(text: string) {
   return text.replace(emojiRegex, (text, name) => {
     const e = emojisByValue[text];
-    return e ? `<img class="emoji" alt="${name}" src="${e.image}" />` : text;
+    return e ? `<img class="emoji" alt="${e.value}" title="${e.value}" src="${e.image}" />` : text;
   })
 }
 
