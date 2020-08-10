@@ -171,7 +171,7 @@ export default class ChatBar extends Vue {
 
   handleShiftEnter() {
     if (!this.handleAutoComplete(null, true)) {
-      this.send();
+      return CodeMirror.Pass;
     }
   }
 
