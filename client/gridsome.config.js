@@ -25,7 +25,7 @@ module.exports = {
         },
         appleMobileWebAppStatusBarStyle: 'default',
         manifestPath: 'manifest.json',
-        icon: 'static/img/logo.png',
+        icon: "./static/favicon.png",
         msTileColor: '#1d1c21',
         workboxOptions: {
           cacheId: 'chat-veld',
