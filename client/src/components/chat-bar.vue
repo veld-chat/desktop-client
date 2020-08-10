@@ -9,7 +9,7 @@
         <div
           v-for="(item, index) in autoComplete"
           :key="item.text"
-          :class="['autocomplete-item', autoCompleteIndex === index && 'active', item.class]"
+          :class="['autocomplete-item', autoCompleteIndex === index && 'active']"
           @click="handleAutoComplete(index)"
         >
           <img
@@ -54,7 +54,6 @@
 import Vue from "vue";
 import { Component, Ref } from "vue-property-decorator";
 import TypingBar from "./typing-bar.vue";
-import userStore from "@/store/user-store";
 import { autoComplete, AutoComplete } from "@/utils/autocomplete";
 const HyperMD = process.isClient ? require("../hypermd") : null;
 const CodeMirror = process.isClient ? require("codemirror") : null;

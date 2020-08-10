@@ -37,27 +37,28 @@ commandItems.push({
   description: "Changes your nickname.",
 });
 
-export function autoComplete(word: string): AutoComplete[] {
-  const list = [];
+function add(name: string, list: AutoComplete[], source: AutoComplete[]) {
+  for (let i = 0; i < source.length; i++) {
+    const item = source[i];
 
+    if (item.value.toLowerCase().includes(name)) {
+      list.push(item);
 
-  if (word[0] === ":") {
-    const name = word.substr(1);
-
-    for (let i = 0; i < emojisItems.length; i++) {
-      const item = emojisItems[i];
-
-      if (item.value.toLowerCase().includes(name)) {
-        list.push(item);
-
-        if (list.length >= 50) {
-          break;
-        }
+      if (list.length >= 50) {
+        break;
       }
     }
   }
+}
 
-  if (word[0] === "@") {
+export function autoComplete(word: string): AutoComplete[] {
+  const list = [];
+
+  if (word[0] === "/") {
+    add(word.substr(1), list, commandItems);
+  } else if (word[0] === ":") {
+    add(word.substr(1), list, emojisItems);
+  } else if (word[0] === "@") {
     const name = word.substr(1);
     const visited = [];
 
