@@ -1,6 +1,6 @@
 import { commandManager } from "@/command-manager";
 
-const nickRegex = /[A-Za-z0-9][A-Za-z0-9\-]{0,15}/;
+const nickRegex = /^[A-Za-z0-9][A-Za-z0-9\-]{0,15}$/;
 const slashRegex = /-+/g
 
 commandManager.register({
@@ -10,7 +10,7 @@ commandManager.register({
     nick = nick.replace(slashRegex, '-');
 
     if (!nickRegex.test(nick)) {
-      client.error("Your nickname is invalid; only letters, numbers or slashes are allowed.")
+      client.error("Your nickname is invalid; only letters, numbers or slashes are allowed with a max length of 16.")
       return;
     }
 

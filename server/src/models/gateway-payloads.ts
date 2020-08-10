@@ -1,4 +1,9 @@
-export type ClientAuthOptions = {
-    name?: string;
-    avatarUrl?: string;
+export type ClientAuthRequest = {
+    token?: string;
+}
+
+export type Token = {
+    id: string;
+    avatar: string;
+    name: string;
 }

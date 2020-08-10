@@ -4,7 +4,7 @@
       "outDir": "dist",
       "sourceMap": true,
       "module": "commonjs",
-      "target": "es5",
+      "target": "esnext",
       "experimentalDecorators": true,
       "downlevelIteration": true,
       "noImplicitAny": true,

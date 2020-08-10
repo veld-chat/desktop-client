@@ -1,56 +1,65 @@
 /* eslint-disable vue/no-v-html */
 <template>
-  <div class="main">
-    <div class="row">
-      <div class="col-xs">
-        <div class="intern-container wrapper">
-          <div class="heading-wrapper">
-            <header class="heading">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                style="height: 2rem;"
-                viewBox="0 0 674.731 463.131"
-              >
-                <path
-                  d="M8433.373,1216.334l236.061-406.322,161.628,286.636,67.489,119.687H9051.3l-205.974-362.35-68.206,120.93"
-                  transform="translate(-8400.564 -786.011)"
-                  fill="none"
-                  stroke="#fff"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="48"
-                />
-              </svg>
-            </header>
-          </div>
-          <div ref="container" class="messages">
-            <div v-for="(message, id) in messages" :key="id" class="msg-instance-container fadein">
-              <div
-                v-if="message.user.avatarUrl"
-                class="msg-instance-avatar"
-                :style="{ backgroundImage: message.user.avatarUrl && `url('${message.user.avatarUrl}')` }"
-              />
-              <div class="msg-content-wrapper">
-                <div class="msg-instance-title">{{ message.user.name }}</div>
-                <p
-                  class="msg-instance"
-                  :class="message.mentionsSelf ? 'mention' : ''"
-                  v-html="message.message"
-                />
-              </div>
-            </div>
-          </div>
-          <chat-bar
-            :ready="connected"
-            @send="sendMessage"
-            @startTyping="startTyping"
-            :current-user-id="this.currentUserId"
-          />
-        </div>
+  <div
+    class="main"
+    :style="{ marginBottom: barHeight + 'px' }"
+  >
+    <chat-bar
+      :ready="connected"
+      :current-user-id="this.currentUserId"
+      @send="sendMessage"
+      @startTyping="startTyping"
+      @height="setBarHeight"
+    />
+
+    <div class="member-list">
+      <div v-for="(user, id) in members" :key="id">
+        <member-list-item :user="user" />
       </div>
-      <div class="col-xs hide-mobile member-list" style="flex-grow: 0;">
-        <div v-for="(user, id) in members" :key="id">
-          <member-list-item :user="user" />
+    </div>
+
+    <div class="heading-wrapper">
+      <header class="heading">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          style="height: 2rem;"
+          viewBox="0 0 674.731 463.131"
+        >
+          <path
+            d="M8433.373,1216.334l236.061-406.322,161.628,286.636,67.489,119.687H9051.3l-205.974-362.35-68.206,120.93"
+            transform="translate(-8400.564 -786.011)"
+            fill="none"
+            stroke="#fff"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="48"
+          />
+        </svg>
+      </header>
+    </div>
+    <div
+      ref="container"
+      class="messages"
+    >
+      <div
+        v-for="(message, id) in messages"
+        :key="id"
+        class="msg-instance-container fadein"
+      >
+        <div
+          v-if="message.user.avatarUrl"
+          class="msg-instance-avatar"
+          :style="{ backgroundImage: message.user.avatarUrl && `url('${message.user.avatarUrl}')` }"
+        />
+        <div class="msg-content-wrapper">
+          <div class="msg-instance-title">
+            {{ message.user.name }}
+          </div>
+          <p
+            class="msg-instance"
+            :class="message.mentionsSelf ? 'mention' : ''"
+            v-html="message.message"
+          />
         </div>
       </div>
     </div>
@@ -72,7 +81,14 @@ import userTypingStore from "../store/user-typing-store";
 
 import ChatBar from "../components/chat-bar.vue";
 import MemberListItem from "../components/member-list-item.vue";
-import { ScrollInformation, shouldScroll } from "@/utils/scroll";
+
+DOMPurify.addHook('afterSanitizeAttributes', function (currentNode) {
+  if (currentNode.tagName === "A") {
+    currentNode.textContent = currentNode.getAttribute("href");
+    currentNode.setAttribute("target", "_blank");
+  }
+  return currentNode;
+});
 
 @Component({
   components: { ChatBar, MemberListItem },
@@ -83,6 +99,7 @@ export default class Root extends Vue {
   @Ref() container: HTMLDivElement;
   messages: MessageCreateEvent[] = [];
   members: User[] = [];
+  barHeight = 0;
 
   mentionParser: MentionParser = new MentionParser();
 
@@ -91,14 +108,14 @@ export default class Root extends Vue {
   token = "";
   connected = false;
   resizeTimer?: number;
-  scroll: ScrollInformation;
+  scroll: boolean;
 
   mounted(): void {
     userStore.onUpdate(() => {
       this.members = userStore.list();
     });
 
-    this.connection = io("chat-gateway.veld.dev");
+    this.connection = io(localStorage.getItem("gateway") || "chat-gateway.veld.dev");
 
     this.connection.on("sys-join", (x) => userStore.upsert(x));
     this.connection.on("sys-leave", (x) => userStore.delete(x.id));
@@ -120,7 +137,7 @@ export default class Root extends Vue {
         userStore.clear();
         userTypingStore.clear();
 
-        this.token = options.token;
+        localStorage.setItem("token", options.token);
         this.currentUserId = options.user.id;
         userStore.upsert(options.user);
 
@@ -134,9 +151,12 @@ export default class Root extends Vue {
         this.connected = true;
       });
 
+      this.connection.on("token", (token) => {
+        localStorage.setItem("token", token);
+      });
+
       this.connection.emit("login", {
-        name: localStorage.getItem("name"),
-        avatarUrl: localStorage.getItem("avatarUrl"),
+        token: localStorage.getItem("token") || null
       });
     });
 
@@ -164,8 +184,6 @@ export default class Root extends Vue {
   onResize() {
     if (!this.scroll) {
       this.scroll = this.shouldScroll();
-      this.scroll.container = this.scroll.document =
-        this.scroll.document || this.scroll.container;
     }
 
     if (!this.resizeTimer) {
@@ -177,7 +195,7 @@ export default class Root extends Vue {
         this.applyScroll(this.scroll);
         this.scroll = undefined;
       }
-    }, 250);
+    }, 200);
   }
 
   onUserEdit(user: User): void {
@@ -196,7 +214,7 @@ export default class Root extends Vue {
           breaks: true,
         }),
         {
-          ALLOWED_TAGS: ["b", "i", "em", "strong", "a", "br"],
+          ALLOWED_TAGS: ["b", "i", "em", "strong", "a", "br", "code", "span"],
           ALLOWED_ATTR: ["href"],
         }
       )
@@ -238,28 +256,26 @@ export default class Root extends Vue {
     this.applyScroll(scroll);
   }
 
-  shouldScroll(): ScrollInformation {
-    return {
-      container: shouldScroll(this.container),
-      document: shouldScroll(document.documentElement),
-    };
+  shouldScroll(): boolean {
+    const element = document.documentElement;
+
+    return element.scrollTop >= element.scrollHeight - element.clientHeight - 100;
   }
 
-  applyScroll(scroll: ScrollInformation): void {
-    if (scroll.document || scroll.container) {
+  applyScroll(scroll: boolean): void {
+    if (scroll) {
       this.$nextTick(() => {
-        if (scroll.container) {
-          this.container.scroll(0, this.container.scrollHeight);
-        }
-
-        if (scroll.document) {
-          document.documentElement.scroll(
-            0,
-            document.documentElement.scrollHeight
-          );
-        }
+        document.documentElement.scroll(
+          0,
+          document.documentElement.scrollHeight
+        );
       });
     }
+  }
+
+  setBarHeight(height: number) {
+    this.barHeight = height;
+    this.applyScroll(this.shouldScroll());
   }
 
   startTyping(): void {

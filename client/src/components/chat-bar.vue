@@ -1,5 +1,5 @@
 <template>
-  <div class="controls-wrapper">
+  <div ref="wrapper" class="controls-wrapper">
     <div class="controls">
       <div
         v-show="autoComplete.length > 0"
@@ -65,6 +65,7 @@ const CodeMirror = process.isClient ? require("codemirror") : null;
 export default class ChatBar extends Vue {
   @Ref() input: HTMLTextAreaElement;
   @Ref() container: HTMLDivElement;
+  @Ref() wrapper: HTMLDivElement;
   message = "";
   lastTimeTyping = 0;
   editor: CodeMirror.Editor;
@@ -91,6 +92,10 @@ export default class ChatBar extends Vue {
       });
 
       this.editor.on("cursorActivity", this.handleCursorChange);
+
+      new ResizeObserver(() => {
+        this.$emit("height", this.wrapper.clientHeight);
+      }).observe(this.wrapper)
     }
   }
 

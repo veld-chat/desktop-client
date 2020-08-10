@@ -1,9 +1,27 @@
-$light: #848484;
-$medium: #444444;
-$dark: #333333;
-$dark2: #282828;
-$darker: #212121;
-$darkest: rgb(20, 20, 20);
+:root {
+  --body-bg: #333333;
+  --sidebar-bg: #282828;
+  --editor-bg: #444444;
+  --editor-color: #FFFFFF;
+  --editor-placeholder-color: #848484;
+  --editor-container-bg: #333333;
+  --typing-color: #848484;
+  --message-bg: #212121;
+  --message-color: #FFFFFF;
+  --message-mention-bg: #212121;
+  --message-mention-color: #FFFFFF;
+  --message-author-color: #bababa;
+  --active-bg: #444444;
+}
+
+body.miku {
+  --body-bg: url('https://www.xtrafondos.com/wallpapers/hatsune-miku-chica-anime-4507.jpg');
+  --message-bg: rgba(0, 0, 0, 0.5);
+  --sidebar-bg: rgba(0, 0, 0, 0.5);
+  --editor-bg: rgba(0, 0, 0, 0.75);
+  --typing-color: white;
+  --editor-container-bg: transparant;
+}
 
 @mixin mobile {
     @media only screen and (max-width: 1024px) {

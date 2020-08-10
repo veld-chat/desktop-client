@@ -1,0 +1,46 @@
+.autocomplete {
+  position: absolute;
+  bottom: 100%;
+  background: #333333;
+  width: 100%;
+  left: 0;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,0.2);
+  margin-bottom: 0.5rem;
+  overflow-y: scroll;
+  max-height: 200px;
+
+  &-description {
+    color: #848484;
+    margin-left: 0.3em;
+  }
+
+  &-image {
+    height: 1.4em;
+    margin-right: 0.5em;
+  }
+
+  &-avatar {
+    height: 1.75em;
+    width: 1.75em;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    margin-right: 0.5em;
+  }
+
+  &-item {
+    display: flex;
+    padding: 0.75em 0.5em;
+    cursor: pointer;
+    align-items: center;
+
+    &:hover {
+      background: rgba(0, 0, 0, .15);
+    }
+
+    &.active {
+      background: rgba(0, 0, 0, .25);
+    }
+  }
+}

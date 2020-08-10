@@ -1,23 +1,28 @@
 import { Client } from "./client";
-import { ClientAuthOptions } from "@/models/gateway-payloads";
+import { ClientAuthRequest, Token } from "@/models/gateway-payloads";
 const emoji = require('node-emoji')
 import * as jwt from "jsonwebtoken";
 import { RateLimit } from "@/utils/rate-limit";
 import { commandManager } from "@/command-manager";
 import SocketIO from "socket.io";
+import SnowyFlake from "snowyflake";
 
 function escape(input: string) {
     return input.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
+const snowFlake = new SnowyFlake();
+
 export class ClientManager {
     private messageRateLimit = new RateLimit(5, 5000);
     private clients: Map<string, Client>;
+    private sockets: Map<string, Client>;
     private options: any;
     private io: SocketIO.Server;
 
     constructor(io: SocketIO.Server, serverOptions: any) {
         this.clients = new Map();
+        this.sockets = new Map();
         this.options = serverOptions;
         this.io = io;
     }
@@ -35,10 +40,7 @@ export class ClientManager {
     }
 
     private onClientConnected(socket: SocketIO.Socket) {
-        console.log("user " + socket.id + " connected");
-
-        const client = new Client(socket, this);
-        this.clients.set(socket.id, client);
+        console.log("client " + socket.id + " connected");
 
         socket.on("disconnect", () => this.onClientDisconnect(socket));
         socket.on("login", (options) => this.onClientAuthenticated(socket, options));
@@ -46,50 +48,82 @@ export class ClientManager {
         socket.emit("sys-commands", commandManager.commands);
     }
 
-    private async onClientAuthenticated(socket: SocketIO.Socket, options: ClientAuthOptions) {
-        let currentUser = this.clients.get(socket.id);
-        if (!currentUser) {
-            console.log("error: user tried to authenticate with invalid socket.");
-            socket.error("invalid session");
-            socket.disconnect(true);
-            return;
+    private async onClientAuthenticated(socket: SocketIO.Socket, request: ClientAuthRequest) {
+        let token: Token = null;
+
+        if (request.token) {
+            try {
+                token = jwt.decode(request.token) as Token;
+            } catch {
+                // ignore: the secret was changed or the token was changed by the user.
+            }
         }
 
-        if (options.avatarUrl) {
-            currentUser.avatar = options.avatarUrl;
+        const id = token?.id ?? snowFlake.nextId().toString();
+        let currentUser = this.clients.get(id);
+        let isNew;
+
+        if (currentUser) {
+            currentUser.registerSocket(socket);
+            isNew = false;
         } else {
+            currentUser = new Client(id, socket, this, token);
+            this.clients.set(id, currentUser);
+            isNew = true;
+        }
+
+        if (!currentUser.avatar) {
             await currentUser.randomAvatar(false);
         }
 
-        currentUser.name = options.name || currentUser.name;
-        this.clients.set(socket.id, currentUser);
+        this.sockets.set(socket.id, currentUser);
 
         socket.emit("ready", {
             user: currentUser.serialize(),
             members: Array.from(this.clients.values()).map(x => x.serialize()),
-            token: jwt.sign(currentUser.id, this.options.secret),
+            token: this.createToken(currentUser),
         });
 
         socket.on("usr-typ", () => this.onClientStartTyping(socket));
         socket.on("usr-msg", (msg) => this.onClientMessageReceived(socket, msg));
-        this.io.emit("sys-join", currentUser.serialize());
+
+        if (isNew) {
+            this.io.emit("sys-join", currentUser.serialize());
+        }
+    }
+
+    createToken(user: Client): string {
+        return jwt.sign({
+          id: user.id,
+          name: user.name,
+          avatar: user.avatar,
+      } as Token, this.options.secret);
     }
 
     private onClientDisconnect(socket: SocketIO.Socket) {
         console.log("user " + socket.id + " disconnected");
-        this.io.emit("sys-leave", this.clients.get(socket.id).serialize());
-        this.clients.delete(socket.id);
+        const client = this.sockets.get(socket.id);
+        this.sockets.delete(socket.id);
+
+        if (client.unregisterSocket(socket)) {
+            this.clients.delete(client.id);
+            this.io.emit("sys-leave", client.serialize());
+        }
     }
 
     private onClientStartTyping(socket: SocketIO.Socket) {
+        const client = this.sockets.get(socket.id);
+
         this.io.emit("usr-typ", {
-            id: socket.id,
-            name: this.clients.get(socket.id).name,
+            id: client.id,
+            name: client.name,
         });
     }
 
     private async onClientMessageReceived(socket: SocketIO.Socket, msg: any) {
-        if (commandManager.handle(this, socket.id, msg.message)) {
+        const client = this.sockets.get(socket.id);
+
+        if (commandManager.handle(this, client, msg.message)) {
             return;
         }
 
@@ -104,7 +138,7 @@ export class ClientManager {
         this.io.emit('usr-msg', {
             message: escape(emoji.emojify(msg.message)),
             mentions: msg.mentions,
-            user: this.clients.get(socket.id).serialize()
+            user: client.serialize()
         });
     }
 }

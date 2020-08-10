@@ -33,7 +33,7 @@ export class CommandManager {
     }
   }
 
-  handle(clientManager: ClientManager, id: string, input: string) {
+  handle(clientManager: ClientManager, client: Client, input: string) {
     if (input.length === 0 || input[0] !== "/") {
       return false;
     }
@@ -45,8 +45,6 @@ export class CommandManager {
     if (!command) {
       return true;
     }
-
-    const client = clientManager.get(id);
 
     command.handle({
       args,

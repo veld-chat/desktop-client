@@ -22,12 +22,6 @@
     }
   }
 
-  /* adding some CodeMirror-not-implemented styles' default style */
-  .cm-inline-code,
-  .cm-math {
-    color: #900;
-  }
-
   /* tooltip for addon/hover */
   div.HyperMD-hover > .HyperMD-hover-content {
     background-color: #fff;
@@ -205,8 +199,6 @@
     }
   }
   span.cm-error { color: #f00; }
-  span.cm-math { @extend %monospace; font-style: italic; background: rgba(#ffe,.4); }
-  span.cm-formatting-math { color: #CAA; font-weight: inherit; }
 
   .CodeMirror-activeline-background { background: #e8f2ff; }
   .CodeMirror-matchingbracket { outline:1px solid grey; color:black !important; }
@@ -488,15 +480,6 @@
     height: auto;
   }
 
-  /// math blocks
-
-  span.hmd-fold-math-placeholder {
-    // when math is not fully rendered. a placeholder with raw Tex expression is presented
-    @extend .cm-math;
-  }
-
-  span.cm-math-2 { font-size: 1.1 * $fs }
-
   /// other Markdown stuff
 
   span.cm-hmd-escape-backslash { color: #CAA; }
@@ -508,24 +491,6 @@
     background-color: rgba(#eee, .7);
     color: #999;
     margin-top: -.2em;
-  }
-
-  span.cm-inline-code {
-    @extend %monospace;
-    color: #922;
-    font-size: 90%;
-
-    &:not(.cm-formatting):not(.cm-hmd-indented-code) {
-      background-color: rgba(#eee, .5);
-      border-radius: 4px;
-      vertical-align: baseline;
-      border: #ccc solid 1px;
-      padding: 1px .4em;
-    }
-
-    &.hmd-hidden-token {
-      font-size: 0;
-    }
   }
 
   /// hyperMD stuff

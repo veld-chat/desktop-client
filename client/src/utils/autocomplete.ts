@@ -56,7 +56,7 @@ export function autoComplete(word: string): AutoComplete[] {
 
   if (word[0] === "/") {
     add(word.substr(1), list, commandItems);
-  } else if (word[0] === ":") {
+  } else if (word[0] === ":" && word.length > 2) {
     add(word.substr(1), list, emojisItems);
   } else if (word[0] === "@") {
     const name = word.substr(1);

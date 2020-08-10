@@ -1,7 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 @import "columns";
 @import "variables";
 @import "emoji";
-@import "hypermd";
+@import "editor";
+@import "autocomplete";
 
 * {
   -webkit-tap-highlight-color:  rgba(255, 255, 255, 0);
@@ -36,14 +38,12 @@
   to   { opacity: 1; }
 }
 
-.sidebar
-{
+.sidebar {
   background-color: rgb(24, 24, 24);
   color: rgb(200, 200, 200);
 }
 
-.fadein
-{
+.fadein {
   -webkit-animation: fadein 0.3s;
   -moz-animation: fadein 0.3s;
   -ms-animation: fadein 0.3s;
@@ -54,13 +54,10 @@
 body {
   background-size: contain;
   font-family: 'Roboto', sans-serif;
-  background-color: $dark;
-}
-@include desktop {
-  body {
-    height: 100vh;
-    overflow-y: hidden;
-  }
+  background: var(--body-bg);
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
 }
 
 li {
@@ -133,41 +130,15 @@ html, body {
   padding: 0;
 }
 
-@include desktop {
-  .main {
-    height: 100vh;
-  }
-}
-
 .wrapper {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   color: white;
-}
-
-@include desktop {
-  .wrapper {
-    height: 100vh;
-  }
-}
-
-@include mobile {
-  .wrapper {
-    margin-bottom: 4rem;
-  }
-}
-
-.intern-container {
-  display: flex;
-  flex-direction: column;
   flex-grow: 1;
 }
 
-@include desktop {
-  .intern-container {
-    overflow: hidden;
-  }
+.col-chat {
+  position: relative;
 }
 
 .heading-wrapper {
@@ -200,12 +171,6 @@ html, body {
   flex-grow: 1;
 }
 
-@include desktop {
-  .intern-container .messages {
-    overflow-y: scroll;
-  }
-}
-
 @include mobile {
   .intern-container .messages {
     align-items: stretch;
@@ -213,27 +178,18 @@ html, body {
   }
 }
 
+$listWidth: 300px;
 
 .member-list {
-  height: 100vh;
-  overflow: scroll;
-  min-width: 400px;
-  padding: 2rem;
-  background-color: $dark2;
-}
-
-.member-list-mobile {
-  display: none;
+  box-sizing: border-box;
   position: fixed;
-  left: 0px;
-  right: 0px;
-  top: 0px;
-  bottom: 0px;
-  z-index: 100;
-
-  &.active {
-    display: block;
-  }
+  right: 0;
+  display: none;
+  height: 100vh;
+  overflow-y: scroll;
+  padding: 1rem;
+  width: $listWidth;
+  background: var(--sidebar-bg);
 }
 
 .member-list-item {
@@ -249,8 +205,8 @@ html, body {
 
 .controls {
   position: relative;
-  background: $medium;
-  color: white;
+  background: var(--editor-bg);
+  color: var(--editor-color);
   display: flex;
   border-radius: 4px;
   padding: 16px 12px;
@@ -260,34 +216,28 @@ html, body {
 .typing-bar {
   margin: 0.25rem;
   font-size: 12px;
-  color: $light;
+  color: var(--typing-color);
 }
 
 .controls-wrapper {
-  background-color: $dark;
-  margin: 0.5rem;
-}
-
-@include mobile {
-  .controls-wrapper {
-    position: fixed;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
-    margin: 0.5rem 0.5rem 0 0.5rem;
-  }
+  background: var(--editor-container-bg);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.5rem 0.5rem 0 0.5rem;
+  z-index: 100;
 }
 
 .mention {
-  background-color: white;
   padding: 4px;
-  color: dark;
+  background: var(--message-mention-bg);
+  color: var(--message-mention-color);
 }
 
 .sendbutton {
   height: 100%;
   width: 2rem;
-  background-color: $medium;
   text-align: center;
   border-radius: 4px;
   cursor: pointer;
@@ -322,12 +272,12 @@ select:-webkit-autofill:focus
 .textfield:focus {
   outline: none;
   -webkit-text-fill-color: white;
-  -webkit-box-shadow: 0 0 0px 100px $medium inset;
+  -webkit-box-shadow: 0 0 0px 100px var(--active-bg) inset;
 }
 
 .msg-instance-title {
+  color: var(--message-author-color);
   font-size: 1.25rem;
-  opacity: .75;
   font-weight: bold;
   word-break: break-all;
   white-space: nowrap;
@@ -341,7 +291,8 @@ select:-webkit-autofill:focus
 }
 
 .msg-instance-container {
-  background: $darker;
+  background: var(--message-bg);
+  color: var(--message-color);
   margin: 8px 16px;
   width: auto;
   padding: 12px;
@@ -374,88 +325,8 @@ select:-webkit-autofill:focus
   background-position: center;
 }
 
-.controls .CodeMirror {
-  background: none;
-  color: inherit;
-  font: inherit;
-  height: auto;
-  width: 100%;
-  margin-bottom: -7px;
-
-  &-gutters {
-    display: none;
-  }
-
-  &-lines {
-    padding: 0 ;
-  }
-
-  &-sizer {
-    min-height: auto;
-  }
-
-  &-cursor {
-    border-left: solid 1px #848484;
-  }
-
-  &-placeholder {
-    color: #848484 !important;
-  }
-
-  span.cm-builtin {
-    color: darkgray;
-  }
-}
-
-.autocomplete {
-  position: absolute;
-  bottom: 100%;
-  background: #333333;
-  width: 100%;
-  left: 0;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px 0 rgba(0,0,0,0.2);
-  margin-bottom: 0.5rem;
-  overflow-y: scroll;
-  max-height: 200px;
-
-  &-description {
-    color: #848484;
-    margin-left: 0.3em;
-  }
-
-  &-image {
-    height: 1.4em;
-    margin-right: 0.5em;
-  }
-
-  &-avatar {
-    height: 1.75em;
-    width: 1.75em;
-    background-size: cover;
-    background-position: center;
-    border-radius: 50%;
-    margin-right: 0.5em;
-  }
-
-  &-item {
-    display: flex;
-    padding: 0.75em 0.5em;
-    cursor: pointer;
-    align-items: center;
-
-    &:hover {
-      background: rgba(0, 0, 0, .15);
-    }
-
-    &.active {
-      background: rgba(0, 0, 0, .25);
-    }
-  }
-}
-
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -468,4 +339,18 @@ select:-webkit-autofill:focus
 
 ::-webkit-scrollbar-thumb:hover {
   background: #212121;
+}
+
+@include desktop {
+  body {
+    margin-right: $listWidth;
+  }
+
+  .member-list {
+    display: block;
+  }
+
+  .controls-wrapper {
+    right: $listWidth;
+  }
 }
