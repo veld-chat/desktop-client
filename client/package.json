@@ -7,11 +7,13 @@
     "build": "gridsome build"
   },
   "dependencies": {
+    "@allanchain/gridsome-plugin-pwa": "^0.2.5",
     "codemirror": "^5.56.0",
     "dompurify": "^2.0.12",
     "gridsome": "^0.7.19",
     "hypermd": "^0.3.11",
     "marked": "^1.1.1",
+    "register-service-worker": "^1.7.1",
     "socket.io-client": "^2.3.0",
     "ts-events": "^3.4.0",
     "twemoji": "^13.0.1",
@@ -39,7 +41,6 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-vue": "^6.2.2",
     "friendly-errors-webpack-plugin": "^1.7.0",
-    "gridsome-plugin-service-worker": "^0.1.5",
     "gridsome-plugin-typescript": "^0.4.0",
     "hard-source-webpack-plugin": "^0.13.1",
     "html-webpack-plugin": "^4.3.0",
