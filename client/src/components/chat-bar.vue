@@ -54,45 +54,10 @@
 import Vue from "vue";
 import { Component, Ref } from "vue-property-decorator";
 import TypingBar from "./typing-bar.vue";
-import { emojis } from "@/utils/emoji";
 import userStore from "@/store/user-store";
+import { autoComplete, AutoComplete } from "@/utils/autocomplete";
 const HyperMD = process.isClient ? require("../hypermd") : null;
 const CodeMirror = process.isClient ? require("codemirror") : null;
-
-interface AutoComplete {
-  text: string;
-  textLowerCased: string;
-  emoji?: string;
-  image?: string;
-  avatar?: string;
-  value: string;
-  description?: string;
-}
-
-const dictionary: AutoComplete[] = [];
-
-for (const n of Object.keys(emojis)) {
-  dictionary.push({
-    text: n,
-    textLowerCased: n,
-    image: emojis[n].image,
-    value: `:${n}:`,
-  });
-}
-
-dictionary.push({
-  text: "avatar",
-  textLowerCased: "avatar",
-  value: `/avatar`,
-  description: "Changes your avatar to a random avatar.",
-});
-
-dictionary.push({
-  text: "nick",
-  textLowerCased: "nick",
-  value: `/nick`,
-  description: "Changes your nickname.",
-});
 
 @Component({
   props: ["ready", "currentUserId"],
@@ -209,10 +174,10 @@ export default class ChatBar extends Vue {
   }
 
   handleHint(cm: CodeMirror.Editor) {
-    const cursor = cm.getCursor(),
-      line = cm.getLine(cursor.line);
-    let start = cursor.ch,
-      end = cursor.ch;
+    const cursor = cm.getCursor();
+    const line = cm.getLine(cursor.line);
+    let start = cursor.ch;
+    let end = cursor.ch;
     while (start && line.charAt(start - 1) !== " ") --start;
     while (end < line.length && line.charAt(end) !== " ") ++end;
 
@@ -225,58 +190,12 @@ export default class ChatBar extends Vue {
     }
 
     const word = line.slice(start, cursor.ch).toLowerCase();
-    const wordEmpty = word.length === 0;
-    const result = {
-      list: [] as AutoComplete[],
+
+    return {
+      list: autoComplete(word),
       from: CodeMirror.Pos(cursor.line, start),
       to: CodeMirror.Pos(cursor.line, end),
     };
-
-    for (let i = 0; i < dictionary.length; i++) {
-      const emoji = dictionary[i];
-
-      if (wordEmpty || emoji.value.slice(0, word.length) === word) {
-        result.list.push(emoji);
-
-        if (result.list.length >= 50) {
-          break;
-        }
-      }
-    }
-
-    if (word[0] === "@") {
-      const name = word.substr(1);
-      const visited = [];
-
-      for (const item of userStore.list()) {
-        const itemName = item.name.toLowerCase();
-
-        if (visited.indexOf(itemName) !== -1) {
-          continue;
-        }
-
-        visited.push(itemName);
-
-        if (itemName.slice(0, name.length).toLowerCase() === name) {
-          result.list.push({
-            text: item.name,
-            textLowerCased: item.name.toLowerCase(),
-            avatar: item.avatarUrl,
-            value: "@" + item.name,
-          });
-
-          if (result.list.length >= 50) {
-            break;
-          }
-        }
-      }
-    }
-
-    result.list = result.list.sort((a,b) => (a.textLowerCased > b.textLowerCased)
-      ? 1
-      : ((b.textLowerCased > a.textLowerCased) ? -1 : 0));
-
-    return result;
   }
 
   startTyping(): void {
