@@ -1,32 +1,44 @@
-import { Client } from "./client";
+import { Client } from "@/client";
 import { ClientAuthRequest, Token } from "@/models/gateway-payloads";
 import * as jwt from "jsonwebtoken";
 import { RateLimit } from "@/utils/rate-limit";
-import { commandManager } from "@/command-manager";
+import { commandManager } from "@/commands/command-manager";
 import SocketIO from "socket.io";
 import SnowyFlake from "snowyflake";
+import mongoose from "mongoose";
+import { User } from "@/db";
+import { ImageService } from "@/image";
+import { container, inject, singleton } from "tsyringe";
+import { logger } from "@/logger";
 
 function escape(input: string) {
     return input.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-const snowFlake = new SnowyFlake();
-
+@singleton()
 export class ClientManager {
     private messageRateLimit = new RateLimit(5, 5000);
     private clients: Map<string, Client>;
     private sockets: Map<string, Client>;
-    private options: any;
-    private io: SocketIO.Server;
 
-    constructor(io: SocketIO.Server, serverOptions: any) {
+    constructor(
+      @inject("io") private readonly io: SocketIO.Server,
+      @inject("options") private readonly options: any,
+      private readonly snowFlake: SnowyFlake,
+      private readonly imageService: ImageService
+    ) {
         this.clients = new Map();
         this.sockets = new Map();
-        this.options = serverOptions;
-        this.io = io;
     }
 
-    start() {
+    async start() {
+        await mongoose.connect('mongodb://localhost:27017/chat', {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
+
+        logger.info("starting server")
+
         this.io.on("connection", (socket) => this.onClientConnected(socket));
     }
 
@@ -39,7 +51,7 @@ export class ClientManager {
     }
 
     private onClientConnected(socket: SocketIO.Socket) {
-        console.log("client " + socket.id + " connected");
+        logger.info("client", socket.id, " connected");
 
         socket.on("disconnect", () => this.onClientDisconnect(socket));
         socket.on("login", (options) => this.onClientAuthenticated(socket, options));
@@ -48,65 +60,71 @@ export class ClientManager {
     }
 
     private async onClientAuthenticated(socket: SocketIO.Socket, request: ClientAuthRequest) {
+        if (this.sockets.has(socket.id)) {
+            this.onClientDisconnect(socket);
+        }
+
         let token: Token = null;
-        let sendToken = false;
 
         if (request.token) {
             try {
                 token = jwt.decode(request.token) as Token;
             } catch {
-                sendToken = true;
+                // ignore
             }
         }
 
-        const id = token?.id ?? snowFlake.nextId().toString();
-        let currentUser = this.clients.get(id);
-        let isNew;
+        const id = token?.id ?? this.snowFlake.nextId().toString();
 
-        if (currentUser) {
-            currentUser.registerSocket(socket);
-            isNew = false;
-        } else {
-            currentUser = new Client(id, socket, this, token);
-            this.clients.set(id, currentUser);
+        let client = this.clients.get(id);
+        let isNew = false;
+
+        if (!client) {
+            let user = await User.findOne({ id });
+
+            if (!user) {
+                user = new User();
+                user.id = id;
+                user.name = "anon-" + socket.id.substr(0, 6);
+                user.avatar = await this.imageService.getRandomImage();
+            }
+
+            user.lastLogin = new Date();
+            await user.save();
+
+            client = container.resolve(Client);
+            client.user = user;
             isNew = true;
+
+            this.clients.set(id, client);
         }
 
-        if (!currentUser.avatar) {
-            await currentUser.randomAvatar(false);
-            sendToken = true;
-        }
-
-        this.sockets.set(socket.id, currentUser);
+        client.registerSocket(socket);
+        this.sockets.set(socket.id, client);
 
         socket.emit("ready", {
-            user: currentUser.serialize(),
+            user: client.serialize(),
             members: Array.from(this.clients.values()).map(x => x.serialize()),
-            token: this.createToken(currentUser),
+            token: this.createToken(client),
         });
 
         socket.on("usr-typ", () => this.onClientStartTyping(socket));
         socket.on("usr-msg", (msg) => this.onClientMessageReceived(socket, msg));
 
         if (isNew) {
-            this.io.emit("sys-join", currentUser.serialize());
-        }
-
-        if (sendToken) {
-            currentUser.updateToken();
+            this.io.emit("sys-join", client.serialize());
         }
     }
 
     createToken(user: Client): string {
-        return jwt.sign({
-          id: user.id,
-          name: user.name,
-          avatar: user.avatar,
-      } as Token, this.options.secret);
+        return jwt.sign(
+          { id: user.id } as Token,
+          this.options.secret,
+          { noTimestamp: true });
     }
 
     private onClientDisconnect(socket: SocketIO.Socket) {
-        console.log("user " + socket.id + " disconnected");
+        logger.info("user", socket.id, " disconnected");
         const client = this.sockets.get(socket.id);
         this.sockets.delete(socket.id);
 
@@ -141,9 +159,10 @@ export class ClientManager {
         }
 
         this.io.emit('usr-msg', {
+            id: this.snowFlake.nextId().toString(),
+            user: client.id,
             message: escape(msg.message),
-            mentions: msg.mentions,
-            user: client.serialize()
+            mentions: msg.mentions
         });
     }
 }

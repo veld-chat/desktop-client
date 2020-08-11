@@ -4,6 +4,4 @@ export type ClientAuthRequest = {
 
 export type Token = {
     id: string;
-    avatar: string;
-    name: string;
 }

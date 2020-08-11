@@ -13,6 +13,7 @@
     "dompurify": "^2.0.12",
     "gridsome": "^0.7.19",
     "hammerjs": "^2.0.8",
+    "html5-qrcode": "^1.2.0",
     "marked": "^1.1.1",
     "register-service-worker": "^1.7.1",
     "socket.io-client": "^2.3.0",

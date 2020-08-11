@@ -2,6 +2,7 @@ import "./style/index.scss";
 
 if (process.isClient) {
   require("codemirror/addon/display/placeholder");
+  require("html5-qrcode/minified/html5-qrcode.min");
 }
 
 export default (Vue, { head, isClient }): void => {

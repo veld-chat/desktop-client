@@ -4,6 +4,8 @@
     class="main"
     :style="{ marginBottom: barHeight + 'px' }"
   >
+    <login v-if="showLogin" />
+
     <chat-bar
       :ready="connected"
       :current-user-id="this.currentUserId"
@@ -38,6 +40,13 @@
             stroke-width="48"
           />
         </svg>
+        <div
+          class="btn btn-sm"
+          @click.prevent="showLogin = true"
+        >
+          <i class="fa fa-user" />
+          Login
+        </div>
       </header>
     </div>
     <div
@@ -82,6 +91,7 @@ import { MentionParser } from "@/utils/mention-parser";
 import userStore from "../store/user-store";
 import userTypingStore from "../store/user-typing-store";
 
+import Login from "../components/login.vue";
 import ChatBar from "../components/chat-bar.vue";
 import MemberListItem from "../components/member-list-item.vue";
 import { Emoji, isEmojiOnly, registerEmoji, replaceEmojis } from "@/utils/emoji";
@@ -97,7 +107,7 @@ if (process.isClient) {
 }
 
 @Component({
-  components: { ChatBar, MemberListItem },
+  components: { ChatBar, MemberListItem, Login },
 })
 export default class Root extends Vue {
   private connection: SocketIOClient.Socket;
@@ -106,6 +116,7 @@ export default class Root extends Vue {
   messages: Message[] = [];
   members: User[] = [];
   barHeight = 0;
+  showLogin = false;
 
   mentionParser: MentionParser = new MentionParser();
 

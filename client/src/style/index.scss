@@ -160,10 +160,13 @@ html, body {
 }
 
 .heading {
-  font-size: 2rem;
-  height: 2rem;
-  font-weight: bold;
   padding: 16px 16px 16px 24px;
+  display: flex;
+  align-items: center;
+
+  svg {
+    margin-right: 32px;
+  }
 }
 
 @include mobile {
@@ -355,4 +358,116 @@ select:-webkit-autofill:focus
   .controls-wrapper {
     right: $listWidth;
   }
+}
+
+img {
+  max-width: 100%;
+}
+
+.login {
+  background: rgba(0, 0, 0, 0.7);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 300;
+  display: flex;
+
+  @include mobile {
+    flex-direction: column;
+  }
+
+  > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    margin: 1em;
+  }
+
+  h1 {
+    color: white;
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .qrcode {
+    &-image {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+    }
+  }
+
+  .camera-picker {
+    padding: 0.5rem 1rem;
+  }
+}
+
+.btn-group {
+  display: flex;
+
+  .btn {
+    border-radius: 0;
+    border-right: solid 1px black;
+  }
+
+  .btn:first-child {
+    border-radius: 5px 0 0 5px;
+  }
+
+  .btn:last-child {
+    border-radius: 0 5px 5px 0;
+    border-right: none;
+  }
+}
+
+.btn {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  text-align: center;
+  width: 10em;
+  padding: 1em;
+  background: var(--editor-bg);
+  color: var(--editor-color);
+  overflow: hidden;
+  border-radius: 5px;
+
+  i {
+    display: block;
+    font-size: 2rem;
+    flex-grow: 1;
+    margin-bottom: 0.25em;
+  }
+
+  &-sm {
+    font-size: 0.75rem;
+    padding: 0.75rem;
+
+    i {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+}
+
+.mt-1 {
+  margin-top: 1rem;
+}
+
+input[type=file].hidden {
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  position: fixed;
+  top: -1;
+  left: -1;
 }

@@ -1653,7 +1653,7 @@ for (const name of Object.keys(emojiDefinitions)) {
   });
 }
 
-const emojiPath = path.join(__dirname, "..", "emoji");
+const emojiPath = path.join(__dirname, "..", "..", "assets", "emoji");
 
 if (fs.existsSync(emojiPath)) {
   for (const file of fs.readdirSync(emojiPath)) {
@@ -1662,7 +1662,7 @@ if (fs.existsSync(emojiPath)) {
     emojis.push({
       name,
       value: `:${name}:`,
-      image: `/emoji/${file}`
+      image: `/assets/emoji/${file}`
     })
   }
 }
