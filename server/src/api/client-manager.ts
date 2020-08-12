@@ -149,7 +149,7 @@ export class ClientManager {
         this.io.emit('usr-msg', {
             message: validate(msg.message),
             embed: validateEmbed(msg.embed),
-            mentions: msg.mentions,
+            mentions: msg.mentions || [],
             user: client.serialize()
         });
     }
