@@ -1,80 +1,88 @@
 <template>
   <div class="login">
-    <div class="col" v-show="step <= 1">
-      <div class="qrcode">
-        <h1>Your code</h1>
-        <div class="qrcode-image">
-          <img
-            :src="'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + token"
-            alt="Token"
-          >
+    <div class="close" @click.prevent="$emit('close')">
+      <i class="fas fa-times"></i>
+    </div>
+    <div class="login-inner">
+      <div class="col" v-show="step <= 1">
+        <div class="qrcode">
+          <h1>Your code</h1>
+          <div class="qrcode-image">
+            <img
+              :src="'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + token"
+              alt="Token"
+            >
+          </div>
         </div>
       </div>
-    </div>
-    <div class="col">
-      <div class="scan">
-        <div v-show="step === 0">
-          <h1>Scan code</h1>
-          <div class="btn-group">
-            <a
-              class="btn"
-              @click.prevent="fileUpload.click()"
-            >
-              <i class="fas fa-upload" />
-              Upload image
-            </a>
-            <a
-              class="btn"
-              @click.prevent="requestCamera()"
-            >
-              <i class="fas fa-camera" />
-              Scan QR-code
-            </a>
-          </div>
-        </div>
-
-        <div v-show="step === 1">
-          <h1>Select camera</h1>
-
-          <select
-            v-model="camera"
-            class="camera-picker"
-          >
-            <option
-              v-for="camera in cameras"
-              :key="camera.id"
-              :value="camera.id"
-            >
-              {{ camera.label || camera.id }}
-            </option>
-          </select>
-        </div>
-
-        <div v-show="step === 2">
-          <h1>Scan code</h1>
-
-          <div
-            id="reader"
-            style="width: 500px"
-          />
-
-          <div class="center mt-1">
-            <div
-              class="btn btn-sm"
-              @click.prevent="reset()"
-            >
-              <i class="fas fa-window-close" />
-              Annuleren
+      <div class="col">
+        <div class="scan">
+          <div v-show="step === 0">
+            <h1>Choose your method</h1>
+            <div class="btn-group">
+              <a
+                class="btn"
+                @click.prevent="fileUpload.click()"
+              >
+                <i class="fas fa-upload" />
+                Upload image
+              </a>
+              <a
+                class="btn"
+                @click.prevent="requestCamera()"
+              >
+                <i class="fas fa-camera" />
+                Scan QR-code
+              </a>
+            </div>
+            <div class="cancel">
+              or just <a href="#" @click.prevent="$emit('close')">give up</a>
             </div>
           </div>
-        </div>
 
-        <input
-          ref="fileUpload"
-          class="hidden"
-          type="file"
-          @change="handleFile"
-        >
+          <div v-show="step === 1">
+            <h1>Select camera</h1>
+
+            <select
+              v-model="camera"
+              class="camera-picker"
+            >
+              <option
+                v-for="camera in cameras"
+                :key="camera.id"
+                :value="camera.id"
+              >
+                {{ camera.label || camera.id }}
+              </option>
+            </select>
+          </div>
+
+          <div v-show="step === 2">
+            <h1>Scan code</h1>
+
+            <div
+              id="reader"
+              style="width: 500px"
+            />
+
+            <div class="center mt-1">
+              <div
+                class="btn btn-sm"
+                @click.prevent="reset()"
+              >
+                <i class="fas fa-window-close" />
+                Annuleren
+              </div>
+            </div>
+          </div>
+
+          <input
+            ref="fileUpload"
+            class="hidden"
+            type="file"
+            @change="handleFile"
+          >
+        </div>
       </div>
     </div>
   </div>

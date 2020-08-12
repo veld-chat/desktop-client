@@ -122,7 +122,7 @@ export default class ChatBar extends Vue {
   private handleClick(e: MouseEvent) {
     const element = e.target as HTMLImageElement;
 
-    if (element && element.tagName === "IMG") {
+    if (element && element.tagName === "IMG" && element.classList.contains("emoji")) {
       if (!this.editor.hasFocus()) {
         this.editor.focus();
       }

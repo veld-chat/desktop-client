@@ -403,37 +403,70 @@ img {
   right: 0;
   bottom: 0;
   z-index: 300;
-  display: flex;
 
-  @include mobile {
-    flex-direction: column;
-  }
-
-  > div {
+  .close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-grow: 1;
-    margin: 1em;
+    background: var(--editor-bg);
+    color: var(--editor-color);
+    border-radius: 50%;
+    width: 2.5em;
+    height: 2.5em;
+    margin: 0.5em;
+    align-self: flex-end;
+    cursor: pointer;
   }
 
-  h1 {
-    color: white;
-    font-size: 1.5rem;
+  .cancel {
     text-align: center;
-    margin-bottom: 1.5rem;
-  }
+    margin-top: 1.5rem;
+    color: white;
 
-  .qrcode {
-    &-image {
-      background: white;
-      padding: 15px;
-      border-radius: 10px;
+    a {
+      color: inherit;
     }
   }
 
-  .camera-picker {
-    padding: 0.5rem 1rem;
+  &-inner {
+    height: 100%;
+    display: flex;
+    flex-grow: 1;
+
+    @include mobile {
+      flex-direction: column;
+    }
+
+    > div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-grow: 1;
+      margin: 1em;
+    }
+
+    h1 {
+      color: white;
+      font-size: 1.5rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .qrcode {
+      &-image {
+        background: white;
+        padding: 15px;
+        border-radius: 10px;
+      }
+    }
+
+    .camera-picker {
+      padding: 0.5rem 1rem;
+    }
   }
 }
 

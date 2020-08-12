@@ -4,7 +4,10 @@
     class="main"
     :style="{ marginBottom: barHeight + 'px' }"
   >
-    <login v-if="showLogin" />
+    <login
+      v-if="showLogin"
+      @close="showLogin = false"
+    />
     <chat-bar @height="setBarHeight" />
     <member-list />
 
@@ -34,8 +37,14 @@
         </div>
       </header>
     </div>
-    <div ref="container" class="messages">
-      <div v-for="message in messages" :key="message.id">
+    <div
+      ref="container"
+      class="messages"
+    >
+      <div
+        v-for="message in messages"
+        :key="message.id"
+      >
         <chat-message :message="message" />
       </div>
     </div>
