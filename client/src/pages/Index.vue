@@ -61,6 +61,7 @@ import { Message, User } from "@/models";
 import { store } from "@/store";
 import { namespace } from "vuex-class";
 import ChatMessage from "@/components/chat-message.vue";
+import { connect } from "@/connection";
 
 const messages = namespace("messages");
 
@@ -81,6 +82,8 @@ export default class Root extends Vue {
   scroll: boolean;
 
   mounted(): void {
+    connect();
+
     if (Notification.permission !== "granted") {
       Notification.requestPermission();
     }
