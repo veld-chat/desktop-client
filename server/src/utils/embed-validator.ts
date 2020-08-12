@@ -16,7 +16,7 @@ export const validateEmbed = (embed: EmbedPayload) => {
     }
 
     if (embed.author.iconUrl) {
-      embed.imageUrl = proxyUrl + embed.author.iconUrl;
+      embed.author.iconUrl = proxyUrl + embed.author.iconUrl;
     }
   }
 
