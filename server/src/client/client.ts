@@ -58,7 +58,7 @@ export class Client {
     }
 
     error(message: string) {
-        this.emit("sys-error", { message });
+        this.emit("sys-error", { message: content });
     }
 
     emit(event: string, ...args: any[]) {

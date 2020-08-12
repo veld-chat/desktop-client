@@ -170,7 +170,7 @@ export class ClientManager {
         this.io.emit('usr-msg', {
             id: this.snowFlake.nextId().toString(),
             user: userId,
-            message: escape(content),
+            content: escape(content),
             embed: validateEmbed(embed),
             mentions: []
         });

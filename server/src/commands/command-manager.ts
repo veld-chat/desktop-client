@@ -52,7 +52,7 @@ export class CommandManager {
       args,
       clientManager,
       client,
-      message: input
+      content: input
     })
 
     return true;

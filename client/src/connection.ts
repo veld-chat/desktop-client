@@ -28,7 +28,7 @@ connection.on("usr-msg", (message) => store.dispatch("messages/add", message));
 connection.on("sys-error", (e) => store.dispatch("messages/add", {
   user: "system",
   mentions: [],
-  message: e.message
+  content: e.content
 } as ServerMessage));
 
 connection.on("connect", () => {

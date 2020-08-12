@@ -26,7 +26,7 @@ function processString(input: string) {
 }
 
 function processMessage(message: ServerMessage, isMention: boolean): MessagePart {
-  const content = processString(message.message);
+  const content = processString(message.content);
 
   return {
     id: message.id,

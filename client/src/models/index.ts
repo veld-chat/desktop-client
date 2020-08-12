@@ -9,7 +9,7 @@ export type ServerMessage = {
   id: string;
   user: string;
   embed?: Embed;
-  message: string;
+  content: string;
   mentions: string[];
 }
 
