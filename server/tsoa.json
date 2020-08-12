@@ -3,11 +3,11 @@
   "noImplicitAdditionalProperties": "throw-on-extras",
   "controllerPathGlobs": ["src/**/*Controller.ts"],
   "spec": {
-    "outputDirectory": "src/api",
+    "outputDirectory": "src/api/tsoa",
     "specVersion": 3
   },
   "routes": {
-    "routesDir": "src/api",
+    "routesDir": "src/api/tsoa",
     "iocModule": "src/api",
     "authenticationModule": "src/api"
   },

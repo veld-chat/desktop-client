@@ -1,13 +1,11 @@
 import { Client } from "@/client";
 import { ClientAuthRequest, Token } from "@/models/gateway-payloads";
-import * as jwt from "jsonwebtoken";
 import { RateLimit } from "@/utils/rate-limit";
 import { commandManager } from "@/commands/command-manager";
 import SocketIO from "socket.io";
 import SnowyFlake from "snowyflake";
 import { validateEmbed } from "@/utils/embed-validator";
 import { normalizeName, validate } from "@/utils/string-validator";
-import mongoose from "mongoose";
 import { User } from "@/db";
 import { ImageService } from "@/image";
 import { container, inject, singleton } from "tsyringe";
@@ -41,11 +39,6 @@ export class ClientManager {
     }
 
     async start() {
-        await mongoose.connect('mongodb://localhost:27017/chat', {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
-
         logger.info("starting server")
 
         this.io.on("connection", (socket) => this.onClientConnected(socket));

@@ -1,21 +1,18 @@
 import "reflect-metadata";
 import express from 'express';
 import bodyParser from "body-parser";
-
 import { Server } from 'http';
 import io from 'socket.io';
 import fs from "fs";
 import { ClientManager } from "@/client";
-
 import "./commands/avatar";
 import "./commands/nick";
 import * as path from "path";
 import { container } from "tsyringe";
 import SocketIO from "socket.io";
 import SnowyFlake from "snowyflake";
-import { initApi, RegisterRoutes, RegisterSwagger } from "@/api";
-import { ValidateError } from "tsoa";
-import { Request, Response } from "express-serve-static-core";
+import { initApi, RegisterErrorHandler, RegisterRoutes, RegisterSwagger } from "@/api";
+import mongoose from "mongoose";
 
 const app = express();
 
@@ -26,48 +23,33 @@ app.use((req, res, next) => {
   next();
 })
 
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-);
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 RegisterRoutes(app);
 RegisterSwagger(app);
+RegisterErrorHandler(app);
 
-app.use(function errorHandler(
-  err: unknown,
-  req: Request,
-  res: Response,
-  next: express.NextFunction
-) {
-  if (err instanceof ValidateError) {
-    console.warn(`Caught Validation Error for ${req.path}:`, err.fields);
-    return res.status(422).json({
-      message: "Validation Failed",
-      details: err?.fields,
-    });
-  }
-  if (err instanceof Error) {
-    return res.status(500).json({
-      message: "Internal Server Error",
-    });
-  }
+async function start() {
+  const config = JSON.parse(fs.readFileSync("config/config.json").toString());
 
-  next();
-});
+  await mongoose.connect(config.connectionString, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  });
 
-const httpServer = new Server(app);
-httpServer.listen(1234);
+  const httpServer = new Server(app);
+  httpServer.listen(1234);
 
-const config = JSON.parse(fs.readFileSync("config/config.json").toString());
+  container.registerSingleton(SnowyFlake);
+  container.register<SocketIO.Server>("io", { useValue: io(httpServer) });
+  container.register<any>("options", { useValue: config });
 
-container.registerSingleton(SnowyFlake);
-container.register<SocketIO.Server>("io", { useValue: io(httpServer) });
-container.register<any>("options", { useValue: config });
+  initApi();
 
-initApi();
+  const clientManager = container.resolve(ClientManager);
+  await clientManager.start();
+}
 
-const clientManager = container.resolve(ClientManager);
-clientManager.start();
+// noinspection JSIgnoredPromiseFromCall
+start();
