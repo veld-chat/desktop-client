@@ -57,8 +57,8 @@ export class Client {
         await this.setAvatar(await this.imageService.getRandomImage());
     }
 
-    error(message: string) {
-        this.emit("sys-error", { message: content });
+    error(content: string) {
+        this.emit("sys-error", { content });
     }
 
     emit(event: string, ...args: any[]) {
