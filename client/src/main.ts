@@ -1,11 +1,17 @@
 import "./style/index.scss";
+import "./connection";
+import Vuex from 'vuex';
+import { store } from "@/store";
 
 if (process.isClient) {
   require("codemirror/addon/display/placeholder");
-  require("html5-qrcode/minified/html5-qrcode.min");
 }
 
-export default (Vue, { head, isClient }): void => {
+export default (Vue, { head, isClient, appOptions }): void => {
+  Vue.use(Vuex);
+
+  appOptions.store = store;
+
   if (isClient && process.env.NODE_ENV === 'production') {
     require('./registerServiceWorker')
   }

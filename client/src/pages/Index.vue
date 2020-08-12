@@ -14,14 +14,7 @@
       @height="setBarHeight"
     />
 
-    <div class="member-list">
-      <div
-        v-for="(user, id) in members"
-        :key="id"
-      >
-        <member-list-item :user="user" />
-      </div>
-    </div>
+    <member-list />
 
     <div class="heading-wrapper">
       <header class="heading">
@@ -85,16 +78,15 @@ import { Component, Ref } from "vue-property-decorator";
 import marked from "marked";
 import io from "socket.io-client";
 import DOMPurify from "dompurify";
-import { MessageCreateEvent, Message, User, MessagePart } from "@/models/events";
 import { MentionParser } from "@/utils/mention-parser";
-
-import userStore from "../store/user-store";
-import userTypingStore from "../store/user-typing-store";
-
 import Login from "../components/login.vue";
 import ChatBar from "../components/chat-bar.vue";
-import MemberListItem from "../components/member-list-item.vue";
+import MemberList from "../components/member-list.vue";
 import { Emoji, isEmojiOnly, registerEmoji, replaceEmojis } from "@/utils/emoji";
+import { Message, ServerMessage, MessagePart, User } from "@/models";
+import { store } from "@/store";
+import { connection } from "@/connection";
+import { namespace } from "vuex-class";
 
 if (process.isClient) {
   DOMPurify.addHook('afterSanitizeAttributes', function (currentNode) {
@@ -106,15 +98,14 @@ if (process.isClient) {
   });
 }
 
+const messages = namespace("messages");
+
 @Component({
-  components: { ChatBar, MemberListItem, Login },
+  components: { ChatBar, MemberList, Login },
 })
 export default class Root extends Vue {
-  private connection: SocketIOClient.Socket;
-
   @Ref() container: HTMLDivElement;
-  messages: Message[] = [];
-  members: User[] = [];
+  @messages.State("messages") messages: Message[];
   barHeight = 0;
   showLogin = false;
 
@@ -128,69 +119,7 @@ export default class Root extends Vue {
   scroll: boolean;
 
   mounted(): void {
-    userStore.onUpdate(() => {
-      this.members = userStore.list();
-    });
 
-    const host = localStorage.getItem("gateway") || "chat-gateway.veld.dev";
-
-    fetch(`//${host}/emojis`)
-      .then(r => r.json())
-      .then((r: Emoji[]) => r.forEach(registerEmoji));
-
-    this.connection = io(host);
-
-    this.connection.on("sys-join", (x) => userStore.upsert(x));
-    this.connection.on("sys-leave", (x) => userStore.delete(x.id));
-    this.connection.on("sys-error", (x) => {
-      this.messages.push({
-        user: {
-          id: "system",
-          name: "system",
-        },
-        mentions: [],
-        parts: [this.processMessage(x.message)]
-      });
-    });
-    this.connection.on("user-edit", this.onUserEdit);
-
-    this.connection.on("connect", () => {
-      this.currentUserId = this.connection.id;
-      this.connection.on("ready", (options) => {
-        userStore.clear();
-        userTypingStore.clear();
-
-        localStorage.setItem("token", options.token);
-        this.currentUserId = options.user.id;
-        userStore.upsert(options.user);
-
-        if (options.members) {
-          for (let user of options.members) {
-            userStore.upsert(user);
-          }
-        }
-
-        console.log(`Logged in as ${options.user.name} (${options.user.id})`);
-        this.connected = true;
-      });
-
-      this.connection.on("token", (token) => {
-        localStorage.setItem("token", token);
-      });
-
-      this.connection.emit("login", {
-        token: localStorage.getItem("token") || null
-      });
-    });
-
-    this.connection.on("usr-typ", (user) => {
-      userTypingStore.upsert({
-        id: user.id,
-        lastTypingTime: Date.now(),
-      });
-    });
-
-    this.connection.on("usr-msg", this.publishMessage.bind(this));
 
     if (Notification.permission !== "granted") {
       Notification.requestPermission();
@@ -200,7 +129,6 @@ export default class Root extends Vue {
   }
 
   beforeDestroy(): void {
-    this.connection.close();
     window.removeEventListener("resize", this.onResize);
   }
 
@@ -226,62 +154,7 @@ export default class Root extends Vue {
       localStorage.setItem("name", user.name);
       localStorage.setItem("avatar", user.avatarUrl);
     }
-    userStore.upsert(user);
-  }
-
-  processMessage(input: string, isMention = false): MessagePart {
-    const content = replaceEmojis(
-      DOMPurify.sanitize(
-        marked(input, {
-          headerIds: false,
-          breaks: true,
-        }),
-        {
-          ALLOWED_TAGS: ["b", "i", "em", "strong", "a", "br", "code", "span"],
-          ALLOWED_ATTR: ["href"],
-        }
-      )
-    );
-
-    return {
-      isMention,
-      content,
-      isEmojiOnly: isEmojiOnly(content)
-    };
-  }
-
-  publishMessage(event: MessageCreateEvent): void {
-    const lastMessageId = this.messages.length - 1;
-    const lastMessage = this.messages[lastMessageId];
-    const scroll = this.shouldScroll();
-    const mentionsSelf = event.mentions?.includes(this.currentUserId);
-
-    if (
-      mentionsSelf &&
-      !document.hasFocus() &&
-      Notification.permission == "granted"
-    ) {
-      new Notification(
-        event.user.name + " has mentioned you!",
-        {
-          body: event.message,
-        }
-      );
-    }
-
-    if (lastMessage && lastMessage.user.id === event.user.id) {
-      Vue.set(this.messages, lastMessageId, {
-        ...event,
-        parts: [...lastMessage.parts, this.processMessage(event.message, mentionsSelf)]
-      });
-    } else {
-      this.messages.push({
-        ...event,
-        parts: [this.processMessage(event.message, mentionsSelf)]
-      });
-    }
-
-    this.applyScroll(scroll);
+    store.dispatch("users/update", user);
   }
 
   shouldScroll(): boolean {
@@ -307,11 +180,11 @@ export default class Root extends Vue {
   }
 
   startTyping(): void {
-    this.connection.emit("usr-typ");
+    connection.emit("usr-typ");
   }
 
   sendMessage(message: string): void {
-    this.connection.emit("usr-msg", {
+    connection.emit("usr-msg", {
       message: message,
       mentions: this.mentionParser.fromString(message),
     });

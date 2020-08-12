@@ -24,7 +24,6 @@
   },
   "include": [
     "./src/**/*",
-    "./typings/*.d.ts",
-    "gridsome.config.js"
+    "./typings/*.d.ts"
   ]
 }

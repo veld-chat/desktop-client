@@ -16,20 +16,20 @@
         <div v-show="step === 0">
           <h1>Scan code</h1>
           <div class="btn-group">
-            <div
+            <a
               class="btn"
               @click.prevent="fileUpload.click()"
             >
               <i class="fas fa-upload" />
               Upload image
-            </div>
-            <div
+            </a>
+            <a
               class="btn"
               @click.prevent="requestCamera()"
             >
               <i class="fas fa-camera" />
               Scan QR-code
-            </div>
+            </a>
           </div>
         </div>
 
