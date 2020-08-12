@@ -42,31 +42,9 @@
         </div>
       </header>
     </div>
-    <div
-      ref="container"
-      class="messages"
-    >
-      <div
-        v-for="(message, id) in messages"
-        :key="id"
-        class="msg-instance-container fadein"
-      >
-        <div
-          v-if="message.user.avatarUrl"
-          class="msg-instance-avatar"
-          :style="{ backgroundImage: message.user.avatarUrl && `url('${message.user.avatarUrl}')` }"
-        />
-        <div class="msg-content-wrapper">
-          <div class="msg-instance-title">
-            {{ message.user.name }}
-          </div>
-          <p
-            v-for="(part, id) in message.parts"
-            :key="id"
-            :class="['msg-instance', part.isMention && 'is-mention', part.isEmojiOnly && 'is-emoji-only']"
-            v-html="part.content"
-          />
-        </div>
+    <div ref="container" class="messages">
+      <div v-for="(message, id) in messages" :key="id">
+        <chat-message :message="message" />
       </div>
     </div>
   </div>
@@ -89,7 +67,7 @@ import { connection } from "@/connection";
 import { namespace } from "vuex-class";
 
 if (process.isClient) {
-  DOMPurify.addHook('afterSanitizeAttributes', function (currentNode) {
+  DOMPurify.addHook("afterSanitizeAttributes", function (currentNode) {
     if (currentNode.tagName === "A") {
       currentNode.textContent = currentNode.getAttribute("href");
       currentNode.setAttribute("target", "_blank");
@@ -160,7 +138,9 @@ export default class Root extends Vue {
   shouldScroll(): boolean {
     const element = document.documentElement;
 
-    return element.scrollTop >= element.scrollHeight - element.clientHeight - 100;
+    return (
+      element.scrollTop >= element.scrollHeight - element.clientHeight - 100
+    );
   }
 
   applyScroll(scroll: boolean): void {

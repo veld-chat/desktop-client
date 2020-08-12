@@ -2,20 +2,20 @@
   --body-bg: #333333;
   --sidebar-bg: #282828;
   --editor-bg: #444444;
-  --editor-color: #FFFFFF;
+  --editor-color: #ffffff;
   --editor-placeholder-color: #848484;
   --editor-container-bg: #333333;
   --typing-color: #848484;
   --message-bg: #212121;
-  --message-color: #FFFFFF;
+  --message-color: #ffffff;
   --message-mention-bg: #1d88b9;
-  --message-mention-color: #FFFFFF;
+  --message-mention-color: #ffffff;
   --message-author-color: #bababa;
   --active-bg: #444444;
 }
 
 body.miku {
-  --body-bg: url('https://www.xtrafondos.com/wallpapers/hatsune-miku-chica-anime-4507.jpg');
+  --body-bg: url("https://www.xtrafondos.com/wallpapers/hatsune-miku-chica-anime-4507.jpg");
   --message-bg: rgba(0, 0, 0, 0.5);
   --sidebar-bg: rgba(0, 0, 0, 0.5);
   --editor-bg: rgba(0, 0, 0, 0.75);
@@ -24,13 +24,13 @@ body.miku {
 }
 
 @mixin mobile {
-    @media only screen and (max-width: 1024px) {
-        @content;
-    }
+  @media only screen and (max-width: 1024px) {
+    @content;
+  }
 }
 
 @mixin desktop {
-    @media only screen and (min-width: 1025px) {
-        @content;
-    }
+  @media only screen and (min-width: 1025px) {
+    @content;
+  }
 }
