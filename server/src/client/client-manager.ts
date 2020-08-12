@@ -59,17 +59,21 @@ export class ClientManager {
             this.onClientDisconnect(socket);
         }
 
-        let token: Token = null;
+        let id: string = null;
+        let token: string = null;
 
         if (request.token) {
             try {
-                token = this.tokenService.decode(request.token);
+                id = this.tokenService.decode(request.token).id;
+                token = request.token;
             } catch {
                 // ignore
             }
         }
 
-        const id = token?.id ?? this.snowFlake.nextId().toString();
+        if (!id) {
+            id = this.snowFlake.nextId().toString();
+        }
 
         let client = this.clients.get(id);
         let isNew = false;
@@ -110,7 +114,7 @@ export class ClientManager {
         socket.emit("ready", {
             user: client.serialize(),
             members: Array.from(this.clients.values()).map(x => x.serialize()),
-            token: this.tokenService.createToken(client.id),
+            token: token ?? this.tokenService.createToken(id),
         });
 
         socket.on("usr-typ", () => this.onClientStartTyping(socket));

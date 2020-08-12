@@ -19,6 +19,8 @@ export function connect() {
     await store.dispatch("session/setToken", options.token);
     await store.dispatch("users/set", options.members);
 
+    localStorage.setItem("token", options.token);
+
     console.log(`Logged in as ${options.user.name} (${options.user.id})`);
   });
 
