@@ -5,7 +5,7 @@ import { ServerMessage } from "@/models";
 
 const host = localStorage.getItem("gateway") || "chat-gateway.veld.dev";
 
-fetch(`//${host}/emojis`)
+fetch(`//${host}/api/v1/emoji`)
   .then(r => r.json())
   .then((r: Emoji[]) => r.forEach(registerEmoji));
 

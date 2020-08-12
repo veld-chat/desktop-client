@@ -12,8 +12,14 @@ import { User } from "@/db";
 import { ImageService } from "@/image";
 import { container, inject, singleton } from "tsyringe";
 import { logger } from "@/logger";
+import { TokenService } from "@/token-service";
+import { EmbedPayload } from "@/models/embed";
 
 function escape(input: string) {
+    if (!input) {
+        return "";
+    }
+
     return input.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
@@ -26,6 +32,7 @@ export class ClientManager {
     constructor(
       @inject("io") private readonly io: SocketIO.Server,
       @inject("options") private readonly options: any,
+      private readonly tokenService: TokenService,
       private readonly snowFlake: SnowyFlake,
       private readonly imageService: ImageService
     ) {
@@ -70,7 +77,7 @@ export class ClientManager {
 
         if (request.token) {
             try {
-                token = jwt.decode(request.token) as Token;
+                token = this.tokenService.decode(request.token);
             } catch {
                 // ignore
             }
@@ -117,7 +124,7 @@ export class ClientManager {
         socket.emit("ready", {
             user: client.serialize(),
             members: Array.from(this.clients.values()).map(x => x.serialize()),
-            token: this.createToken(client),
+            token: this.tokenService.createToken(client.id),
         });
 
         socket.on("usr-typ", () => this.onClientStartTyping(socket));
@@ -126,13 +133,6 @@ export class ClientManager {
         if (isNew) {
             this.io.emit("sys-join", client.serialize());
         }
-    }
-
-    createToken(user: Client): string {
-        return jwt.sign(
-          { id: user.id } as Token,
-          this.options.secret,
-          { noTimestamp: true });
     }
 
     private onClientDisconnect(socket: SocketIO.Socket) {
@@ -170,12 +170,16 @@ export class ClientManager {
             msg.message = msg.message.substr(0, 256);
         }
 
+        this.sendMessage(client.id, msg.message);
+    }
+
+    sendMessage(userId: string, content: string, embed?: EmbedPayload) {
         this.io.emit('usr-msg', {
             id: this.snowFlake.nextId().toString(),
-            user: client.id,
-            message: escape(msg.message),
-            embed: validateEmbed(msg.embed),
-            mentions: msg.mentions
+            user: userId,
+            message: escape(content),
+            embed: validateEmbed(embed),
+            mentions: []
         });
     }
 }

@@ -1628,7 +1628,7 @@ const emojiDefinitions: {[key: string]: string} = {
   "secret": "㊙️"
 };
 
-interface Emoji {
+export interface Emoji {
   name: string;
   value: string;
   image: string

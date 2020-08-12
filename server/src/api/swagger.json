@@ -1,0 +1,186 @@
+{
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"TokenResponse": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"token": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"token"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"EmbedAuthor": {
+				"properties": {
+					"iconUrl": {
+						"type": "string"
+					},
+					"value": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"iconUrl",
+					"value"
+				],
+				"type": "object"
+			},
+			"EmbedPayload": {
+				"properties": {
+					"thumbnailUrl": {
+						"type": "string"
+					},
+					"imageUrl": {
+						"type": "string"
+					},
+					"footer": {
+						"type": "string"
+					},
+					"color": {
+						"type": "number",
+						"format": "double"
+					},
+					"description": {
+						"type": "string"
+					},
+					"title": {
+						"type": "string"
+					},
+					"author": {
+						"$ref": "#/components/schemas/EmbedAuthor"
+					}
+				},
+				"type": "object"
+			},
+			"MessageRequest": {
+				"properties": {
+					"content": {
+						"type": "string"
+					},
+					"embed": {
+						"$ref": "#/components/schemas/EmbedPayload"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Emoji": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"value": {
+						"type": "string"
+					},
+					"image": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"value",
+					"image"
+				],
+				"type": "object",
+				"additionalProperties": false
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "veld-chat-server",
+		"version": "1.0.0",
+		"description": "fun stuff happening",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {}
+	},
+	"openapi": "3.0.0",
+	"paths": {
+		"/api/v1/token": {
+			"get": {
+				"operationId": "Create",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TokenResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/api/v1/message": {
+			"post": {
+				"operationId": "Create",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"security": [
+					{
+						"bot": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/MessageRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/emoji": {
+			"get": {
+				"operationId": "Create",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/Emoji"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}

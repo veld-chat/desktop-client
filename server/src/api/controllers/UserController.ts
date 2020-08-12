@@ -1,0 +1,26 @@
+import { Controller, Get, Route } from "tsoa";
+import { injectable } from "tsyringe";
+import { TokenService } from "@/token-service";
+import { TokenResponse } from "@/api/models/Token";
+import { Snowyflake } from "snowyflake";
+
+@injectable()
+@Route("api/v1/token")
+export class TokenController extends Controller {
+  constructor(
+    private readonly snowyflake: Snowyflake,
+    private readonly tokenService: TokenService
+  ) {
+    super();
+  }
+
+  @Get()
+  public create(): Promise<TokenResponse> {
+    const id = this.snowyflake.nextId().toString();
+
+    return Promise.resolve({
+      id,
+      token: this.tokenService.createToken(id)
+    });
+  }
+}
