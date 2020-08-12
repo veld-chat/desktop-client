@@ -25,7 +25,7 @@ export type EmbedAuthor = {
 }
 
 export type MessageCreateEvent = {
-  message: string;
+  content: string;
   embed?: Embed;
 } & MessageBase
 

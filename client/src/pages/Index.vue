@@ -122,7 +122,7 @@ export default class Root extends Vue {
           name: "system",
         },
         mentions: [],
-        parts: [this.processMessage(x.message)],
+        parts: [this.processMessage(x.content)],
       });
     });
     this.connection.on("user-edit", this.onUserEdit);
@@ -277,7 +277,7 @@ export default class Root extends Vue {
       Notification.permission == "granted"
     ) {
       new Notification(event.user.name + " has mentioned you!", {
-        body: event.message,
+        body: event.content,
       });
     }
 
@@ -286,13 +286,13 @@ export default class Root extends Vue {
         ...event,
         parts: [
           ...lastMessage.parts,
-          this.processMessage(event.message, event.embed, mentionsSelf),
+          this.processMessage(event.content, event.embed, mentionsSelf),
         ],
       });
     } else {
       this.messages.push({
         ...event,
-        parts: [this.processMessage(event.message, event.embed, mentionsSelf)],
+        parts: [this.processMessage(event.content, event.embed, mentionsSelf)],
       });
     }
 
@@ -329,7 +329,7 @@ export default class Root extends Vue {
 
   sendMessage(message: string): void {
     this.connection.emit("usr-msg", {
-      message: message,
+      content: message,
       mentions: this.mentionParser.fromString(message),
     });
   }

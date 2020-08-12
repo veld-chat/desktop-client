@@ -1,4 +1,4 @@
-import { Client } from "./client";
+import { Client } from "../models/client";
 import { ClientAuthRequest, Token } from "@/models/gateway-payloads";
 import * as jwt from "jsonwebtoken";
 import { RateLimit } from "@/utils/rate-limit";
@@ -134,7 +134,7 @@ export class ClientManager {
     private async onClientMessageReceived(socket: SocketIO.Socket, msg: any) {
         const client = this.sockets.get(socket.id);
 
-        if (commandManager.handle(this, client, msg.message)) {
+        if (commandManager.handle(this, client, msg.content)) {
             return;
         }
 
@@ -142,12 +142,12 @@ export class ClientManager {
             return;
         }
 
-        if ((msg.message || "").length > 256) {
-            msg.message = msg.message.substr(0, 256);
+        if ((msg.content || "").length > 256) {
+            msg.content = msg.content.substr(0, 256);
         }
 
         this.io.emit('usr-msg', {
-            message: validate(msg.message),
+            content: validate(msg.content),
             embed: validateEmbed(msg.embed),
             mentions: msg.mentions || [],
             user: client.serialize()
