@@ -18,6 +18,7 @@ export function connect() {
     await store.dispatch("session/setUser", options.user);
     await store.dispatch("session/setToken", options.token);
     await store.dispatch("users/set", options.members);
+    await store.dispatch("channels/set", options.channels);
 
     console.log(`Logged in as ${options.user.name} (${options.user.id})`);
   });

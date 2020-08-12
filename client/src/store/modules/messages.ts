@@ -1,7 +1,6 @@
 import { Module } from "vuex";
 import { RootState, store } from "@/store";
-import { Embed, Message, MessagePart, ServerMessage, User } from "@/models";
-import Vue from "vue";
+import { Embed, Message, MessagePart, ServerMessage } from "@/models";
 import { isEmojiOnly, replaceEmojis } from "@/utils/emoji";
 import DOMPurify from "dompurify";
 import marked from "marked";

@@ -27,6 +27,8 @@ import { Prop } from "vue-property-decorator";
 export default class ChannelList extends Vue {
   @Prop() channels: Channel[];
 
-  newChannel() {}
+  newChannel() {
+    console.log("lol no.");
+  }
 }
 </script>

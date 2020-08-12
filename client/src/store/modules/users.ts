@@ -4,7 +4,7 @@ import { User, UserTyping } from "@/models";
 
 export interface UserState {
   users: readonly User[]
-  usersById: {[id: string]: User},
+  usersById: { [id: string]: User },
   typing: UserTyping[]
 }
 
@@ -34,7 +34,7 @@ export const users: Module<UserState, RootState> = {
         user
       ]);
     },
-    async remove({ state, commit }, userOrId: User|string) {
+    async remove({ state, commit }, userOrId: User | string) {
       if (typeof userOrId !== "string") {
         userOrId = userOrId.id;
       }
