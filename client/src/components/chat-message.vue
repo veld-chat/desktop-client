@@ -12,7 +12,7 @@
           <b v-if="message.user.bot" class="badge">BOT</b>
         </span>
       </div>
-      <div v-for="(part, id) in message.parts" :key="id">
+      <div v-for="part in message.parts" :key="part.id">
         <p
           :class="['msg-instance', part.isMention && 'is-mention', part.isEmojiOnly && 'is-emoji-only']"
           v-html="part.content"
@@ -48,7 +48,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Prop, Component } from "vue-property-decorator";
-import { Message } from "../models/events";
+import { Message } from "@/models";
 
 @Component
 export default class ChatMessage extends Vue {

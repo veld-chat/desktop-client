@@ -1,5 +1,6 @@
-import { Client } from "./api/client";
-import { ClientManager } from "./api/client-manager";
+import { Client } from "../client/client";
+import { ClientManager } from "../client/client-manager";
+import { singleton } from "tsyringe";
 
 const ws = /\s+/;
 
@@ -21,6 +22,7 @@ export interface Command {
   handle(e: CommandContext): void | Promise<void>;
 }
 
+@singleton()
 export class CommandManager {
   private _commands: { [name: string]: Command } = {};
   commands: { [name: string]: CommandInformation } = {}
@@ -50,7 +52,7 @@ export class CommandManager {
       args,
       clientManager,
       client,
-      message: input
+      content: input
     })
 
     return true;

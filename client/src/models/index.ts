@@ -2,7 +2,16 @@ export type User = {
   id: string;
   name: string;
   avatarUrl?: string;
+  bot: boolean;
 };
+
+export type ServerMessage = {
+  id: string;
+  user: string;
+  embed?: Embed;
+  content: string;
+  mentions: string[];
+}
 
 type MessageBase = {
   user: User;
@@ -24,21 +33,19 @@ export type EmbedAuthor = {
   iconUrl: string;
 }
 
-export type MessageCreateEvent = {
+export type MessagePart = {
+  id: string;
   content: string;
   embed?: Embed;
-} & MessageBase
-
-export type MessagePart = {
-  content: string;
-  embed: Embed;
   isEmojiOnly: boolean;
   isMention: boolean;
 }
 
 export type Message = {
+  id: string;
+  user: User;
   parts: MessagePart[];
-} & MessageBase;
+}
 
 export type UserTyping = {
   id: string;

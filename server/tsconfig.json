@@ -6,6 +6,7 @@
       "module": "commonjs",
       "target": "esnext",
       "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
       "downlevelIteration": true,
       "noImplicitAny": true,
       "esModuleInterop": true,

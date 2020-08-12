@@ -1,10 +1,10 @@
 <template>
   <div class="typing-bar">
     <span
-      :style="`display: flex; align-items: baseline;` + (userTypings.length > 0 ? '' : 'visibility: hidden;')"
+      :style="`display: flex; align-items: baseline;` + (currentlyTyping.length > 0 ? '' : 'visibility: hidden;')"
     >
       <i class="icon fas fa-ellipsis-h" />
-      {{ `${userTypingText} ${userTypings.length === 1 ? "is" : "are"} typing...` }}
+      {{ `${userTypingText} ${typing.length === 1 ? "is" : "are"} typing...` }}
     </span>
   </div>
 </template>
@@ -12,49 +12,40 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import { UserTyping } from "@/models/events";
-import { Prop } from "vue-property-decorator";
-import userTypingStore from "@/store/user-typing-store";
-import userStore from "@/store/user-store";
+import { namespace } from "vuex-class";
+import { User, UserTyping } from "@/models";
+
+const users = namespace("users");
+const session = namespace("session");
 
 @Component({})
 export default class TypingBar extends Vue {
-  private dispose: () => void;
   private timerId: number;
+  currentlyTyping: UserTyping[] = [];
 
-  @Prop() currentUserId;
-
-  userTypings: UserTyping[] = [];
-  amountOfUsersTyping = 0;
+  @session.State("user") user: User;
+  @users.State("typing") typing: UserTyping[];
+  @users.Getter("byId") getUser: (id: string) => User;
 
   mounted(): void {
-    this.dispose = userTypingStore.onUpdate(this.update);
-    this.timerId = window.setInterval(this.update, 5000);
+    this.timerId = window.setInterval(this.update, 1000);
   }
 
   beforeDestroy(): void {
-    this.dispose();
     clearInterval(this.timerId);
   }
 
-  update(): void {
-    this.userTypings = userTypingStore
-      .list()
-      .filter((x: UserTyping) => x.id != this.currentUserId)
-      .filter((x: UserTyping) => x.lastTypingTime + 5000 > Date.now());
+  update() {
+    const now = Date.now();
+    this.currentlyTyping = this.typing.filter(typing => typing.id !== this.user.id && typing.lastTypingTime + 5000 > now);
   }
 
   get userTypingText(): string {
-    if (this.userTypings.length > 3) {
-      return `${this.amountOfUsersTyping} users`;
+    if (this.currentlyTyping.length > 3) {
+      return `${this.currentlyTyping.length} users`;
+    } else {
+      return this.currentlyTyping.map(typing => this.getUser(typing.id)?.name ?? "{unknown}").join(", ");
     }
-
-    return userTypingStore
-      .list()
-      .filter((x: UserTyping) => x.id != this.currentUserId)
-      .filter((x: UserTyping) => x.lastTypingTime + 5000 > Date.now())
-      .map((x: UserTyping) => userStore.get(x.id)?.name || "{unknown}")
-      .join(", ");
   }
 }
 </script>

@@ -1,4 +1,4 @@
-import userStore from "@/store/user-store";
+import { store } from "@/store";
 
 export interface AutoComplete {
   text: string;
@@ -52,7 +52,7 @@ export function autoComplete(word: string): AutoComplete[] {
     const name = word.substr(1);
     const visited = [];
 
-    for (const item of userStore.list()) {
+    for (const item of store.state.users.users) {
       const itemName = item.name.toLowerCase();
 
       if (visited.indexOf(itemName) !== -1) {
