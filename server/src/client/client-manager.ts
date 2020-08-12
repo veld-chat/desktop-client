@@ -5,21 +5,14 @@ import { commandManager } from "@/commands/command-manager";
 import SocketIO from "socket.io";
 import SnowyFlake from "snowyflake";
 import { validateEmbed } from "@/utils/embed-validator";
-import { normalizeName, validate } from "@/utils/string-validator";
+import { escapeHtml, normalizeName, validate } from "@/utils/string-validator";
 import { User } from "@/db";
 import { ImageService } from "@/image";
 import { container, inject, singleton } from "tsyringe";
 import { logger } from "@/logger";
 import { TokenService } from "@/token-service";
 import { EmbedPayload } from "@/models/embed";
-
-function escape(input: string) {
-    if (!input) {
-        return "";
-    }
-
-    return input.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
+import { selectMany } from "@/utils/map";
 
 @singleton()
 export class ClientManager {
@@ -170,9 +163,25 @@ export class ClientManager {
         this.io.emit('usr-msg', {
             id: this.snowFlake.nextId().toString(),
             user: userId,
-            content: escape(content),
+            content: escapeHtml(content),
             embed: validateEmbed(embed),
-            mentions: []
+            mentions: this.getMentions(content)
         });
+    }
+
+    getMentions(content: string): string[] {
+        if (!content) {
+            return [];
+        }
+
+        return selectMany(
+          content
+            .split(" ")
+            .filter(word => word.startsWith("@"))
+            .map(mention => mention.substr(1)),
+          nick => [...this.clients.values()]
+            .filter(c => c.name === nick)
+            .map(c => c.id)
+        );
     }
 }

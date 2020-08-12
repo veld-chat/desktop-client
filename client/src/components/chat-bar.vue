@@ -56,7 +56,6 @@ import { Component, Ref } from "vue-property-decorator";
 import TypingBar from "./typing-bar.vue";
 import { autoComplete, AutoComplete } from "@/utils/autocomplete";
 import { connection } from "@/connection";
-import { getMentions } from "@/utils/mention-parser";
 const HyperMD = process.isClient ? require("../hypermd") : null;
 const CodeMirror = process.isClient ? require("codemirror") : null;
 
@@ -266,8 +265,7 @@ export default class ChatBar extends Vue {
     const message = this.editor.getValue();
 
     connection.emit("usr-msg", {
-      message,
-      mentions: getMentions(message),
+      message
     });
 
     this.editor.setValue("");

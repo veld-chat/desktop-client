@@ -14,3 +14,11 @@ export function normalizeName(name: string): string {
 
   return name;
 }
+
+export function escapeHtml(input: string) {
+  if (!input) {
+    return "";
+  }
+
+  return input.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
