@@ -1,4 +1,4 @@
-import { commandManager } from "@/command-manager";
+import { commandManager } from "@/commands/command-manager";
 import { RateLimit } from "@/utils/rate-limit";
 
 const avatarRateLimit = new RateLimit(1, 5000);

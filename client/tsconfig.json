@@ -9,6 +9,7 @@
     "downlevelIteration": true,
     "esModuleInterop": true,
     "noImplicitReturns": false,
+    "allowJs": true,
     "lib": [
       "dom",
       "es2015",
@@ -23,7 +24,6 @@
   },
   "include": [
     "./src/**/*",
-    "./typings/*.d.ts",
-    "gridsome.config.js"
+    "./typings/*.d.ts"
   ]
 }

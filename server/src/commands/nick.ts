@@ -1,19 +1,13 @@
-import { commandManager } from "@/command-manager";
-
-const nickRegex = /^[A-Za-z0-9][A-Za-z0-9\-]{0,15}$/;
-const slashRegex = /-+/g
+import { commandManager } from "@/commands/command-manager";
 
 commandManager.register({
   name: "nick",
   description: "Change your nickname",
-  async handle({ args: [nick], client }) {
-    nick = nick.replace(slashRegex, '-');
-
-    if (!nickRegex.test(nick)) {
-      client.error("Your nickname is invalid; only letters, numbers or slashes are allowed with a max length of 16.")
-      return;
+  async handle({ args: [name], client }) {
+    try {
+      await client.setName(name);
+    } catch (e) {
+      client.error(e.message);
     }
-
-    client.name = nick;
   }
 });

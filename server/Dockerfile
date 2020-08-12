@@ -8,7 +8,7 @@ COPY .babelrc .
 
 RUN yarn
 
-COPY src/emoji dist/emoji
+COPY assets assets
 COPY src src
 RUN yarn build
 
