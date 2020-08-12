@@ -115,6 +115,10 @@ export class ClientManager {
         const client = this.sockets.get(socket.id);
         this.sockets.delete(socket.id);
 
+        if (!client) {
+            return;
+        }
+
         if (client.unregisterSocket(socket)) {
             this.clients.delete(client.id);
             this.io.emit("sys-leave", client.serialize());
