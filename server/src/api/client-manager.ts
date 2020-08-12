@@ -5,10 +5,8 @@ import { RateLimit } from "@/utils/rate-limit";
 import { commandManager } from "@/command-manager";
 import SocketIO from "socket.io";
 import SnowyFlake from "snowyflake";
-
-function escape(input: string) {
-    return input.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
+import { validateEmbed } from "@/utils/embed-validator";
+import { validate } from "@/utils/string-validator";
 
 const snowFlake = new SnowyFlake();
 
@@ -48,8 +46,10 @@ export class ClientManager {
     }
 
     private async onClientAuthenticated(socket: SocketIO.Socket, request: ClientAuthRequest) {
+        console.log(request);
         let token: Token = null;
         let sendToken = false;
+        let isBot = false;
 
         if (request.token) {
             try {
@@ -57,6 +57,10 @@ export class ClientManager {
             } catch {
                 sendToken = true;
             }
+        }
+
+        if (request.bot) {
+            isBot = request.bot;
         }
 
         const id = token?.id ?? snowFlake.nextId().toString();
@@ -67,7 +71,7 @@ export class ClientManager {
             currentUser.registerSocket(socket);
             isNew = false;
         } else {
-            currentUser = new Client(id, socket, this, token);
+            currentUser = new Client(id, socket, this, token, isBot);
             this.clients.set(id, currentUser);
             isNew = true;
         }
@@ -99,10 +103,11 @@ export class ClientManager {
 
     createToken(user: Client): string {
         return jwt.sign({
-          id: user.id,
-          name: user.name,
-          avatar: user.avatar,
-      } as Token, this.options.secret);
+            id: user.id,
+            name: user.name,
+            avatar: user.avatar,
+            bot: user.bot
+        } as Token, this.options.secret);
     }
 
     private onClientDisconnect(socket: SocketIO.Socket) {
@@ -136,12 +141,13 @@ export class ClientManager {
             return;
         }
 
-        if (msg.message.length > 256) {
+        if ((msg.message || "").length > 256) {
             msg.message = msg.message.substr(0, 256);
         }
 
         this.io.emit('usr-msg', {
-            message: escape(msg.message),
+            message: validate(msg.message),
+            embed: validateEmbed(msg.embed),
             mentions: msg.mentions,
             user: client.serialize()
         });

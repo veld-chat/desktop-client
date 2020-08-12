@@ -1,12 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 @import "columns";
 @import "variables";
+
 @import "emoji";
 @import "editor";
 @import "autocomplete";
+@import "embed";
+@import "flex";
 
 * {
-  -webkit-tap-highlight-color:  rgba(255, 255, 255, 0);
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
   -webkit-overflow-scrolling: touch;
   -webkit-user-drag: none;
   margin: 0;
@@ -14,28 +17,48 @@
 }
 
 @keyframes fadein {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @-moz-keyframes fadein {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @-webkit-keyframes fadein {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @-ms-keyframes fadein {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @-o-keyframes fadein {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .sidebar {
@@ -53,7 +76,7 @@
 
 body {
   background-size: contain;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   background: var(--body-bg);
   background-size: cover;
   background-attachment: fixed;
@@ -72,8 +95,7 @@ li {
   margin-left: 0.25rem;
 }
 
-.msg-container
-{
+.msg-container {
   margin: 5px 5px;
 }
 
@@ -100,6 +122,15 @@ li {
   margin: 2px 8px;
   overflow-x: hidden;
   text-overflow: ellipsis;
+}
+
+.badge {
+  background-color: var(--message-mention-bg);
+  color: white;
+  padding: 0.125rem 0.25rem;
+  margin-left: 0.5rem;
+  font-size: 14px;
+  border-radius: 2px;
 }
 
 .msg-instance {
@@ -132,12 +163,13 @@ li {
 }
 
 #ui-typing {
-  background-color: rgba(255,255,255,0.5);
+  background-color: rgba(255, 255, 255, 0.5);
   border-radius: 5px;
   padding: 0.5vh 0.75vw;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
 }
@@ -272,8 +304,7 @@ textarea:-webkit-autofill:hover,
 textarea:-webkit-autofill:focus,
 select:-webkit-autofill,
 select:-webkit-autofill:hover,
-select:-webkit-autofill:focus
-.textfield:hover,
+select:-webkit-autofill:focus .textfield:hover,
 .textfield:active,
 .textfield:focus {
   outline: none;

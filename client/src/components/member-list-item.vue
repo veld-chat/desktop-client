@@ -5,9 +5,10 @@
       class="msg-instance-avatar"
       :style="{ backgroundImage: `url('${user.avatarUrl}')` }"
     />
-    <div>
+    <span class="flex text-centered">
       <div class="user-name">{{ user.name }}</div>
-    </div>
+      <div class="badge" v-if="user.bot">BOT</div>
+    </span>
   </div>
 </template>
 

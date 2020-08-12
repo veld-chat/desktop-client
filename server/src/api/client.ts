@@ -7,16 +7,22 @@ export class Client {
     private sockets: SocketIO.Socket[] = [];
     private _name: string;
     private _avatar: string;
+    private _bot: boolean;
     private clientManager: ClientManager;
 
     readonly id: string;
 
-    constructor(id: string, socket: Socket, clientManager: ClientManager, token: Token = null) {
+    constructor(id: string, socket: Socket, clientManager: ClientManager, token: Token = null, bot: boolean = false) {
         this.id = id;
         this.sockets = [socket];
         this.clientManager = clientManager;
         this._name = token?.name ?? `anon-${socket.id}`;
         this._avatar = token?.avatar;
+        this._bot = bot;
+    }
+
+    get bot() {
+        return this._bot;
     }
 
     get name() {
@@ -41,9 +47,10 @@ export class Client {
 
     serialize() {
         return {
-            id: this.id, 
+            id: this.id,
             name: this._name,
-            avatarUrl: this._avatar
+            avatarUrl: this._avatar,
+            bot: this._bot,
         };
     }
 

@@ -22,8 +22,8 @@ export interface Command {
 }
 
 export class CommandManager {
-  private _commands: {[name: string]: Command} = {};
-  commands: {[name: string]: CommandInformation} = {}
+  private _commands: { [name: string]: Command } = {};
+  commands: { [name: string]: CommandInformation } = {}
 
   register(command: Command) {
     this._commands[command.name] = command;
@@ -34,7 +34,7 @@ export class CommandManager {
   }
 
   handle(clientManager: ClientManager, client: Client, input: string) {
-    if (input.length === 0 || input[0] !== "/") {
+    if (!input || input[0] !== "/") {
       return false;
     }
 
