@@ -128,10 +128,7 @@ export class ClientManager {
     private onClientStartTyping(socket: SocketIO.Socket) {
         const client = this.sockets.get(socket.id);
 
-        this.io.emit("usr-typ", {
-            id: client.id,
-            name: client.name,
-        });
+        this.io.emit("usr-typ", client.serialize());
     }
 
     private async onClientMessageReceived(socket: SocketIO.Socket, msg: any) {
