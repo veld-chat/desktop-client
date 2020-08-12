@@ -2,9 +2,11 @@ export type User = {
   id: string;
   name: string;
   avatarUrl?: string;
+  bot: boolean;
 };
 
 export type ServerMessage = {
+  id: string;
   user: string;
   embed?: Embed;
   message: string;
@@ -32,14 +34,16 @@ export type EmbedAuthor = {
 }
 
 export type MessagePart = {
+  id: string;
   content: string;
-  embed: Embed;
+  embed?: Embed;
   isEmojiOnly: boolean;
   isMention: boolean;
 }
 
 export type Message = {
-  user: string;
+  id: string;
+  user: User;
   parts: MessagePart[];
 }
 

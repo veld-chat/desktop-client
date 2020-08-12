@@ -3,6 +3,7 @@ import { UserDoc } from "@/db";
 import SocketIO from "socket.io";
 import { injectable } from "tsyringe";
 import { ImageService } from "@/image";
+import { normalizeName } from "@/utils/string-validator";
 
 @injectable()
 export class Client {
@@ -15,10 +16,6 @@ export class Client {
       private readonly imageService: ImageService
     ) {}
 
-    get socketCount() {
-        return this.sockets.length;
-    }
-
     get id() {
         return this.user.id;
     }
@@ -27,8 +24,12 @@ export class Client {
         return this.user.name;
     }
 
+    get bot() {
+        return this.user.bot;
+    }
+
     async setName(value: string) {
-        this.user.name = value;
+        this.user.name = normalizeName(value);
         this.clientManager.updateUser(this);
         await this.user.save();
     }
@@ -47,7 +48,8 @@ export class Client {
         return {
             id: this.id, 
             name: this.user.name,
-            avatarUrl: this.user.avatar
+            avatarUrl: this.user.avatar,
+            bot: this.user.bot
         };
     }
 

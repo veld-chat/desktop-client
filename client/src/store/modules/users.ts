@@ -3,7 +3,7 @@ import { RootState } from "@/store";
 import { User, UserTyping } from "@/models";
 
 export interface UserState {
-  users: User[]
+  users: readonly User[]
   usersById: {[id: string]: User},
   typing: UserTyping[]
 }
@@ -60,8 +60,8 @@ export const users: Module<UserState, RootState> = {
         usersById[user.id] = user;
       }
 
-      state.users = payload;
-      state.usersById = usersById;
+      state.users = Object.freeze(payload);
+      state.usersById = Object.freeze(usersById);
     },
     setTyping(state, payload: UserTyping[]) {
       state.typing = payload;

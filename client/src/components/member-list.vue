@@ -1,8 +1,8 @@
 <template>
   <div class="member-list">
     <div
-      v-for="(user, id) in users"
-      :key="id"
+      v-for="user in users"
+      :key="user.id"
     >
       <div class="member-list-item">
         <div

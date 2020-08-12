@@ -2,9 +2,18 @@ import "./style/index.scss";
 import "./connection";
 import Vuex from 'vuex';
 import { store } from "@/store";
+import DOMPurify from "dompurify";
 
 if (process.isClient) {
   require("codemirror/addon/display/placeholder");
+
+  DOMPurify.addHook("afterSanitizeAttributes", function (currentNode) {
+    if (currentNode.tagName === "A") {
+      currentNode.textContent = currentNode.getAttribute("href");
+      currentNode.setAttribute("target", "_blank");
+    }
+    return currentNode;
+  });
 }
 
 export default (Vue, { head, isClient, appOptions }): void => {

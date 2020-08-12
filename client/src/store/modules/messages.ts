@@ -1,17 +1,17 @@
 import { Module } from "vuex";
-import { RootState } from "@/store";
-import { Message, MessagePart, ServerMessage, User } from "@/models";
+import { RootState, store } from "@/store";
+import { Embed, Message, MessagePart, ServerMessage, User } from "@/models";
 import Vue from "vue";
 import { isEmojiOnly, replaceEmojis } from "@/utils/emoji";
 import DOMPurify from "dompurify";
 import marked from "marked";
 
 export interface MessageState {
-  messages: Message[]
+  messages: readonly Message[]
 }
 
-function processMessage(input: string, isMention: boolean): MessagePart {
-  const content = replaceEmojis(
+function processString(input: string) {
+  return replaceEmojis(
     DOMPurify.sanitize(
       marked(input, {
         headerIds: false,
@@ -23,12 +23,46 @@ function processMessage(input: string, isMention: boolean): MessagePart {
       }
     )
   );
+}
+
+function processMessage(message: ServerMessage, isMention: boolean): MessagePart {
+  const content = processString(message.message);
 
   return {
+    id: message.id,
     isMention,
     content,
+    embed: processEmbed(message.embed),
     isEmojiOnly: isEmojiOnly(content)
   };
+}
+
+function processEmbed(embed: Embed): Embed {
+  if (!embed) {
+    return embed;
+  }
+
+  if (embed.author) {
+    if (!embed.author.value) {
+      embed.author = null;
+    } else {
+      embed.author.value = processString(embed.author.value);
+    }
+  }
+
+  if (embed.title) {
+    embed.title = processString(embed.title);
+  }
+
+  if (embed.description) {
+    embed.description = processString(embed.description);
+  }
+
+  if (embed.footer) {
+    embed.footer = processString(embed.footer);
+  }
+
+  return embed;
 }
 
 export const messages: Module<MessageState, RootState> = {
@@ -44,32 +78,50 @@ export const messages: Module<MessageState, RootState> = {
     async add({ commit, rootState }, message: ServerMessage) {
       const { id } = rootState.session.user;
       const isMention = message.mentions.includes(id);
-      const part = processMessage(message.message, isMention);
+      const part = processMessage(message, isMention);
 
       commit("add", {
-        user: message.user,
+        message,
         part
       });
     }
   },
 
   mutations: {
-    add(state, { user, part }: { user: string, part: MessagePart }) {
-      const { messages } = state;
-      const lastMessageId = messages.length - 1;
-      const lastMessage = messages[lastMessageId];
+    add(state, { message, part }: { message: ServerMessage, part: MessagePart }) {
+      const user = message.user !== "system"
+        ? store.state.users.usersById[message.user]
+        : {
+          id: "system",
+          name: "system",
+          bot: false
+        };
 
-      if (lastMessage && lastMessage.user === user) {
-        Vue.set(messages, lastMessageId, {
-          user,
-          parts: [...lastMessage.parts, part]
-        });
-      } else {
-        messages.push({
-          user,
-          parts: [part]
-        });
+      if (!user) {
+        return;
       }
+
+      const data: Message = {
+        user,
+        id: message.id,
+        parts: [part]
+      };
+
+      const lastMessage = state.messages[state.messages.length - 1];
+      const messages = [...state.messages];
+
+      if (lastMessage && lastMessage.user.id === message.user) {
+        messages.pop();
+        messages.push({
+          ...data,
+          id: lastMessage.id,
+          parts: [...lastMessage.parts, ...data.parts]
+        })
+      } else {
+        messages.push(data);
+      }
+
+      state.messages = Object.freeze(messages);
     }
   }
 };

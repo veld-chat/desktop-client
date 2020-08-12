@@ -10,7 +10,7 @@
           v-for="(item, index) in autoComplete"
           :key="item.text"
           :class="['autocomplete-item', autoCompleteIndex === index && 'active']"
-          @click="handleAutoComplete(index, shift)"
+          @click="handleAutoComplete(index)"
         >
           <img
             v-if="item.image"
@@ -46,7 +46,7 @@
         <i class="fas fa-paper-plane" />
       </a>
     </div>
-    <typing-bar :current-user-id="currentUserId" />
+    <typing-bar />
   </div>
 </template>
 
@@ -55,11 +55,12 @@ import Vue from "vue";
 import { Component, Ref } from "vue-property-decorator";
 import TypingBar from "./typing-bar.vue";
 import { autoComplete, AutoComplete } from "@/utils/autocomplete";
+import { connection } from "@/connection";
+import { getMentions } from "@/utils/mention-parser";
 const HyperMD = process.isClient ? require("../hypermd") : null;
 const CodeMirror = process.isClient ? require("codemirror") : null;
 
 @Component({
-  props: ["ready", "currentUserId"],
   components: { TypingBar },
 })
 export default class ChatBar extends Vue {
@@ -68,6 +69,7 @@ export default class ChatBar extends Vue {
   @Ref() wrapper: HTMLDivElement;
   message = "";
   lastTimeTyping = 0;
+  ready = true;
   editor: CodeMirror.Editor;
   autoComplete: AutoComplete[] = [];
   autoCompleteIndex = 0;
@@ -77,36 +79,42 @@ export default class ChatBar extends Vue {
   shift: boolean;
 
   mounted(): void {
-    if (process.isClient) {
-      this.editor = HyperMD.fromTextArea(this.input, {
-        theme: "hypermd-light",
-        placeholder: "Send a message",
-        scrollbarStyle: "null",
-        lineNumbers: false,
-        viewportMargin: Infinity,
-        autoCloseBrackets: false,
-        extraKeys: {
-          Enter: this.handleEnter,
-          Up: this.moveUp,
-          Down: this.moveDown,
-          Tab: this.handleTab,
-          "Shift-Enter": this.handleShiftEnter
-        },
-      });
-
-      this.editor.on("cursorActivity", this.handleCursorChange);
-
-      new ResizeObserver(() => {
-        this.$emit("height", this.wrapper.clientHeight);
-      }).observe(this.wrapper);
-
-      document.addEventListener("click", this.handleClick);
-      document.addEventListener("keyup", this.handleKeyPress);
-      document.addEventListener("keydown", this.handleKeyPress);
+    if (!process.isClient) {
+      return;
     }
+
+    this.editor = HyperMD.fromTextArea(this.input, {
+      theme: "hypermd-light",
+      placeholder: "Send a message",
+      scrollbarStyle: "null",
+      lineNumbers: false,
+      viewportMargin: Infinity,
+      autoCloseBrackets: false,
+      extraKeys: {
+        Enter: this.handleEnter,
+        Up: this.moveUp,
+        Down: this.moveDown,
+        Tab: this.handleTab,
+        "Shift-Enter": this.handleShiftEnter
+      },
+    });
+
+    this.editor.on("cursorActivity", this.handleCursorChange);
+
+    new ResizeObserver(() => {
+      this.$emit("height", this.wrapper.clientHeight);
+    }).observe(this.wrapper);
+
+    document.addEventListener("click", this.handleClick);
+    document.addEventListener("keyup", this.handleKeyPress);
+    document.addEventListener("keydown", this.handleKeyPress);
   }
 
   beforeDestroy() {
+    if (!process.isClient) {
+      return;
+    }
+
     document.removeEventListener("click", this.handleClick);
     document.removeEventListener("keyup", this.handleKeyPress);
     document.removeEventListener("keydown", this.handleKeyPress);
@@ -144,7 +152,7 @@ export default class ChatBar extends Vue {
     this.startTyping();
   }
 
-  handleAutoComplete(index?: number, insert = false) {
+  handleAutoComplete(index?: number) {
     if (this.autoComplete.length === 0) {
       return false;
     }
@@ -152,7 +160,7 @@ export default class ChatBar extends Vue {
     const item = this.autoComplete[index ?? this.autoCompleteIndex];
     let result = item.value + " ";
 
-    if (insert) {
+    if (this.shift) {
       result += this.word;
     }
 
@@ -170,7 +178,7 @@ export default class ChatBar extends Vue {
   }
 
   handleShiftEnter() {
-    if (!this.handleAutoComplete(null, true)) {
+    if (!this.handleAutoComplete()) {
       return CodeMirror.Pass;
     }
   }
@@ -251,11 +259,17 @@ export default class ChatBar extends Vue {
     }
 
     this.lastTimeTyping = new Date().getTime();
-    this.$emit("startTyping");
+    connection.emit("usr-typ");
   }
 
   send(): void {
-    this.$emit("send", this.editor.getValue());
+    const message = this.editor.getValue();
+
+    connection.emit("usr-msg", {
+      message,
+      mentions: getMentions(message),
+    });
+
     this.editor.setValue("");
     this.editor.focus();
   }

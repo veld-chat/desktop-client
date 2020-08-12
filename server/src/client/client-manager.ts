@@ -6,7 +6,7 @@ import { commandManager } from "@/commands/command-manager";
 import SocketIO from "socket.io";
 import SnowyFlake from "snowyflake";
 import { validateEmbed } from "@/utils/embed-validator";
-import { validate } from "@/utils/string-validator";
+import { normalizeName, validate } from "@/utils/string-validator";
 import mongoose from "mongoose";
 import { User } from "@/db";
 import { ImageService } from "@/image";
@@ -91,7 +91,17 @@ export class ClientManager {
                 user.avatar = await this.imageService.getRandomImage();
             }
 
+            if (request.name) {
+                try {
+                    user.name = normalizeName(request.name);
+                } catch {
+                    // ignore
+                }
+            }
+
             user.lastLogin = new Date();
+            user.bot = !!request.bot;
+
             await user.save();
 
             client = container.resolve(Client);

@@ -5,15 +5,7 @@
     :style="{ marginBottom: barHeight + 'px' }"
   >
     <login v-if="showLogin" />
-
-    <chat-bar
-      :ready="connected"
-      :current-user-id="this.currentUserId"
-      @send="sendMessage"
-      @startTyping="startTyping"
-      @height="setBarHeight"
-    />
-
+    <chat-bar @height="setBarHeight" />
     <member-list />
 
     <div class="heading-wrapper">
@@ -43,7 +35,7 @@
       </header>
     </div>
     <div ref="container" class="messages">
-      <div v-for="(message, id) in messages" :key="id">
+      <div v-for="message in messages" :key="message.id">
         <chat-message :message="message" />
       </div>
     </div>
@@ -53,41 +45,24 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Ref } from "vue-property-decorator";
-import marked from "marked";
-import io from "socket.io-client";
-import DOMPurify from "dompurify";
-import { MentionParser } from "@/utils/mention-parser";
 import Login from "../components/login.vue";
 import ChatBar from "../components/chat-bar.vue";
 import MemberList from "../components/member-list.vue";
-import { Emoji, isEmojiOnly, registerEmoji, replaceEmojis } from "@/utils/emoji";
-import { Message, ServerMessage, MessagePart, User } from "@/models";
+import { Message, User } from "@/models";
 import { store } from "@/store";
-import { connection } from "@/connection";
 import { namespace } from "vuex-class";
-
-if (process.isClient) {
-  DOMPurify.addHook("afterSanitizeAttributes", function (currentNode) {
-    if (currentNode.tagName === "A") {
-      currentNode.textContent = currentNode.getAttribute("href");
-      currentNode.setAttribute("target", "_blank");
-    }
-    return currentNode;
-  });
-}
+import ChatMessage from "@/components/chat-message.vue";
 
 const messages = namespace("messages");
 
 @Component({
-  components: { ChatBar, MemberList, Login },
+  components: { ChatMessage, ChatBar, MemberList, Login },
 })
 export default class Root extends Vue {
   @Ref() container: HTMLDivElement;
   @messages.State("messages") messages: Message[];
   barHeight = 0;
   showLogin = false;
-
-  mentionParser: MentionParser = new MentionParser();
 
   currentUserId = "";
   message = "";
@@ -97,8 +72,6 @@ export default class Root extends Vue {
   scroll: boolean;
 
   mounted(): void {
-
-
     if (Notification.permission !== "granted") {
       Notification.requestPermission();
     }
@@ -157,17 +130,6 @@ export default class Root extends Vue {
   setBarHeight(height: number) {
     this.barHeight = height;
     this.applyScroll(this.shouldScroll());
-  }
-
-  startTyping(): void {
-    connection.emit("usr-typ");
-  }
-
-  sendMessage(message: string): void {
-    connection.emit("usr-msg", {
-      message: message,
-      mentions: this.mentionParser.fromString(message),
-    });
   }
 }
 </script>

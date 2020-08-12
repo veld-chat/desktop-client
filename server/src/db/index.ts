@@ -5,6 +5,7 @@ const UserSchema = createSchema({
   name: Type.string(),
   avatar: Type.string(),
   lastLogin: Type.date(),
+  bot: Type.boolean()
 });
 
 export const User = typedModel('User', UserSchema);
