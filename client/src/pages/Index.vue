@@ -1,43 +1,48 @@
 /* eslint-disable vue/no-v-html */
 <template>
-  <div class="main" :style="{ marginBottom: barHeight + 'px' }">
-    <chat-bar
-      :ready="connected"
-      :current-user-id="this.currentUserId"
-      @send="sendMessage"
-      @startTyping="startTyping"
-      @height="setBarHeight"
-    />
-
-    <div class="member-list">
-      <div v-for="(user, id) in members" :key="id">
-        <member-list-item :user="user" />
-      </div>
+  <div class="main">
+    <div class="sidebar is-fixed-left">
+      <channel-list :channels="channels" />
     </div>
 
-    <div class="heading-wrapper">
-      <header class="heading">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          style="height: 2rem;"
-          viewBox="0 0 674.731 463.131"
-        >
-          <path
-            d="M8433.373,1216.334l236.061-406.322,161.628,286.636,67.489,119.687H9051.3l-205.974-362.35-68.206,120.93"
-            transform="translate(-8400.564 -786.011)"
-            fill="none"
-            stroke="#fff"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="48"
-          />
-        </svg>
-      </header>
-    </div>
-    <div ref="container" class="messages">
-      <div v-for="(message, id) in messages" :key="id">
-        <chat-message :message="message" />
+    <div class="chat-section">
+      <div class="heading-wrapper">
+        <header class="heading">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            style="height: 2rem;"
+            viewBox="0 0 674.731 463.131"
+          >
+            <path
+              d="M8433.373,1216.334l236.061-406.322,161.628,286.636,67.489,119.687H9051.3l-205.974-362.35-68.206,120.93"
+              transform="translate(-8400.564 -786.011)"
+              fill="none"
+              stroke="#fff"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="48"
+            />
+          </svg>
+        </header>
       </div>
+      <div class="message-container" ref="container">
+        <div class="messages">
+          <div v-for="(message, id) in messages" :key="id">
+            <chat-message :message="message" />
+          </div>
+        </div>
+      </div>
+
+      <chat-bar
+        :ready="connected"
+        :current-user-id="this.currentUserId"
+        @send="sendMessage"
+        @startTyping="startTyping"
+        @height="setBarHeight"
+      />
+    </div>
+    <div class="sidebar">
+      <member-list-item v-for="(user, id) in members" :key="id" :user="user" />
     </div>
   </div>
 </template>
@@ -62,13 +67,15 @@ import userTypingStore from "../store/user-typing-store";
 import ChatBar from "../components/chat-bar.vue";
 import MemberListItem from "../components/member-list-item.vue";
 import ChatMessage from "../components/chat-message.vue";
+import ChannelList from "../components/channel-list.vue";
+
 import {
   Emoji,
   isEmojiOnly,
   registerEmoji,
   replaceEmojis,
 } from "@/utils/emoji";
-import { Embed } from "../models/events";
+import { Embed, Channel } from "../models/events";
 
 if (process.isClient) {
   DOMPurify.addHook("afterSanitizeAttributes", function (currentNode) {
@@ -81,7 +88,7 @@ if (process.isClient) {
 }
 
 @Component({
-  components: { ChatBar, MemberListItem, ChatMessage },
+  components: { ChatBar, MemberListItem, ChatMessage, ChannelList },
 })
 export default class Root extends Vue {
   private connection: SocketIOClient.Socket;
@@ -89,6 +96,7 @@ export default class Root extends Vue {
   @Ref() container: HTMLDivElement;
   messages: Message[] = [];
   members: User[] = [];
+  channels: Channel[] = [];
   barHeight = 0;
 
   mentionParser: MentionParser = new MentionParser();
@@ -120,6 +128,9 @@ export default class Root extends Vue {
         user: {
           id: "system",
           name: "system",
+          status: {
+            value: "online",
+          },
         },
         mentions: [],
         parts: [this.processMessage(x.content)],
@@ -309,11 +320,10 @@ export default class Root extends Vue {
 
   applyScroll(scroll: boolean): void {
     if (scroll) {
+      console.log("scrolling...");
+
       this.$nextTick(() => {
-        document.documentElement.scroll(
-          0,
-          document.documentElement.scrollHeight
-        );
+        this.container.scroll(0, this.container.scrollHeight);
       });
     }
   }

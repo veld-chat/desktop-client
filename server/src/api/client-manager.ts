@@ -7,6 +7,7 @@ import SocketIO from "socket.io";
 import SnowyFlake from "snowyflake";
 import { validateEmbed } from "@/utils/embed-validator";
 import { validate } from "@/utils/string-validator";
+import { Channel } from "@/models/channel";
 
 const snowFlake = new SnowyFlake();
 
@@ -14,6 +15,8 @@ export class ClientManager {
     private messageRateLimit = new RateLimit(5, 5000);
     private clients: Map<string, Client>;
     private sockets: Map<string, Client>;
+    private channels: Map<string, Channel>;
+
     private options: any;
     private io: SocketIO.Server;
 
@@ -45,8 +48,8 @@ export class ClientManager {
         socket.emit("sys-commands", commandManager.commands);
     }
 
+
     private async onClientAuthenticated(socket: SocketIO.Socket, request: ClientAuthRequest) {
-        console.log(request);
         let token: Token = null;
         let sendToken = false;
         let isBot = false;
@@ -86,6 +89,13 @@ export class ClientManager {
         socket.emit("ready", {
             user: currentUser.serialize(),
             members: Array.from(this.clients.values()).map(x => x.serialize()),
+            channels: [
+                {
+                    id: 0,
+                    name: "main",
+                    members: Array.from(this.clients.values()).map(x => x.serialize()),
+                }
+            ],
             token: this.createToken(currentUser),
         });
 
@@ -127,7 +137,6 @@ export class ClientManager {
 
     private onClientStartTyping(socket: SocketIO.Socket) {
         const client = this.sockets.get(socket.id);
-
         this.io.emit("usr-typ", client.serialize());
     }
 

@@ -8,6 +8,11 @@
 @import "embed";
 @import "flex";
 
+a,
+button {
+  cursor: pointer;
+}
+
 * {
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
   -webkit-overflow-scrolling: touch;
@@ -74,6 +79,10 @@
   animation: fadein 0.3s;
 }
 
+html {
+  max-height: 100vh;
+}
+
 body {
   background-size: contain;
   font-family: "Roboto", sans-serif;
@@ -95,13 +104,21 @@ li {
   margin-left: 0.25rem;
 }
 
+.chat-section {
+  height: 100vh;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 .msg-container {
   margin: 5px 5px;
 }
 
 .main {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  width: 100vw;
 }
 
 @include desktop {
@@ -131,6 +148,19 @@ li {
   margin-left: 0.5rem;
   font-size: 14px;
   border-radius: 2px;
+
+  &.is-secondary {
+    background-color: var(--body-bg);
+  }
+
+  &.is-danger {
+    background-color: var(--danger-bg);
+    color: white;
+  }
+}
+
+.icon {
+  margin: 0.25rem;
 }
 
 .msg-instance {
@@ -205,6 +235,11 @@ body {
   }
 }
 
+.message-container {
+  flex: 1;
+  overflow-y: scroll;
+}
+
 .messages {
   width: 100%;
   display: flex;
@@ -212,7 +247,6 @@ body {
   justify-content: flex-start;
   align-items: flex-start;
   padding: 8px 0;
-  flex-grow: 1;
 }
 
 @include mobile {
@@ -224,11 +258,26 @@ body {
 
 $listWidth: 300px;
 
-.member-list {
+.channel-list-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  margin: 0.25rem 0;
+  border-radius: 4px;
+
+  &.selected {
+    background-color: var(--body-bg);
+  }
+
+  &:hover {
+    background-color: var(--body-bg);
+  }
+}
+
+.sidebar {
   box-sizing: border-box;
-  position: fixed;
-  right: 0;
-  display: none;
   height: 100vh;
   overflow-y: scroll;
   padding: 1rem;
@@ -236,15 +285,34 @@ $listWidth: 300px;
   background: var(--sidebar-bg);
 }
 
+@include mobile {
+  .sidebar {
+    display: none;
+  }
+}
+
+.category {
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
 .member-list-item {
   padding-bottom: 0.5rem;
   display: flex;
   justify-items: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .user-name {
   color: white;
   font-size: 18px;
+}
+
+.fit-text {
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .controls {
@@ -265,11 +333,8 @@ $listWidth: 300px;
 
 .controls-wrapper {
   background: var(--editor-container-bg);
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
   padding: 0.5rem 0.5rem 0 0.5rem;
+  flex-shrink: 0;
   z-index: 100;
 }
 
@@ -381,9 +446,5 @@ select:-webkit-autofill:focus .textfield:hover,
 
   .member-list {
     display: block;
-  }
-
-  .controls-wrapper {
-    right: $listWidth;
   }
 }

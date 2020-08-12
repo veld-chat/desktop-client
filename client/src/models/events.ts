@@ -2,11 +2,25 @@ export type User = {
   id: string;
   name: string;
   avatarUrl?: string;
+  status: UserStatus;
 };
+
+export type UserStatusValue = "online" | "offline" | "dnd" | "away";
+export type UserStatus = {
+  statusText?: string;
+  value: UserStatusValue;
+}
 
 type MessageBase = {
   user: User;
   mentions: string[];
+};
+
+export type Channel = {
+  id: string;
+  name: string;
+  mentions?: number;
+  members: User[];
 };
 
 export type Embed = {

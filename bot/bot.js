@@ -34,24 +34,24 @@ connection.on("sys-join", (user) => {
   }
 
   connection.emit('usr-msg', {
-    message: "welcome " + user.name + "!"
+    content: "welcome " + user.name + "!"
   });
   members[user.id] = user;
 })
 
 connection.on("sys-leave", (user) => {
   connection.emit('usr-msg', {
-    message: "bye " + user.name + " :sob:"
+    content: "bye " + user.name + " :sob:"
   });
   delete members[user.id];
 })
 
 connection.on('usr-msg', (message) => {
-  if (!message.message || message.bot) {
+  if (!message.content || message.bot) {
     return;
   }
 
-  if (message.message == "!ping") {
+  if (message.content == "!ping") {
     connection.emit('usr-msg', {
       embed: {
         description: "pong!",
@@ -59,24 +59,24 @@ connection.on('usr-msg', (message) => {
       }
     });
   }
-  if (message.message.startsWith("!say")) {
+  if (message.content.startsWith("!say")) {
     let toSay = message.message.substring(4);
     console.log(toSay);
 
     connection.emit('usr-msg', {
-      message: toSay
+      content: toSay
     });
   }
 
-  if (message.message == "!help") {
+  if (message.content == "!help") {
     connection.emit('usr-msg', {
-      message: "!help\n!say <message>\n!ping"
+      content: "!help\n!say <message>\n!ping"
     });
   }
 
-  if (message.message.startsWith("!remind")) {
+  if (message.content.startsWith("!remind")) {
     connection.emit('usr-msg', {
-      message: "haha... no. I am too lazy to write this."
+      content: "haha... no. I am too lazy to write this."
     });
   }
 });
