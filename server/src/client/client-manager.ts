@@ -226,8 +226,6 @@ export class ClientManager {
         client.registerSocket(socket);
         this.sockets.set(socket.id, client);
 
-        console.log(client.channels);
-
         socket.emit(GatewayEvents.ready, {
             user: client.serialize(),
             members: Array.from(this.clients.values())
@@ -259,7 +257,6 @@ export class ClientManager {
     }
 
     private onClientDisconnect(socket: SocketIO.Socket) {
-        logger.info("user", socket.id, " disconnected");
         const client = this.sockets.get(socket.id);
         this.sockets.delete(socket.id);
 
@@ -290,8 +287,6 @@ export class ClientManager {
 
     private async onClientMessageReceived(socket: SocketIO.Socket, msg: any) {
         const client = this.sockets.get(socket.id);
-
-        console.log(msg);
 
         if (commandManager.handle(this, client, msg.message)) {
             return;
