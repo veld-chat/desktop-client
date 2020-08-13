@@ -64,8 +64,11 @@
 				},
 				"type": "object"
 			},
-			"MessageRequest": {
+			"CreateMessageRequest": {
 				"properties": {
+					"channelId": {
+						"type": "string"
+					},
 					"content": {
 						"type": "string"
 					},
@@ -73,6 +76,9 @@
 						"$ref": "#/components/schemas/EmbedPayload"
 					}
 				},
+				"required": [
+					"channelId"
+				],
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -95,6 +101,112 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"UserStatusValue": {
+				"anyOf": [
+					{
+						"type": "string",
+						"enum": [
+							"online"
+						],
+						"nullable": false
+					},
+					{
+						"type": "string",
+						"enum": [
+							"offline"
+						],
+						"nullable": false
+					},
+					{
+						"type": "string",
+						"enum": [
+							"dnd"
+						],
+						"nullable": false
+					},
+					{
+						"type": "string",
+						"enum": [
+							"away"
+						],
+						"nullable": false
+					}
+				]
+			},
+			"UserStatus": {
+				"properties": {
+					"value": {
+						"$ref": "#/components/schemas/UserStatusValue"
+					},
+					"statusText": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"value"
+				],
+				"type": "object"
+			},
+			"User": {
+				"properties": {
+					"status": {
+						"$ref": "#/components/schemas/UserStatus"
+					},
+					"bot": {
+						"type": "boolean"
+					},
+					"avatarUrl": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"id": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"status",
+					"bot",
+					"avatarUrl",
+					"name",
+					"id"
+				],
+				"type": "object"
+			},
+			"Channel": {
+				"properties": {
+					"members": {
+						"items": {
+							"$ref": "#/components/schemas/User"
+						},
+						"type": "array"
+					},
+					"name": {
+						"type": "string"
+					},
+					"id": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"members",
+					"name",
+					"id"
+				],
+				"type": "object"
+			},
+			"CreateChannelRequest": {
+				"properties": {
+					"name": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name"
+				],
+				"type": "object"
 			}
 		},
 		"securitySchemes": {}
@@ -110,7 +222,7 @@
 	},
 	"openapi": "3.0.0",
 	"paths": {
-		"/api/v1/token": {
+		"/api/v1/users/token": {
 			"get": {
 				"operationId": "Create",
 				"responses": {
@@ -129,7 +241,7 @@
 				"parameters": []
 			}
 		},
-		"/api/v1/message": {
+		"/api/v1/messages": {
 			"post": {
 				"operationId": "Create",
 				"responses": {
@@ -148,14 +260,14 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/MessageRequest"
+								"$ref": "#/components/schemas/CreateMessageRequest"
 							}
 						}
 					}
 				}
 			}
 		},
-		"/api/v1/emoji": {
+		"/api/v1/emojis": {
 			"get": {
 				"operationId": "Create",
 				"responses": {
@@ -175,6 +287,39 @@
 				},
 				"security": [],
 				"parameters": []
+			}
+		},
+		"/api/v1/channels": {
+			"post": {
+				"operationId": "Create",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Channel"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"bot": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateChannelRequest"
+							}
+						}
+					}
+				}
 			}
 		}
 	},

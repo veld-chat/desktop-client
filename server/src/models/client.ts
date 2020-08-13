@@ -2,12 +2,14 @@ import axios from 'axios';
 import { ClientManager } from "@/api/client-manager";
 import SocketIO, { Socket } from "socket.io";
 import { Token } from "@/models/gateway-payloads";
+import { UserStatus, User } from './user';
 
 export class Client {
     private sockets: SocketIO.Socket[] = [];
     private _name: string;
     private _avatar: string;
     private _bot: boolean;
+    private _status: UserStatus;
     private clientManager: ClientManager;
 
     readonly id: string;
@@ -19,6 +21,13 @@ export class Client {
         this._name = token?.name ?? `anon-${socket.id}`;
         this._avatar = token?.avatar;
         this._bot = bot;
+        this._status = {
+            value: "online",
+        };
+    }
+
+    get status() {
+        return this._status;
     }
 
     get bot() {
@@ -45,12 +54,15 @@ export class Client {
         this.updateToken();
     }
 
-    serialize() {
+    serialize(): User {
         return {
             id: this.id,
             name: this._name,
             avatarUrl: this._avatar,
             bot: this._bot,
+            status: {
+                value: "online"
+            }
         };
     }
 

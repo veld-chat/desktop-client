@@ -5,7 +5,7 @@ import { TokenResponse } from "@/api/models/Token";
 import { Snowyflake } from "snowyflake";
 
 @injectable()
-@Route("api/v1/token")
+@Route("api/v1/users")
 export class TokenController extends Controller {
   constructor(
     private readonly snowyflake: Snowyflake,
@@ -14,7 +14,7 @@ export class TokenController extends Controller {
     super();
   }
 
-  @Get()
+  @Get("/token")
   public create(): Promise<TokenResponse> {
     const id = this.snowyflake.nextId().toString();
 

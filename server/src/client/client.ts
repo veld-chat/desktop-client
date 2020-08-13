@@ -4,6 +4,7 @@ import SocketIO from "socket.io";
 import { injectable } from "tsyringe";
 import { ImageService } from "@/image";
 import { normalizeName } from "@/utils/string-validator";
+import { User } from "@/models/user";
 
 @injectable()
 export class Client {
@@ -12,9 +13,9 @@ export class Client {
     user: UserDoc;
 
     constructor(
-      private readonly clientManager: ClientManager,
-      private readonly imageService: ImageService
-    ) {}
+        private readonly clientManager: ClientManager,
+        private readonly imageService: ImageService
+    ) { }
 
     get id() {
         return this.user.id;
@@ -26,6 +27,10 @@ export class Client {
 
     get bot() {
         return this.user.bot;
+    }
+
+    get channels(): string[] {
+        return this.user.channels;
     }
 
     async setName(value: string) {
@@ -44,12 +49,15 @@ export class Client {
         await this.user.save();
     }
 
-    serialize() {
+    serialize(): User {
         return {
-            id: this.id, 
+            id: this.id,
             name: this.user.name,
             avatarUrl: this.user.avatar,
-            bot: this.user.bot
+            bot: this.user.bot,
+            status: {
+                value: "online"
+            }
         };
     }
 

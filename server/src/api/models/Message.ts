@@ -1,6 +1,7 @@
 import { EmbedPayload } from "@/models/embed";
 
-export interface MessageRequest {
+export interface CreateMessageRequest {
+  channelId: string;
   content?: string;
   embed?: EmbedPayload;
 }

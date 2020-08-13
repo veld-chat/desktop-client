@@ -1,7 +1,7 @@
 .flex {
   display: flex;
-}
 
-.text-centered {
-  align-items: center;
+  &.text-centered {
+    align-items: center;
+  }
 }

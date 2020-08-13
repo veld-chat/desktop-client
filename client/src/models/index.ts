@@ -3,19 +3,36 @@ export type User = {
   name: string;
   avatarUrl?: string;
   bot: boolean;
+  status: UserStatus;
+};
+
+export type UserStatusValue = "online" | "offline" | "dnd" | "away";
+export type UserStatus = {
+  statusText?: string;
+  value: UserStatusValue;
 };
 
 export type ServerMessage = {
   id: string;
+  channelId: string;
   user: string;
   embed?: Embed;
   content: string;
   mentions: string[];
-}
+};
 
 type MessageBase = {
   user: User;
   mentions: string[];
+};
+
+export type Channel = {
+  id: string;
+  name: string;
+  mentions?: number;
+
+  members: string[];
+  messages?: Message[];
 };
 
 export type Embed = {

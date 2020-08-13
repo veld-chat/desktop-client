@@ -5,8 +5,18 @@ const UserSchema = createSchema({
   name: Type.string(),
   avatar: Type.string(),
   lastLogin: Type.date(),
-  bot: Type.boolean()
+  bot: Type.boolean(),
+  channels: Type.array().of(Type.string({ default: [] })),
 });
+
+const ChannelSchema = createSchema({
+  id: Type.string(),
+  name: Type.string(),
+  members: Type.array().of(Type.string({ default: [] })),
+})
 
 export const User = typedModel('User', UserSchema);
 export type UserDoc = ExtractDoc<typeof UserSchema>;
+
+export const Channel = typedModel('Channel', ChannelSchema);
+export type ChannelDoc = ExtractDoc<typeof ChannelSchema>;

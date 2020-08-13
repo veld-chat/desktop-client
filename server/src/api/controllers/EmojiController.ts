@@ -4,7 +4,7 @@ import { Emoji, getEmojisForHost } from "@/utils/emoji";
 import { ApiRequest } from "@/api";
 
 @injectable()
-@Route("api/v1/emoji")
+@Route("api/v1/emojis")
 export class EmojiController extends Controller {
   @Get()
   public create(

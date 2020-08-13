@@ -1,21 +1,7 @@
 <template>
-  <div class="member-list">
-    <div
-      v-for="user in users"
-      :key="user.id"
-    >
-      <div class="member-list-item">
-        <div
-          v-if="user.avatarUrl"
-          class="msg-instance-avatar"
-          :style="{ backgroundImage: `url('${user.avatarUrl}')` }"
-        />
-        <div>
-          <div class="user-name">
-            {{ user.name }}
-          </div>
-        </div>
-      </div>
+  <div class="sidebar">
+    <div v-for="user in users" :key="user.id">
+      <member-list-item :user="user" />
     </div>
   </div>
 </template>
@@ -25,11 +11,14 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { User } from "@/models";
 import { namespace } from "vuex-class";
+import MemberListItem from "./member-list-item.vue";
 
 const users = namespace("users");
 
-@Component
-export default class MemberListItem extends Vue {
-  @users.State("users") users: User[]
+@Component({
+  components: { MemberListItem },
+})
+export default class MemberList extends Vue {
+  @users.State("users") users: User[];
 }
 </script>
