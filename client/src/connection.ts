@@ -22,6 +22,8 @@ export function connect() {
     await store.dispatch("users/set", options.members);
     await store.dispatch("channels/set", options.channels);
 
+    localStorage.setItem("token", options.token);
+
     console.log(`Logged in as ${options.user.name} (${options.user.id})`);
   });
 

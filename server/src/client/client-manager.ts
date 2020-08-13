@@ -172,17 +172,21 @@ export class ClientManager {
             this.onClientDisconnect(socket);
         }
 
-        let token: Token = null;
+        let id: string = null;
+        let token: string = null;
 
         if (request.token) {
             try {
-                token = this.tokenService.decode(request.token);
+                id = this.tokenService.decode(request.token).id;
+                token = request.token;
             } catch {
                 // ignore
             }
         }
 
-        const id = token?.id ?? this.snowFlake.nextId().toString();
+        if (!id) {
+            id = this.snowFlake.nextId().toString();
+        }
 
         let client = this.clients.get(id);
         let isNew = false;
@@ -232,7 +236,7 @@ export class ClientManager {
                 .map(x => this.getChannel(x))
                 .filter(x => x)
                 .map(x => x.serialize(true)),
-            token: this.tokenService.createToken(client.id),
+            token: token ?? this.tokenService.createToken(id),
         });
 
         socket.on(GatewayEvents.userTyping, () => this.onClientStartTyping(socket));
