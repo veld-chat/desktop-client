@@ -14,7 +14,7 @@ export class TokenController extends Controller {
     super();
   }
 
-  @Get("/token")
+  @Get("token")
   public create(): TokenResponse {
     const id = this.snowyflake.nextId().toString();
 

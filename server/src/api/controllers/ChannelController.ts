@@ -27,7 +27,7 @@ export class ChannelController extends Controller {
     return channel;
   }
 
-  @Post("/{channelId}/messages")
+  @Post("{channelId}/messages")
   public async createMessage(
     @Request() request: ApiRequest,
     @Body() body: CreateMessageRequest,
