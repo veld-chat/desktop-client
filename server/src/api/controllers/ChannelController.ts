@@ -2,7 +2,7 @@ import { Body, Controller, Post, Request, Route, Security, Path } from "tsoa";
 import { injectable } from "tsyringe";
 import { ClientManager } from "@/client";
 import { ApiRequest } from "@/api";
-import { CreateChannelRequest, APIChannel } from "../models/channel";
+import { CreateChannelRequest, APIChannel } from "@/api/models/Channel";
 
 @injectable()
 @Security("bot")
