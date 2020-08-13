@@ -212,6 +212,7 @@ export class ClientManager {
 
             user.lastLogin = new Date();
             user.bot = !!request.bot;
+            user.channels = user.channels || ["0", "1"];
 
             await user.save();
 

@@ -1,7 +1,7 @@
 import { Controller, Get, Route } from "tsoa";
 import { injectable } from "tsyringe";
 import { TokenService } from "@/token-service";
-import { TokenResponse } from "@/api/models/Token";
+import { TokenResponse } from "@/api/models/token";
 import { Snowyflake } from "snowyflake";
 
 @injectable()

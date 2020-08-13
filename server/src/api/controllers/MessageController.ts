@@ -1,5 +1,5 @@
 import { Body, Controller, Post, Request, Route, Security } from "tsoa";
-import { CreateMessageRequest } from "@/api/models/Message";
+import { CreateMessageRequest } from "@/api/models/message";
 import { injectable } from "tsyringe";
 import { ClientManager } from "@/client";
 import { ApiRequest } from "@/api";
