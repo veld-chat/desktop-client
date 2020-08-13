@@ -115,7 +115,7 @@
 				],
 				"type": "object"
 			},
-			"APIChannel": {
+			"ApiChannel": {
 				"properties": {
 					"id": {
 						"type": "string"
@@ -273,7 +273,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/APIChannel"
+									"$ref": "#/components/schemas/ApiChannel"
 								}
 							}
 						}
