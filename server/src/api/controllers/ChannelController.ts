@@ -2,7 +2,7 @@ import { Body, Controller, Post, Request, Route, Security, Path } from "tsoa";
 import { injectable } from "tsyringe";
 import { ClientManager } from "@/client";
 import { ApiRequest } from "@/api";
-import { CreateChannelRequest, Channel } from "../models/channel";
+import { CreateChannelRequest, APIChannel } from "../models/channel";
 
 @injectable()
 @Security("bot")
@@ -18,7 +18,7 @@ export class ChannelController extends Controller {
   public async create(
     @Request() request: ApiRequest,
     @Body() body: CreateChannelRequest
-  ): Promise<Channel> {
+  ): Promise<APIChannel> {
     let channel = this.clientManager.createChannel(request.user.id, body.name);
     if (!channel) {
       throw new Error("internal server error");
