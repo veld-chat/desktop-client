@@ -49,7 +49,7 @@ const models: TsoaRoute.Models = {
         "type": { "dataType": "nestedObjectLiteral", "nestedProperties": { "status": { "ref": "UserStatus", "required": true }, "bot": { "dataType": "boolean", "required": true }, "avatarUrl": { "dataType": "string", "required": true }, "name": { "dataType": "string", "required": true }, "id": { "dataType": "string", "required": true } }, "validators": {} },
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "APIChannel": {
+    "ApiChannel": {
         "dataType": "refObject",
         "properties": {
             "id": { "dataType": "string", "required": true },
