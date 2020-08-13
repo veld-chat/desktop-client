@@ -5,6 +5,7 @@ COPY package.json .
 COPY yarn.lock .
 COPY tsconfig.json .
 COPY .babelrc .
+COPY tsoa.json .
 
 RUN yarn
 
