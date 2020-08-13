@@ -24,7 +24,7 @@ connection.on('ready', (info) => {
   });
 });
 
-connection.on("sys-join", (user) => {
+connection.on("channel:join", (user) => {
   if (!currentUser) {
     return;
   }
@@ -39,7 +39,7 @@ connection.on("sys-join", (user) => {
   members[user.id] = user;
 })
 
-connection.on("sys-leave", (user) => {
+connection.on("channel:leave", (user) => {
   connection.emit('usr-msg', {
     content: "bye " + user.name + " :sob:"
   });

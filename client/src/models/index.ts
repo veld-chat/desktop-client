@@ -6,7 +6,6 @@ export type User = {
   status: UserStatus;
 };
 
-
 export type UserStatusValue = "online" | "offline" | "dnd" | "away";
 export type UserStatus = {
   statusText?: string;
@@ -15,6 +14,7 @@ export type UserStatus = {
 
 export type ServerMessage = {
   id: string;
+  channelId: string;
   user: string;
   embed?: Embed;
   content: string;
@@ -30,7 +30,9 @@ export type Channel = {
   id: string;
   name: string;
   mentions?: number;
-  members: User[];
+
+  members: string[];
+  messages?: Message[];
 };
 
 export type Embed = {

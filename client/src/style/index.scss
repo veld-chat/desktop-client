@@ -72,11 +72,11 @@ button {
 }
 
 .fadein {
-  -webkit-animation: fadein 0.3s;
-  -moz-animation: fadein 0.3s;
-  -ms-animation: fadein 0.3s;
-  -o-animation: fadein 0.3s;
-  animation: fadein 0.3s;
+  -webkit-animation: fadein 80ms;
+  -moz-animation: fadein 80ms;
+  -ms-animation: fadein 80ms;
+  -o-animation: fadein 80ms;
+  animation: fadein 80ms;
 }
 
 html {
@@ -588,7 +588,7 @@ img {
   margin-top: 1rem;
 }
 
-input[type=file].hidden {
+input[type="file"].hidden {
   width: 1px;
   height: 1px;
   opacity: 0;

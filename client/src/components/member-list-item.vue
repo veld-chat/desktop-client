@@ -15,7 +15,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Prop, Component } from "vue-property-decorator";
-import { User } from "../models/events";
+import { User } from "@/models";
 
 @Component
 export default class MemberListItem extends Vue {

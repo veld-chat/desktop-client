@@ -1,12 +1,12 @@
 import { Body, Controller, Post, Request, Route, Security } from "tsoa";
-import { MessageRequest } from "@/api/models/Message";
+import { CreateMessageRequest } from "@/api/models/Message";
 import { injectable } from "tsyringe";
 import { ClientManager } from "@/client";
 import { ApiRequest } from "@/api";
 
 @injectable()
 @Security("bot")
-@Route("api/v1/message")
+@Route("api/v1/messages")
 export class MessageController extends Controller {
   constructor(
     private readonly clientManager: ClientManager
@@ -17,7 +17,7 @@ export class MessageController extends Controller {
   @Post()
   public async create(
     @Request() request: ApiRequest,
-    @Body() body: MessageRequest
+    @Body() body: CreateMessageRequest
   ): Promise<void> {
     await this.clientManager.sendMessage(request.user.id, body.content, body.embed);
   }

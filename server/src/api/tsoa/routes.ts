@@ -8,6 +8,8 @@ import { TokenController } from './../controllers/UserController';
 import { MessageController } from './../controllers/MessageController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { EmojiController } from './../controllers/EmojiController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { ChannelController } from './../controllers/ChannelController';
 import { expressAuthentication } from './..';
 import { iocContainer } from './..';
 import * as express from 'express';
@@ -34,9 +36,10 @@ const models: TsoaRoute.Models = {
         "type": { "dataType": "nestedObjectLiteral", "nestedProperties": { "thumbnailUrl": { "dataType": "string" }, "imageUrl": { "dataType": "string" }, "footer": { "dataType": "string" }, "color": { "dataType": "double" }, "description": { "dataType": "string" }, "title": { "dataType": "string" }, "author": { "ref": "EmbedAuthor" } }, "validators": {} },
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "MessageRequest": {
+    "CreateMessageRequest": {
         "dataType": "refObject",
         "properties": {
+            "channelId": { "dataType": "string", "required": true },
             "content": { "dataType": "string" },
             "embed": { "ref": "EmbedPayload" },
         },
@@ -53,6 +56,31 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UserStatusValue": {
+        "dataType": "refAlias",
+        "type": { "dataType": "union", "subSchemas": [{ "dataType": "enum", "enums": ["online"] }, { "dataType": "enum", "enums": ["offline"] }, { "dataType": "enum", "enums": ["dnd"] }, { "dataType": "enum", "enums": ["away"] }], "validators": {} },
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UserStatus": {
+        "dataType": "refAlias",
+        "type": { "dataType": "nestedObjectLiteral", "nestedProperties": { "value": { "ref": "UserStatusValue", "required": true }, "statusText": { "dataType": "string" } }, "validators": {} },
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "User": {
+        "dataType": "refAlias",
+        "type": { "dataType": "nestedObjectLiteral", "nestedProperties": { "status": { "ref": "UserStatus", "required": true }, "bot": { "dataType": "boolean", "required": true }, "avatarUrl": { "dataType": "string", "required": true }, "name": { "dataType": "string", "required": true }, "id": { "dataType": "string", "required": true } }, "validators": {} },
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Channel": {
+        "dataType": "refAlias",
+        "type": { "dataType": "nestedObjectLiteral", "nestedProperties": { "members": { "dataType": "array", "array": { "dataType": "refAlias", "ref": "User" }, "required": true }, "name": { "dataType": "string", "required": true }, "id": { "dataType": "string", "required": true } }, "validators": {} },
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CreateChannelRequest": {
+        "dataType": "refAlias",
+        "type": { "dataType": "nestedObjectLiteral", "nestedProperties": { "name": { "dataType": "string", "required": true } }, "validators": {} },
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
 const validationService = new ValidationService(models);
 
@@ -63,7 +91,7 @@ export function RegisterRoutes(app: express.Express) {
     //  NOTE: If you do not see routes for all of your controllers in this file, then you might not have informed tsoa of where to look
     //      Please look into the "controllerPathGlobs" config option described in the readme: https://github.com/lukeautry/tsoa
     // ###########################################################################################################
-    app.get('/api/v1/token',
+    app.get('/api/v1/users/token',
         function(request: any, response: any, next: any) {
             const args = {
             };
@@ -87,12 +115,12 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    app.post('/api/v1/message',
+    app.post('/api/v1/messages',
         authenticateMiddleware([{ "bot": [] }]),
         function(request: any, response: any, next: any) {
             const args = {
                 request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
-                body: { "in": "body", "name": "body", "required": true, "ref": "MessageRequest" },
+                body: { "in": "body", "name": "body", "required": true, "ref": "CreateMessageRequest" },
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -114,7 +142,7 @@ export function RegisterRoutes(app: express.Express) {
             promiseHandler(controller, promise, response, next);
         });
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    app.get('/api/v1/emoji',
+    app.get('/api/v1/emojis',
         function(request: any, response: any, next: any) {
             const args = {
                 req: { "in": "request", "name": "req", "required": true, "dataType": "object" },
@@ -130,6 +158,33 @@ export function RegisterRoutes(app: express.Express) {
             }
 
             const controller: any = iocContainer.get<EmojiController>(EmojiController);
+            if (typeof controller['setStatus'] === 'function') {
+                controller.setStatus(undefined);
+            }
+
+
+            const promise = controller.create.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.post('/api/v1/channels',
+        authenticateMiddleware([{ "bot": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
+                body: { "in": "body", "name": "body", "required": true, "ref": "CreateChannelRequest" },
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller: any = iocContainer.get<ChannelController>(ChannelController);
             if (typeof controller['setStatus'] === 'function') {
                 controller.setStatus(undefined);
             }

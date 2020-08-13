@@ -2,7 +2,7 @@ import axios from 'axios';
 import { ClientManager } from "@/api/client-manager";
 import SocketIO, { Socket } from "socket.io";
 import { Token } from "@/models/gateway-payloads";
-import { UserStatus } from './user';
+import { UserStatus, User } from './user';
 
 export class Client {
     private sockets: SocketIO.Socket[] = [];
@@ -54,12 +54,15 @@ export class Client {
         this.updateToken();
     }
 
-    serialize() {
+    serialize(): User {
         return {
             id: this.id,
             name: this._name,
             avatarUrl: this._avatar,
             bot: this._bot,
+            status: {
+                value: "online"
+            }
         };
     }
 

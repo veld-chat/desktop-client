@@ -1,18 +1,20 @@
 import { Module } from "vuex";
 import { RootState } from "@/store";
-import { Channel } from "@/models";
+import { Channel, User } from "@/models";
 
-export interface UserState {
-  channels: readonly Channel[]
-  channelsById: { [id: string]: Channel },
+export interface ChannelState {
+  channels: readonly Channel[];
+  channelsById: { [id: string]: Channel };
+  currentChannel: string;
 }
 
-export const users: Module<UserState, RootState> = {
+export const channels: Module<ChannelState, RootState> = {
   namespaced: true,
 
   state: {
     channels: [],
     channelsById: {},
+    currentChannel: "0",
   },
 
   getters: {
@@ -20,14 +22,26 @@ export const users: Module<UserState, RootState> = {
   },
 
   actions: {
+    async addMember({ state, commit }, payload: { id: string, member: User }) {
+      commit("setMembers", {
+        id: payload.id,
+        members: [
+          ...state.channelsById[payload.id].members.filter(x => x == payload.member.id),
+          payload.member
+        ],
+      });
+    },
     async clear({ commit }) {
-      commit("setUsers", []);
+      commit("setChannels", []);
     },
     async set({ commit }, channels: Channel[]) {
-      commit("setUsers", channels);
+      commit("setChannels", channels);
+    },
+    async setCurrentChannel({ commit }, channel: string) {
+      commit("setCurrentChannel", channel);
     },
     async update({ state, commit }, channel: Channel) {
-      commit("setUsers", [
+      commit("setChannels", [
         ...state.channels.filter(u => u.id !== channel.id),
         channel
       ]);
@@ -37,7 +51,18 @@ export const users: Module<UserState, RootState> = {
         channelOrId = channelOrId.id;
       }
 
-      commit("setUsers", [...state.channels.filter(u => u.id !== channelOrId)]);
+      if (state.currentChannel == channelOrId) {
+        commit("setCurrentChannel", "0");
+      }
+
+      commit("setChannels", [...state.channels.filter(u => u.id !== channelOrId)]);
+    },
+    removeMember({ state, commit }, payload: { id: string, member: string }) {
+      commit("setMembers", {
+        id: payload.id,
+        members: state.channelsById[payload.id].members
+          .filter(x => x == payload.member)
+      });
     }
   },
 
@@ -45,12 +70,28 @@ export const users: Module<UserState, RootState> = {
     setChannels(state, payload: Channel[]) {
       const channeldById = {};
 
-      for (const user of payload) {
-        channeldById[user.id] = user;
+      for (const channel of payload) {
+        channeldById[channel.id] = channel;
       }
 
       state.channels = Object.freeze(payload);
       state.channelsById = Object.freeze(channeldById);
+    },
+    setCurrentChannel(state, payload: string) {
+      state.currentChannel = Object.freeze(payload);
+    },
+    setMembers(state, payload: { members: string[], id: string }) {
+      const channel = state.channelsById[payload.id];
+      channel.members = payload.members;
+
+      state.channels = Object.freeze([
+        ...state.channels.filter(x => x.id !== channel.id),
+        channel,
+      ]);
+      state.channelsById = Object.freeze({
+        ...state.channelsById,
+        [payload.id]: channel,
+      });
     }
   }
 };

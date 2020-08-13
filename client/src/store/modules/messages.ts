@@ -6,7 +6,7 @@ import DOMPurify from "dompurify";
 import marked from "marked";
 
 export interface MessageState {
-  messages: readonly Message[]
+  messages: { [channelId: string]: readonly Message[] }
 }
 
 function processString(input: string) {
@@ -68,7 +68,7 @@ export const messages: Module<MessageState, RootState> = {
   namespaced: true,
 
   state: {
-    messages: []
+    messages: {}
   },
 
   getters: {},
@@ -88,14 +88,7 @@ export const messages: Module<MessageState, RootState> = {
 
   mutations: {
     add(state, { message, part }: { message: ServerMessage, part: MessagePart }) {
-      const user = message.user !== "system"
-        ? store.state.users.usersById[message.user]
-        : {
-          id: "system",
-          name: "system",
-          bot: false
-        };
-
+      const user = store.state.users.usersById[message.user];
       if (!user) {
         return;
       }
@@ -106,8 +99,10 @@ export const messages: Module<MessageState, RootState> = {
         parts: [part]
       };
 
-      const lastMessage = state.messages[state.messages.length - 1];
-      const messages = [...state.messages];
+      const messageChannel = state.messages[message.channelId] || [];
+      const messageCount = messageChannel.length;
+      const lastMessage = messageChannel[messageCount - 1];
+      const messages = [...messageChannel];
 
       if (lastMessage && lastMessage.user.id === message.user) {
         messages.pop();
@@ -120,7 +115,10 @@ export const messages: Module<MessageState, RootState> = {
         messages.push(data);
       }
 
-      state.messages = Object.freeze(messages);
+      state.messages = Object.freeze({
+        ...state.messages,
+        [message.channelId]: messages
+      });
     }
   }
 };

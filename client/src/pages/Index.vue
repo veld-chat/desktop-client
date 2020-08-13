@@ -2,7 +2,7 @@
 <template>
   <div class="main">
     <div class="sidebar">
-      <channel-list :channels="channels" />
+      <channel-list />
     </div>
 
     <div class="chat-section">
@@ -23,25 +23,22 @@
               stroke-width="48"
             />
           </svg>
-
           <login v-if="showLogin" @close="showLogin = false" />
+          <div class="btn btn-sm" @click.prevent="showLogin = true">
+            <i class="fa fa-user" />
+            Login
+          </div>
         </header>
       </div>
       <div class="message-container" ref="container">
         <div class="messages">
-          <div v-for="(message, id) in messages" :key="id">
+          <div v-for="(message, id) in messages[currentChannelId]" :key="id">
             <chat-message :message="message" />
           </div>
         </div>
       </div>
 
-      <chat-bar
-        :ready="connected"
-        :current-user-id="this.currentUserId"
-        @send="sendMessage"
-        @startTyping="startTyping"
-        @height="setBarHeight"
-      />
+      <chat-bar :ready="connected" />
     </div>
     <member-list />
   </div>
@@ -61,13 +58,16 @@ import { connect } from "@/connection";
 import ChannelList from "../components/channel-list.vue";
 
 const messages = namespace("messages");
+const channels = namespace("channels");
 
 @Component({
   components: { ChatMessage, ChatBar, MemberList, ChannelList, Login },
 })
 export default class Root extends Vue {
   @Ref() container: HTMLDivElement;
-  @messages.State("messages") messages: Message[];
+  @messages.State("messages") messages: { [channelId: string]: Message[] };
+  @channels.State("currentChannel") currentChannelId: number;
+
   barHeight = 0;
   showLogin = false;
 
@@ -127,8 +127,6 @@ export default class Root extends Vue {
 
   applyScroll(scroll: boolean): void {
     if (scroll) {
-      console.log("scrolling...");
-
       this.$nextTick(() => {
         this.container.scroll(0, this.container.scrollHeight);
       });

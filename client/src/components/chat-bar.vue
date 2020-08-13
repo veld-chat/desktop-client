@@ -1,29 +1,19 @@
 <template>
   <div ref="wrapper" class="controls-wrapper">
     <div class="controls">
-      <div
-        v-show="autoComplete.length > 0"
-        ref="container"
-        class="autocomplete"
-      >
+      <div v-show="autoComplete.length > 0" ref="container" class="autocomplete">
         <div
           v-for="(item, index) in autoComplete"
           :key="item.text"
           :class="['autocomplete-item', autoCompleteIndex === index && 'active']"
           @click="handleAutoComplete(index)"
         >
-          <img
-            v-if="item.image"
-            :src="item.image"
-            class="autocomplete-image"
-            alt="Image"
-          >
+          <img v-if="item.image" :src="item.image" class="autocomplete-image" alt="Image" />
           <div
             v-if="item.avatar"
             class="autocomplete-avatar"
             :style="{backgroundImage: `url('${item.avatar}')`}"
           />
-
           {{ item.emoji }} {{ item.text }}
           <span
             v-show="item.description"
@@ -39,10 +29,7 @@
         maxlength="256"
         :disabled="!ready"
       />
-      <a
-        class="sendbutton flex-end"
-        @click="send()"
-      >
+      <a class="sendbutton flex-end" @click="send()">
         <i class="fas fa-paper-plane" />
       </a>
     </div>
@@ -56,8 +43,11 @@ import { Component, Ref } from "vue-property-decorator";
 import TypingBar from "./typing-bar.vue";
 import { autoComplete, AutoComplete } from "@/utils/autocomplete";
 import { connection } from "@/connection";
+import { namespace } from "vuex-class";
 const HyperMD = process.isClient ? require("../hypermd") : null;
 const CodeMirror = process.isClient ? require("codemirror") : null;
+
+const channels = namespace("channels");
 
 @Component({
   components: { TypingBar },
@@ -66,6 +56,8 @@ export default class ChatBar extends Vue {
   @Ref() input: HTMLTextAreaElement;
   @Ref() container: HTMLDivElement;
   @Ref() wrapper: HTMLDivElement;
+
+  @channels.State("currentChannel") currentChannel: string;
   message = "";
   lastTimeTyping = 0;
   ready = true;
@@ -94,7 +86,7 @@ export default class ChatBar extends Vue {
         Up: this.moveUp,
         Down: this.moveDown,
         Tab: this.handleTab,
-        "Shift-Enter": this.handleShiftEnter
+        "Shift-Enter": this.handleShiftEnter,
       },
     });
 
@@ -122,7 +114,11 @@ export default class ChatBar extends Vue {
   private handleClick(e: MouseEvent) {
     const element = e.target as HTMLImageElement;
 
-    if (element && element.tagName === "IMG" && element.classList.contains("emoji")) {
+    if (
+      element &&
+      element.tagName === "IMG" &&
+      element.classList.contains("emoji")
+    ) {
       if (!this.editor.hasFocus()) {
         this.editor.focus();
       }
@@ -218,12 +214,12 @@ export default class ChatBar extends Vue {
 
   moveToItem() {
     this.$nextTick(() => {
-       const element = this.container.querySelector(".active");
+      const element = this.container.querySelector(".active");
 
-       if (element) {
-         element.scrollIntoView({ block: "center" });
-       }
-    })
+      if (element) {
+        element.scrollIntoView({ block: "center" });
+      }
+    });
   }
 
   handleHint(cm: CodeMirror.Editor) {
@@ -258,14 +254,18 @@ export default class ChatBar extends Vue {
     }
 
     this.lastTimeTyping = new Date().getTime();
-    connection.emit("usr-typ");
+    connection.emit("user:typing");
   }
 
   send(): void {
     const message = this.editor.getValue();
+    if (message.length == 0) {
+      return;
+    }
 
-    connection.emit("usr-msg", {
-      message
+    connection.emit("message:create", {
+      content: message,
+      channelId: this.currentChannel,
     });
 
     this.editor.setValue("");
