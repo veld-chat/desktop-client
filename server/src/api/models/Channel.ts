@@ -1,6 +1,6 @@
 import { User } from "@/models/user";
 
-export interface APIChannel {
+export interface ApiChannel {
   id: string;
   name: string;
   members?: User[];
