@@ -3,6 +3,7 @@ import { injectable } from "tsyringe";
 import { ClientManager } from "@/client";
 import { ApiRequest } from "@/api";
 import { CreateChannelRequest, APIChannel } from "@/api/models/channel";
+import { CreateMessageRequest } from "../models/message";
 
 @injectable()
 @Security("bot")
@@ -24,5 +25,14 @@ export class ChannelController extends Controller {
       throw new Error("internal server error");
     }
     return channel;
+  }
+
+  @Post("/{channelId}/messages")
+  public async createMessage(
+    @Request() request: ApiRequest,
+    @Body() body: CreateMessageRequest,
+    @Path("channelId") channelId: string
+  ): Promise<void> {
+    await this.clientManager.sendMessage(request.user.id, channelId, body.content, body.embed);
   }
 }

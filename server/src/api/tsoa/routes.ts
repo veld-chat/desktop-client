@@ -5,8 +5,6 @@ import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute, H
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { TokenController } from './../controllers/UserController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { MessageController } from './../controllers/MessageController';
-// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { EmojiController } from './../controllers/EmojiController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { ChannelController } from './../controllers/ChannelController';
@@ -22,26 +20,6 @@ const models: TsoaRoute.Models = {
         "properties": {
             "id": { "dataType": "string", "required": true },
             "token": { "dataType": "string", "required": true },
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "EmbedAuthor": {
-        "dataType": "refAlias",
-        "type": { "dataType": "nestedObjectLiteral", "nestedProperties": { "iconUrl": { "dataType": "string", "required": true }, "value": { "dataType": "string", "required": true } }, "validators": {} },
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "EmbedPayload": {
-        "dataType": "refAlias",
-        "type": { "dataType": "nestedObjectLiteral", "nestedProperties": { "thumbnailUrl": { "dataType": "string" }, "imageUrl": { "dataType": "string" }, "footer": { "dataType": "string" }, "color": { "dataType": "double" }, "description": { "dataType": "string" }, "title": { "dataType": "string" }, "author": { "ref": "EmbedAuthor" } }, "validators": {} },
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "CreateMessageRequest": {
-        "dataType": "refObject",
-        "properties": {
-            "channelId": { "dataType": "string", "required": true },
-            "content": { "dataType": "string" },
-            "embed": { "ref": "EmbedPayload" },
         },
         "additionalProperties": false,
     },
@@ -89,6 +67,26 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "EmbedAuthor": {
+        "dataType": "refAlias",
+        "type": { "dataType": "nestedObjectLiteral", "nestedProperties": { "iconUrl": { "dataType": "string", "required": true }, "value": { "dataType": "string", "required": true } }, "validators": {} },
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "EmbedPayload": {
+        "dataType": "refAlias",
+        "type": { "dataType": "nestedObjectLiteral", "nestedProperties": { "thumbnailUrl": { "dataType": "string" }, "imageUrl": { "dataType": "string" }, "footer": { "dataType": "string" }, "color": { "dataType": "double" }, "description": { "dataType": "string" }, "title": { "dataType": "string" }, "author": { "ref": "EmbedAuthor" } }, "validators": {} },
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CreateMessageRequest": {
+        "dataType": "refObject",
+        "properties": {
+            "channelId": { "dataType": "string", "required": true },
+            "content": { "dataType": "string" },
+            "embed": { "ref": "EmbedPayload" },
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
 const validationService = new ValidationService(models);
 
@@ -114,33 +112,6 @@ export function RegisterRoutes(app: express.Express) {
             }
 
             const controller: any = iocContainer.get<TokenController>(TokenController);
-            if (typeof controller['setStatus'] === 'function') {
-                controller.setStatus(undefined);
-            }
-
-
-            const promise = controller.create.apply(controller, validatedArgs as any);
-            promiseHandler(controller, promise, response, next);
-        });
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    app.post('/api/v1/messages',
-        authenticateMiddleware([{ "bot": [] }]),
-        function(request: any, response: any, next: any) {
-            const args = {
-                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
-                body: { "in": "body", "name": "body", "required": true, "ref": "CreateMessageRequest" },
-            };
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = getValidatedArgs(args, request, response);
-            } catch (err) {
-                return next(err);
-            }
-
-            const controller: any = iocContainer.get<MessageController>(MessageController);
             if (typeof controller['setStatus'] === 'function') {
                 controller.setStatus(undefined);
             }
@@ -199,6 +170,34 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.create.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.post('/api/v1/channels/:channelId/messages',
+        authenticateMiddleware([{ "bot": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
+                body: { "in": "body", "name": "body", "required": true, "ref": "CreateMessageRequest" },
+                channelId: { "in": "path", "name": "channelId", "required": true, "dataType": "string" },
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller: any = iocContainer.get<ChannelController>(ChannelController);
+            if (typeof controller['setStatus'] === 'function') {
+                controller.setStatus(undefined);
+            }
+
+
+            const promise = controller.createMessage.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

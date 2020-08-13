@@ -22,66 +22,6 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"EmbedAuthor": {
-				"properties": {
-					"iconUrl": {
-						"type": "string"
-					},
-					"value": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"iconUrl",
-					"value"
-				],
-				"type": "object"
-			},
-			"EmbedPayload": {
-				"properties": {
-					"thumbnailUrl": {
-						"type": "string"
-					},
-					"imageUrl": {
-						"type": "string"
-					},
-					"footer": {
-						"type": "string"
-					},
-					"color": {
-						"type": "number",
-						"format": "double"
-					},
-					"description": {
-						"type": "string"
-					},
-					"title": {
-						"type": "string"
-					},
-					"author": {
-						"$ref": "#/components/schemas/EmbedAuthor"
-					}
-				},
-				"type": "object"
-			},
-			"CreateMessageRequest": {
-				"properties": {
-					"channelId": {
-						"type": "string"
-					},
-					"content": {
-						"type": "string"
-					},
-					"embed": {
-						"$ref": "#/components/schemas/EmbedPayload"
-					}
-				},
-				"required": [
-					"channelId"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
 			"Emoji": {
 				"properties": {
 					"name": {
@@ -208,6 +148,66 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"EmbedAuthor": {
+				"properties": {
+					"iconUrl": {
+						"type": "string"
+					},
+					"value": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"iconUrl",
+					"value"
+				],
+				"type": "object"
+			},
+			"EmbedPayload": {
+				"properties": {
+					"thumbnailUrl": {
+						"type": "string"
+					},
+					"imageUrl": {
+						"type": "string"
+					},
+					"footer": {
+						"type": "string"
+					},
+					"color": {
+						"type": "number",
+						"format": "double"
+					},
+					"description": {
+						"type": "string"
+					},
+					"title": {
+						"type": "string"
+					},
+					"author": {
+						"$ref": "#/components/schemas/EmbedAuthor"
+					}
+				},
+				"type": "object"
+			},
+			"CreateMessageRequest": {
+				"properties": {
+					"channelId": {
+						"type": "string"
+					},
+					"content": {
+						"type": "string"
+					},
+					"embed": {
+						"$ref": "#/components/schemas/EmbedPayload"
+					}
+				},
+				"required": [
+					"channelId"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -240,32 +240,6 @@
 				},
 				"security": [],
 				"parameters": []
-			}
-		},
-		"/api/v1/messages": {
-			"post": {
-				"operationId": "Create",
-				"responses": {
-					"204": {
-						"description": "No content"
-					}
-				},
-				"security": [
-					{
-						"bot": []
-					}
-				],
-				"parameters": [],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/CreateMessageRequest"
-							}
-						}
-					}
-				}
 			}
 		},
 		"/api/v1/emojis": {
@@ -317,6 +291,41 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/CreateChannelRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/channels/{channelId}/messages": {
+			"post": {
+				"operationId": "CreateMessage",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"security": [
+					{
+						"bot": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "channelId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateMessageRequest"
 							}
 						}
 					}
