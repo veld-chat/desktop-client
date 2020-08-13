@@ -1,6 +1,6 @@
 import { injectable } from "tsyringe";
 import { ChannelDoc } from "@/db";
-import { APIChannel } from "@/api/models/channel";
+import { ApiChannel } from "@/api/models/channel";
 import { ClientManager } from "./client-manager";
 
 @injectable()
@@ -11,7 +11,7 @@ export class ClientChannel {
     private readonly clientManager: ClientManager
   ) { }
 
-  serialize(withMembers: boolean = false): APIChannel {
+  serialize(withMembers: boolean = false): ApiChannel {
     return {
       id: this.channel.id,
       name: this.channel.name,
