@@ -1,11 +1,11 @@
 import { User } from "@/models/user";
 
-export type APIChannel = {
+export interface APIChannel {
   id: string;
   name: string;
   members?: User[];
 };
 
-export type CreateChannelRequest = {
+export interface CreateChannelRequest {
   name: string;
 }

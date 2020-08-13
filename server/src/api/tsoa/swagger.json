@@ -175,27 +175,27 @@
 				],
 				"type": "object"
 			},
-			"Channel": {
+			"APIChannel": {
 				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
 					"members": {
 						"items": {
 							"$ref": "#/components/schemas/User"
 						},
 						"type": "array"
-					},
-					"name": {
-						"type": "string"
-					},
-					"id": {
-						"type": "string"
 					}
 				},
 				"required": [
-					"members",
-					"name",
-					"id"
+					"id",
+					"name"
 				],
-				"type": "object"
+				"type": "object",
+				"additionalProperties": false
 			},
 			"CreateChannelRequest": {
 				"properties": {
@@ -206,7 +206,8 @@
 				"required": [
 					"name"
 				],
-				"type": "object"
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -298,7 +299,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Channel"
+									"$ref": "#/components/schemas/APIChannel"
 								}
 							}
 						}
@@ -320,6 +321,31 @@
 						}
 					}
 				}
+			}
+		},
+		"/api/v1/channels/{channelId}": {
+			"post": {
+				"operationId": "Join",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"security": [
+					{
+						"bot": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "channelId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		}
 	},
