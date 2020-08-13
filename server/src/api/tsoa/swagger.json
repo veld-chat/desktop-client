@@ -322,31 +322,6 @@
 					}
 				}
 			}
-		},
-		"/api/v1/channels/{channelId}": {
-			"post": {
-				"operationId": "Join",
-				"responses": {
-					"204": {
-						"description": "No content"
-					}
-				},
-				"security": [
-					{
-						"bot": []
-					}
-				],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "channelId",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
-			}
 		}
 	},
 	"servers": [
