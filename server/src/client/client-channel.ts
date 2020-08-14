@@ -1,6 +1,6 @@
 import { injectable } from "tsyringe";
 import { ChannelDoc } from "@/db";
-import { ApiChannel } from "../api/models/channel";
+import { ApiChannel } from "../api/models";
 import { ClientManager } from "./client-manager";
 
 @injectable()
