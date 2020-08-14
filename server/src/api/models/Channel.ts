@@ -4,7 +4,7 @@ export interface ApiChannel {
   id: string;
   name: string;
   members?: User[];
-};
+}
 
 export interface CreateChannelRequest {
   name: string;
