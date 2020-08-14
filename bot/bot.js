@@ -59,8 +59,8 @@ connection.on('message:create', async (message) => {
         channelId: "0",
         embed: {
           title: "Hi I'm Veld's test bot!",
-          description: "Thanks for checking me out :)",
-          imageUrl: "https://cdn.miki.ai/ext/imgh/12ERnwskpGx.jpeg",
+          description: "Thanks for checking me out :) Long text to test max-width on the embed....",
+          imageUrl: "https://miki-cdn.nyc3.digitaloceanspaces.com/branding/logo-dark@1024.png",
         },
       }, {
         headers: {

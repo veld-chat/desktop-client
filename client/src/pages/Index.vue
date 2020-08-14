@@ -46,7 +46,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Ref } from "vue-property-decorator";
+import { Component, Ref, Watch } from "vue-property-decorator";
 import Login from "../components/login.vue";
 import ChatBar from "../components/chat-bar.vue";
 import MemberList from "../components/member-list.vue";
@@ -80,6 +80,14 @@ export default class Root extends Vue {
 
   mounted(): void {
     connect();
+
+    this.$store.watch(
+      () => this.$store.state.messages.messages,
+      () => {
+        console.log("scroll");
+        this.applyScroll(this.shouldScroll());
+      }
+    );
 
     if (Notification.permission !== "granted") {
       Notification.requestPermission();

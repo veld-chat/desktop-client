@@ -23,6 +23,11 @@
   margin-top: 0.25rem;
   margin-bottom: 0.25rem;
 }
+.embed p {
+  overflow: hidden;
+  word-wrap: break-word;
+  overflow-wrap: break-all;
+}
 
 .embed-author {
   display: flex;
@@ -48,9 +53,14 @@
   color: #787878;
 }
 
+.embed-info {
+  flex: 1;
+}
+
 .embed-icon {
   width: 4rem;
   height: 4rem;
+  margin: 0;
 }
 
 .embed-image-container {
@@ -60,6 +70,14 @@
 .embed-image {
   width: auto;
   max-height: 240px;
+}
+
+.embed-icon-container {
+  width: 4rem;
+  height: 4rem;
+  margin-left: 1rem;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 @include mobile {

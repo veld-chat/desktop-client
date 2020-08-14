@@ -32,8 +32,11 @@
               <p v-if="part.embed.description">{{ part.embed.description }}</p>
               <p v-if="part.embed.footer" class="embed-footer">{{part.embed.footer}}</p>
             </div>
-            <div class="embed-icon-container">
-              <img v-if="part.embed.imageUrl" class="embed-icon" :src="part.embed.imageUrl" />
+            <div v-if="part.embed.imageUrl" class="embed-icon-container">
+              <div
+                :style="`background: url(${part.embed.imageUrl}) center; background-size: contain`"
+                class="embed-icon"
+              />
             </div>
           </div>
           <div>
