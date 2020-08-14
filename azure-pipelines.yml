@@ -5,6 +5,14 @@
 resources:
 - repo: self
 
+trigger:
+ branches:
+  include:
+    - master
+ paths:
+   include:
+     - 'server/src/*'
+
 variables:
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: 'b9833edf-8d3f-4cf2-9f56-772c293631be'
