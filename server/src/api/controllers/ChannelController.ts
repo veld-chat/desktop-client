@@ -27,6 +27,14 @@ export class ChannelController extends Controller {
     return channel;
   }
 
+  @Post("{channelId}/join")
+  public async joinChannel(
+    @Request() request: ApiRequest,
+    @Path("channelId") channelId: string
+  ) {
+    await this.clientManager.joinChannel(request.user.id, channelId);
+  }
+
   @Post("{channelId}/messages")
   public async createMessage(
     @Request() request: ApiRequest,
