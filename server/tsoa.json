@@ -8,7 +8,6 @@
   },
   "routes": {
     "routesDir": "src/api/tsoa",
-    "iocModule": "src/api",
     "authenticationModule": "src/api"
   },
   "compilerOptions": {

@@ -16,7 +16,6 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import ChannelListItem from "./channel-list-item.vue";
-33;
 import { Channel } from "@/models";
 import { State, namespace } from "vuex-class";
 

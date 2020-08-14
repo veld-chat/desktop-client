@@ -1,6 +1,6 @@
 <template>
   <a
-    :class="`channel-list-item ${currentChannel == channel.id ? 'selected' : ''}`"
+    :class="['channel-list-item', currentChannel === channel.id && 'is-selected', channel.unreadAmount === 0 && 'is-read']"
     @click="setChannel"
   >
     <span class="flex text-centered">
@@ -9,10 +9,10 @@
     </span>
     <div class="flex">
       <div
-        v-if="channel.mentions && channel.mentions > 0"
+        v-if="channel.mentionAmount && channel.mentionAmount > 0"
         class="badge is-danger"
-      >{{channel.mentions}}</div>
-      <div v-if="channel.members" class="badge is-secondary">{{onlineMembers}}/{{totalMembers}}</div>
+      >{{channel.mentionAmount}}</div>
+      <div v-if="!channel.system" class="badge is-secondary">{{onlineMembers}}/{{totalMembers}}</div>
     </div>
   </a>
 </template>
@@ -46,7 +46,7 @@ export default class ChannelListItem extends Vue {
     return this.channel.members
       .map((x) => this.users[x] || null)
       .filter((x) => x)
-      .filter((x) => x.status.value === "online").length;
+      .filter((x) => x.status.value !== "offline").length;
   }
 
   get totalMembers(): number {

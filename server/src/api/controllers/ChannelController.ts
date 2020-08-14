@@ -1,30 +1,19 @@
 import { Body, Controller, Post, Request, Route, Security, Path } from "tsoa";
-import { injectable } from "tsyringe";
-import { ClientManager } from "@/client";
 import { ApiRequest } from "@/api";
-import { CreateChannelRequest, ApiChannel } from "../models";
-import { CreateMessageRequest } from "../models";
+import { clientManager } from "@/client";
+import { channelService, userService } from "@/services";
+import { ApiChannel } from "@/models";
+import { CreateChannelRequest, CreateMessageRequest } from "@/api/models";
 
-@injectable()
 @Security("bot")
 @Route("api/v1/channels")
 export class ChannelController extends Controller {
-  constructor(
-    private readonly clientManager: ClientManager
-  ) {
-    super();
-  }
-
   @Post()
   public async create(
     @Request() request: ApiRequest,
     @Body() body: CreateChannelRequest
   ): Promise<ApiChannel> {
-    let channel = this.clientManager.createChannel(request.user.id, body.name);
-    if (!channel) {
-      throw new Error("internal server error");
-    }
-    return channel;
+    return await channelService.create(body.name, request.user.id);
   }
 
   @Post("{channelId}/join")
@@ -32,7 +21,7 @@ export class ChannelController extends Controller {
     @Request() request: ApiRequest,
     @Path("channelId") channelId: string
   ) {
-    await this.clientManager.joinChannel(request.user.id, channelId);
+    return await channelService.addMember(channelId, request.user.id);
   }
 
   @Post("{channelId}/messages")
@@ -41,6 +30,6 @@ export class ChannelController extends Controller {
     @Body() body: CreateMessageRequest,
     @Path("channelId") channelId: string
   ): Promise<void> {
-    await this.clientManager.sendMessage(request.user.id, channelId, body.content, body.embed);
+    await clientManager.sendMessage(request.user.id, channelId, body.content, body.embed);
   }
 }

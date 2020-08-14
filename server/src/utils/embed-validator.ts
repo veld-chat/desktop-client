@@ -1,5 +1,5 @@
-import { EmbedPayload } from "@/models/embed";
 import { validate } from "./string-validator";
+import { EmbedPayload } from "@/models";
 
 const proxyUrl = "https://proxy.veld.workers.dev/?url=";
 

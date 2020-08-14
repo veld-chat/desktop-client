@@ -1,23 +1,24 @@
-import { Client, ClientChannel } from "@/client";
-import { ClientAuthRequest, Token } from "@/models/gateway-payloads";
+import { Client } from "@/client";
 import { RateLimit } from "@/utils/rate-limit";
 import { commandManager } from "@/commands/command-manager";
 import SocketIO from "socket.io";
-import SnowyFlake from "snowyflake";
 import { validateEmbed } from "@/utils/embed-validator";
-import { escapeHtml, normalizeName, validate } from "@/utils/string-validator";
-import { User, Channel } from "@/db";
-import { ImageService } from "@/image";
-import { container, inject, singleton } from "tsyringe";
+import { escapeHtml, normalizeName } from "@/utils/string-validator";
+import { User, Channel, ChannelDoc } from "@/db";
 import { logger } from "@/logger";
-import { TokenService } from "@/token-service";
-import { EmbedPayload } from "@/models/embed";
 import { selectMany } from "@/utils/map";
+import { server } from "@/server";
+import { generateId } from "@/utils";
+import { channelService, tokenService, userService } from "@/services";
+import { imageService } from "@/services/image-service";
+import { ClientAuthRequest, EmbedPayload } from "@/models";
 
-const GatewayEvents = {
+export const GatewayEvents = {
     ready: "ready",
     login: "login",
     createMessage: "message:create",
+    userJoin: "user:join",
+    userLeave: "user:leave",
     userTyping: "user:typing",
     userUpdate: "user:update",
     channelCommands: "channel:commands",
@@ -26,98 +27,58 @@ const GatewayEvents = {
     memberDelete: "member:delete",
 }
 
-@singleton()
-export class ClientManager {
+export const clientManager = new class {
     private messageRateLimit = new RateLimit(5, 5000);
     private clients: Map<string, Client>;
     private sockets: Map<string, Client>;
-    private channels: Map<string, ClientChannel>;
+    private mainChannel: string;
 
-    constructor(
-        @inject("io") private readonly io: SocketIO.Server,
-        @inject("options") private readonly options: any,
-        private readonly tokenService: TokenService,
-        private readonly snowFlake: SnowyFlake,
-        private readonly imageService: ImageService
-    ) {
+    constructor() {
         this.clients = new Map();
         this.sockets = new Map();
-        this.channels = new Map();
     }
 
     async start() {
         logger.info("starting server")
 
-        this.channels.set("0", this.getDefaultChannel());
-        this.channels.set("1", this.getTestChannel());
+        let main = await Channel.findOne({ name: "main", system: true });
 
-        this.io.on("connection", (socket) => this.onClientConnected(socket));
-    }
-
-    async createChannel(name: string, creatorId: string): Promise<Channel | null> {
-        let creator = this.clients.get(creatorId);
-        if (!creator) {
-            return null;
+        if (main === null) {
+            main = new Channel();
+            main.id = generateId();
+            main.name = "main";
+            main.system = true;
+            await main.save();
         }
 
-        let channel = new Channel();
-        channel.id = this.snowFlake.nextId().toString();
-        channel.name = name;
-        channel.members = [creatorId];
+        this.mainChannel = main.id;
 
-        let clientChannel = container.resolve(ClientChannel);
-        clientChannel.channel = channel;
-
-        this.io.emit(GatewayEvents.channelCreate, clientChannel.serialize(true));
-        return channel;
-    }
-
-    async joinChannel(id: string, channelId: string) {
-        if (!this.getChannel(channelId)
-            || !this.get(id)) {
-            return;
-        }
-
-        let user = this.get(id);
-        if (!user) {
-            return;
-        }
-        user.channels.push(channelId);
-        await user.user.save();
-
-        let channel = this.getChannel(channelId);
-        channel.members.push(user.id);
-        await channel.channel.save();
+        server.io.on("connection", (socket) => this.onClientConnected(socket));
     }
 
     get(id: string) {
         return this.clients.get(id);
     }
 
-    getChannel(channelId: string): ClientChannel {
-        if (channelId === "0") {
-            return this.getDefaultChannel();
-        }
-        return this.channels.get(channelId);
-    }
-
     sendMessage(userId: string, channelId: string, content: string, embed?: EmbedPayload) {
-        if (!channelId || !this.getChannel(channelId)) {
-            return;
-        }
+        const isMain = channelId === this.mainChannel;
 
-        this.io.emit(GatewayEvents.createMessage, {
-            id: this.snowFlake.nextId().toString(),
-            channelId: channelId,
-            user: userId,
-            content: escapeHtml(content),
-            embed: validateEmbed(embed),
-            mentions: this.getMentions(content)
-        });
+        for (const client of this.clients.values()) {
+            if (isMain || client.user.channels.includes(channelId)) {
+                client.emit(GatewayEvents.createMessage, {
+                    id: generateId(),
+                    channelId: channelId,
+                    user: userId,
+                    content: escapeHtml(content),
+                    embed: validateEmbed(embed),
+                    mentions: this.getMentions(content)
+                });
+            }
+        }
     }
 
     updateUser(user: Client) {
-        this.io.emit(GatewayEvents.userUpdate, user.serialize());
+        server.io.emit(GatewayEvents.userUpdate, user.serialize());
     }
 
     getMentions(content: string): string[] {
@@ -136,28 +97,6 @@ export class ClientManager {
         );
     }
 
-    getDefaultChannel(): ClientChannel {
-        let channel = new Channel();
-        channel.id = "0";
-        channel.name = "main";
-        channel.members = Array.from(this.clients.values()).map(x => x.id);
-
-        let clientChannel = container.resolve(ClientChannel);
-        clientChannel.channel = channel;
-        return clientChannel;
-    }
-
-    getTestChannel(): ClientChannel {
-        let channel = new Channel();
-        channel.id = "1";
-        channel.name = "test";
-        channel.members = Array.from(this.clients.values()).map(x => x.id);
-
-        let clientChannel = container.resolve(ClientChannel);
-        clientChannel.channel = channel;
-        return clientChannel;
-    }
-
     private onClientConnected(socket: SocketIO.Socket) {
         logger.info("client", socket.id, " connected");
 
@@ -169,7 +108,7 @@ export class ClientManager {
 
     private async onClientAuthenticated(socket: SocketIO.Socket, request: ClientAuthRequest) {
         if (this.sockets.has(socket.id)) {
-            this.onClientDisconnect(socket);
+            await this.onClientDisconnect(socket);
         }
 
         let id: string = null;
@@ -177,7 +116,7 @@ export class ClientManager {
 
         if (request.token) {
             try {
-                id = this.tokenService.decode(request.token).id;
+                id = tokenService.decode(request.token).id;
                 token = request.token;
             } catch {
                 // ignore
@@ -185,7 +124,7 @@ export class ClientManager {
         }
 
         if (!id) {
-            id = this.snowFlake.nextId().toString();
+            id = generateId();
         }
 
         let client = this.clients.get(id);
@@ -198,8 +137,7 @@ export class ClientManager {
                 user = new User();
                 user.id = id;
                 user.name = "anon-" + socket.id.substr(0, 6);
-                user.avatar = await this.imageService.getRandomImage();
-                user.channels = ["0", "1"];
+                user.avatar = await imageService.getRandomImage();
             }
 
             if (request.name) {
@@ -212,11 +150,10 @@ export class ClientManager {
 
             user.lastLogin = new Date();
             user.bot = !!request.bot;
-            user.channels = user.channels || ["0", "1"];
 
             await user.save();
 
-            client = container.resolve(Client);
+            client = new Client();
             client.user = user;
             isNew = true;
 
@@ -231,55 +168,30 @@ export class ClientManager {
             members: Array.from(this.clients.values())
                 .filter(x => x)
                 .map(x => x.serialize()),
-            channels: client.channels
-                .map(x => this.getChannel(x))
-                .filter(x => x)
-                .map(x => x.serialize(true)),
-            token: token ?? this.tokenService.createToken(id),
+            channels: await channelService.getAll(client.user.channels, true, true),
+            token: token ?? tokenService.createToken(id),
+            mainChannel: this.mainChannel
         });
 
         socket.on(GatewayEvents.userTyping, () => this.onClientStartTyping(socket));
         socket.on(GatewayEvents.createMessage, (msg) => this.onClientMessageReceived(socket, msg));
-
-        if (isNew) {
-            for (let channel of client.channels) {
-                if (!channel) {
-                    continue;
-                }
-
-                this.io.emit(
-                    GatewayEvents.memberCreate, {
-                    user: client.serialize(),
-                    channel: this.getChannel(channel).serialize(),
-                });
-            }
-        }
+        server.io.emit(GatewayEvents.userJoin, client.serialize());
     }
 
-    private onClientDisconnect(socket: SocketIO.Socket) {
+    private async onClientDisconnect(socket: SocketIO.Socket) {
         const client = this.sockets.get(socket.id);
         this.sockets.delete(socket.id);
 
         if (client && client.unregisterSocket(socket)) {
             this.clients.delete(client.id);
-
-            for (let channel of client.channels) {
-                if (!channel) {
-                    continue;
-                }
-
-                this.io.emit(GatewayEvents.memberDelete, {
-                    user: client.serialize(),
-                    channel: this.getChannel(channel).serialize(),
-                });
-            }
+            server.io.emit(GatewayEvents.userLeave, await userService.get(client.id));
         }
     }
 
     private onClientStartTyping(socket: SocketIO.Socket) {
         const client = this.sockets.get(socket.id);
 
-        this.io.emit(GatewayEvents.userTyping, {
+        server.io.emit(GatewayEvents.userTyping, {
             id: client.id,
             name: client.name,
         });
@@ -288,7 +200,7 @@ export class ClientManager {
     private async onClientMessageReceived(socket: SocketIO.Socket, msg: any) {
         const client = this.sockets.get(socket.id);
 
-        if (commandManager.handle(this, client, msg.message)) {
+        if (commandManager.handle(client, msg.content)) {
             return;
         }
 

@@ -7,10 +7,12 @@ const UserSchema = createSchema({
   lastLogin: Type.date(),
   bot: Type.boolean(),
   channels: Type.array().of(Type.string({ default: [] })),
+  statusText: Type.string()
 });
 
 const ChannelSchema = createSchema({
   id: Type.string(),
+  system: Type.boolean(),
   name: Type.string(),
   members: Type.array().of(Type.string({ default: [] })),
 })

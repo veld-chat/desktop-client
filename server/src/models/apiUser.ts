@@ -1,4 +1,4 @@
-export type User = {
+export type ApiUser = {
   id: string;
   name: string;
   avatarUrl: string;

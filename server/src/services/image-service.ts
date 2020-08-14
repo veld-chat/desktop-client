@@ -1,9 +1,7 @@
-import { singleton } from "tsyringe";
 import axios from "axios";
 import { logger } from "@/logger";
 
-@singleton()
-export class ImageService {
+export const imageService = new class {
   /**
    * Get a random image from Imghoard.
    */

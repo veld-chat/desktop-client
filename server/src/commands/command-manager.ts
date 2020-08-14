@@ -1,14 +1,11 @@
 import { Client } from "../client/client";
-import { ClientManager } from "../client/client-manager";
-import { singleton } from "tsyringe";
 
 const ws = /\s+/;
 
 export interface CommandContext {
   args: string[];
-  message: string;
+  content: string;
   client: Client;
-  clientManager: ClientManager
 }
 
 export interface CommandInformation {
@@ -22,8 +19,7 @@ export interface Command {
   handle(e: CommandContext): void | Promise<void>;
 }
 
-@singleton()
-export class CommandManager {
+export const commandManager = new class {
   private _commands: { [name: string]: Command } = {};
   commands: { [name: string]: CommandInformation } = {}
 
@@ -35,12 +31,12 @@ export class CommandManager {
     }
   }
 
-  handle(clientManager: ClientManager, client: Client, input: string) {
-    if (!input || input[0] !== "/") {
+  handle(client: Client, content: string) {
+    if (!content || content[0] !== "/") {
       return false;
     }
 
-    const args = input.substr(1).split(ws);
+    const args = content.substr(1).split(ws);
     const name = args.shift();
     const command = this._commands[name];
 
@@ -50,13 +46,10 @@ export class CommandManager {
 
     command.handle({
       args,
-      clientManager,
       client,
-      content: input
+      content
     })
 
     return true;
   }
 }
-
-export const commandManager = new CommandManager();

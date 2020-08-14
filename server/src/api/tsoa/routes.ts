@@ -9,7 +9,6 @@ import { EmojiController } from './../controllers/EmojiController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { ChannelController } from './../controllers/ChannelController';
 import { expressAuthentication } from './..';
-import { iocContainer } from './..';
 import * as express from 'express';
 
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -44,7 +43,7 @@ const models: TsoaRoute.Models = {
         "type": { "dataType": "nestedObjectLiteral", "nestedProperties": { "value": { "ref": "UserStatusValue", "required": true }, "statusText": { "dataType": "string" } }, "validators": {} },
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "User": {
+    "ApiUser": {
         "dataType": "refAlias",
         "type": { "dataType": "nestedObjectLiteral", "nestedProperties": { "status": { "ref": "UserStatus", "required": true }, "bot": { "dataType": "boolean", "required": true }, "avatarUrl": { "dataType": "string", "required": true }, "name": { "dataType": "string", "required": true }, "id": { "dataType": "string", "required": true } }, "validators": {} },
     },
@@ -54,7 +53,7 @@ const models: TsoaRoute.Models = {
         "properties": {
             "id": { "dataType": "string", "required": true },
             "name": { "dataType": "string", "required": true },
-            "members": { "dataType": "array", "array": { "dataType": "refAlias", "ref": "User" } },
+            "members": { "dataType": "array", "array": { "dataType": "refAlias", "ref": "ApiUser" } },
         },
         "additionalProperties": false,
     },
@@ -80,7 +79,6 @@ const models: TsoaRoute.Models = {
     "CreateMessageRequest": {
         "dataType": "refObject",
         "properties": {
-            "channelId": { "dataType": "string", "required": true },
             "content": { "dataType": "string" },
             "embed": { "ref": "EmbedPayload" },
         },
@@ -111,10 +109,7 @@ export function RegisterRoutes(app: express.Express) {
                 return next(err);
             }
 
-            const controller: any = iocContainer.get<TokenController>(TokenController);
-            if (typeof controller['setStatus'] === 'function') {
-                controller.setStatus(undefined);
-            }
+            const controller = new TokenController();
 
 
             const promise = controller.create.apply(controller, validatedArgs as any);
@@ -136,10 +131,7 @@ export function RegisterRoutes(app: express.Express) {
                 return next(err);
             }
 
-            const controller: any = iocContainer.get<EmojiController>(EmojiController);
-            if (typeof controller['setStatus'] === 'function') {
-                controller.setStatus(undefined);
-            }
+            const controller = new EmojiController();
 
 
             const promise = controller.create.apply(controller, validatedArgs as any);
@@ -163,13 +155,34 @@ export function RegisterRoutes(app: express.Express) {
                 return next(err);
             }
 
-            const controller: any = iocContainer.get<ChannelController>(ChannelController);
-            if (typeof controller['setStatus'] === 'function') {
-                controller.setStatus(undefined);
-            }
+            const controller = new ChannelController();
 
 
             const promise = controller.create.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    app.post('/api/v1/channels/:channelId/join',
+        authenticateMiddleware([{ "bot": [] }]),
+        function(request: any, response: any, next: any) {
+            const args = {
+                request: { "in": "request", "name": "request", "required": true, "dataType": "object" },
+                channelId: { "in": "path", "name": "channelId", "required": true, "dataType": "string" },
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new ChannelController();
+
+
+            const promise = controller.joinChannel.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -191,10 +204,7 @@ export function RegisterRoutes(app: express.Express) {
                 return next(err);
             }
 
-            const controller: any = iocContainer.get<ChannelController>(ChannelController);
-            if (typeof controller['setStatus'] === 'function') {
-                controller.setStatus(undefined);
-            }
+            const controller = new ChannelController();
 
 
             const promise = controller.createMessage.apply(controller, validatedArgs as any);

@@ -1,21 +1,16 @@
-import { ClientManager } from "./client-manager";
 import { UserDoc } from "@/db";
 import SocketIO from "socket.io";
-import { injectable } from "tsyringe";
-import { ImageService } from "@/image";
 import { normalizeName } from "@/utils/string-validator";
-import { User } from "@/models/user";
+import { clientManager } from "@/client/client-manager";
+import { userService } from "@/services";
+import { imageService } from "@/services/image-service";
+import { ApiUser, UserStatusValue } from "@/models";
 
-@injectable()
 export class Client {
     private sockets: SocketIO.Socket[] = [];
 
     user: UserDoc;
-
-    constructor(
-        private readonly clientManager: ClientManager,
-        private readonly imageService: ImageService
-    ) { }
+    status: UserStatusValue = "online";
 
     get id() {
         return this.user.id;
@@ -35,7 +30,7 @@ export class Client {
 
     async setName(value: string) {
         this.user.name = normalizeName(value);
-        this.clientManager.updateUser(this);
+        clientManager.updateUser(this);
         await this.user.save();
     }
 
@@ -45,24 +40,16 @@ export class Client {
 
     async setAvatar(value: string) {
         this.user.avatar = value;
-        this.clientManager.updateUser(this);
+        clientManager.updateUser(this);
         await this.user.save();
     }
 
-    serialize(): User {
-        return {
-            id: this.id,
-            name: this.user.name,
-            avatarUrl: this.user.avatar,
-            bot: this.user.bot,
-            status: {
-                value: "online"
-            }
-        };
+    serialize(): ApiUser {
+        return userService.serialize(this.user, this);
     }
 
     async randomAvatar() {
-        await this.setAvatar(await this.imageService.getRandomImage());
+        await this.setAvatar(await imageService.getRandomImage());
     }
 
     error(content: string) {

@@ -88,7 +88,7 @@
 				],
 				"type": "object"
 			},
-			"User": {
+			"ApiUser": {
 				"properties": {
 					"status": {
 						"$ref": "#/components/schemas/UserStatus"
@@ -125,7 +125,7 @@
 					},
 					"members": {
 						"items": {
-							"$ref": "#/components/schemas/User"
+							"$ref": "#/components/schemas/ApiUser"
 						},
 						"type": "array"
 					}
@@ -193,9 +193,6 @@
 			},
 			"CreateMessageRequest": {
 				"properties": {
-					"channelId": {
-						"type": "string"
-					},
 					"content": {
 						"type": "string"
 					},
@@ -203,9 +200,6 @@
 						"$ref": "#/components/schemas/EmbedPayload"
 					}
 				},
-				"required": [
-					"channelId"
-				],
 				"type": "object",
 				"additionalProperties": false
 			}
@@ -295,6 +289,38 @@
 						}
 					}
 				}
+			}
+		},
+		"/api/v1/channels/{channelId}/join": {
+			"post": {
+				"operationId": "JoinChannel",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "boolean"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"bot": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "channelId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		},
 		"/api/v1/channels/{channelId}/messages": {

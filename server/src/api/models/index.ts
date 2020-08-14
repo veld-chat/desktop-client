@@ -1,15 +1,8 @@
-import { User } from "@/models/user";
-import { EmbedPayload } from "@/models/embed";
+import { EmbedPayload } from "@/models";
 
 export interface CreateMessageRequest {
   content?: string;
   embed?: EmbedPayload;
-}
-
-export interface ApiChannel {
-  id: string;
-  name: string;
-  members?: User[];
 }
 
 export interface CreateChannelRequest {

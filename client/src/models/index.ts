@@ -26,13 +26,25 @@ type MessageBase = {
   mentions: string[];
 };
 
+export type ScrollPosition = number | "end";
+
+export type ServerChannel = {
+  id: string;
+  system: boolean;
+  name: string;
+  members: User[];
+};
+
 export type Channel = {
   id: string;
+  system: boolean;
   name: string;
-  mentions?: number;
-
   members: string[];
-  messages?: Message[];
+  messages: Message[];
+  scroll: ScrollPosition;
+  lastMessageId?: string;
+  unreadAmount: number;
+  mentionAmount: number;
 };
 
 export type Embed = {

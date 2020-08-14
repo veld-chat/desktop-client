@@ -31,14 +31,14 @@
         </header>
       </div>
       <div class="message-container" ref="container">
-        <div class="messages">
-          <div v-for="(message, id) in messages[currentChannelId]" :key="id">
+        <div v-if="channel" class="messages">
+          <div v-for="(message, id) in channel.messages" :key="id">
             <chat-message :message="message" />
           </div>
         </div>
       </div>
 
-      <chat-bar :ready="connected" />
+      <chat-bar />
     </div>
     <member-list />
   </div>
@@ -50,14 +50,13 @@ import { Component, Ref, Watch } from "vue-property-decorator";
 import Login from "../components/login.vue";
 import ChatBar from "../components/chat-bar.vue";
 import MemberList from "../components/member-list.vue";
-import { Message, User } from "@/models";
+import { Channel, User } from "@/models";
 import { store } from "@/store";
 import { namespace } from "vuex-class";
 import ChatMessage from "@/components/chat-message.vue";
 import { connect } from "@/connection";
 import ChannelList from "../components/channel-list.vue";
 
-const messages = namespace("messages");
 const channels = namespace("channels");
 
 @Component({
@@ -65,56 +64,51 @@ const channels = namespace("channels");
 })
 export default class Root extends Vue {
   @Ref() container: HTMLDivElement;
-  @messages.State("messages") messages: { [channelId: string]: Message[] };
-  @channels.State("currentChannel") currentChannelId: number;
+  @channels.Getter("current") channel: Channel;
 
-  barHeight = 0;
   showLogin = false;
 
   currentUserId = "";
   message = "";
   token = "";
-  connected = false;
-  resizeTimer?: number;
   scroll: boolean;
 
   mounted(): void {
     connect();
 
-    this.$store.watch(
-      () => this.$store.state.messages.messages,
-      () => {
-        console.log("scroll");
-        this.applyScroll(this.shouldScroll());
-      }
-    );
-
     if (Notification.permission !== "granted") {
       Notification.requestPermission();
     }
 
-    window.addEventListener("resize", this.onResize);
+    window.addEventListener("resize", this.updateScroll);
+    this.container.addEventListener("scroll", this.setChannelScroll);
   }
 
   beforeDestroy(): void {
-    window.removeEventListener("resize", this.onResize);
+    window.removeEventListener("resize", this.updateScroll);
+    this.container.removeEventListener("scroll", this.setChannelScroll);
   }
 
-  onResize() {
-    if (!this.scroll) {
-      this.scroll = this.shouldScroll();
+  setChannelScroll() {
+    const { container } = this;
+    let scroll: number | "end" = container.scrollTop;
+
+    if (scroll >= container.scrollHeight - container.clientHeight - 100) {
+      scroll = "end";
     }
 
-    if (!this.resizeTimer) {
-      window.clearTimeout(this.resizeTimer);
+    if (this.channel.scroll !== scroll) {
+      this.$store.dispatch("channels/setScroll", { id: this.channel.id, scroll });
     }
+  }
 
-    this.resizeTimer = window.setTimeout(() => {
-      if (this.scroll) {
-        this.applyScroll(this.scroll);
-        this.scroll = undefined;
-      }
-    }, 200);
+  @Watch("channel.messages")
+  updateScroll() {
+    if (this.channel.scroll === "end") {
+      this.$nextTick(() => {
+        this.container.scroll(0, this.container.scrollHeight);
+      });
+    }
   }
 
   onUserEdit(user: User): void {
@@ -131,19 +125,6 @@ export default class Root extends Vue {
     return (
       element.scrollTop >= element.scrollHeight - element.clientHeight - 100
     );
-  }
-
-  applyScroll(scroll: boolean): void {
-    if (scroll) {
-      this.$nextTick(() => {
-        this.container.scroll(0, this.container.scrollHeight);
-      });
-    }
-  }
-
-  setBarHeight(height: number) {
-    this.barHeight = height;
-    this.applyScroll(this.shouldScroll());
   }
 }
 </script>

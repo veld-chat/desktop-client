@@ -33,7 +33,6 @@
     "ts-mongoose": "^0.0.21",
     "tslog": "^2.7.0",
     "tsoa": "^3.2.1",
-    "tsyringe": "^4.3.0",
     "twemoji": "^13.0.1"
   },
   "devDependencies": {

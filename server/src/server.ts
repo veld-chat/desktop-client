@@ -4,52 +4,56 @@ import bodyParser from "body-parser";
 import { Server } from 'http';
 import io from 'socket.io';
 import fs from "fs";
-import { ClientManager } from "@/client";
 import "./commands/avatar";
 import "./commands/nick";
 import * as path from "path";
-import { container } from "tsyringe";
 import SocketIO from "socket.io";
-import SnowyFlake from "snowyflake";
-import { initApi, RegisterErrorHandler, RegisterRoutes, RegisterSwagger } from "@/api";
+import { RegisterErrorHandler, RegisterRoutes, RegisterSwagger } from "@/api";
 import mongoose from "mongoose";
+import { clientManager } from "@/client";
 
-const app = express();
+export interface Config {
+  secret: string;
+  connectionString: string;
+}
 
-app.use('/assets', express.static(path.join(__dirname, "..", "assets")));
+export const server = new class {
+  io: SocketIO.Server;
+  options: Config;
 
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  next();
-})
+  async start() {
+    const config: Config = JSON.parse(fs.readFileSync("config/config.json").toString());
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+    await mongoose.connect(config.connectionString, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
 
-RegisterRoutes(app);
-RegisterSwagger(app);
-RegisterErrorHandler(app);
+    const app = express();
 
-async function start() {
-  const config = JSON.parse(fs.readFileSync("config/config.json").toString());
+    app.use('/assets', express.static(path.join(__dirname, "..", "assets")));
 
-  await mongoose.connect(config.connectionString, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  });
+    app.use((req, res, next) => {
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      next();
+    })
 
-  const httpServer = new Server(app);
-  httpServer.listen(1234);
+    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(bodyParser.json());
 
-  container.registerSingleton(SnowyFlake);
-  container.register<SocketIO.Server>("io", { useValue: io(httpServer) });
-  container.register<any>("options", { useValue: config });
+    RegisterRoutes(app);
+    RegisterSwagger(app);
+    RegisterErrorHandler(app);
 
-  initApi();
+    const httpServer = new Server(app);
+    httpServer.listen(1234);
 
-  const clientManager = container.resolve(ClientManager);
-  await clientManager.start();
+    this.io = io(httpServer);
+    this.options = config;
+
+    await clientManager.start();
+  }
 }
 
 // noinspection JSIgnoredPromiseFromCall
-start();
+server.start();

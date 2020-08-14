@@ -270,7 +270,15 @@ $listWidth: 300px;
   margin: 0.25rem 0;
   border-radius: 4px;
 
-  &.selected {
+  &.is-read {
+    opacity: 0.4;
+  }
+
+  &.is-selected, &:hover {
+    opacity: 1;
+  }
+
+  &.is-selected {
     background-color: var(--body-bg);
   }
 

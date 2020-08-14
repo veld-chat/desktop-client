@@ -1,15 +1,8 @@
-import { TokenService } from "@/token-service";
-import { ClientManager } from "@/client";
-import { container } from "tsyringe";
 import * as express from "express";
-
-let tokenService: TokenService;
-let clientManager: ClientManager;
-
-export function initApi() {
-  tokenService = container.resolve(TokenService);
-  clientManager = container.resolve(ClientManager);
-}
+import { clientManager } from "@/client";
+import { tokenService } from "@/services";
+import { AuthError } from "@/api/errors";
+import { Token } from "@/models";
 
 export async function expressAuthentication(
   request: express.Request,
@@ -19,10 +12,16 @@ export async function expressAuthentication(
   const authValue = request.header("Authorization");
 
   if (!authValue || !authValue.startsWith("Bearer ")) {
-    throw new Error("Expected Authentication header.")
+    throw new AuthError("Expected Authentication header")
   }
 
-  const token = tokenService.decode(authValue.substr(7));
+  let token: Token;
+
+  try {
+    token = tokenService.decode(authValue.substr(7));
+  } catch {
+    throw new AuthError("Invalid token")
+  }
 
   return {
     id: token.id,

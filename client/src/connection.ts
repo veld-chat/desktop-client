@@ -1,11 +1,18 @@
 import { Emoji, registerEmoji } from "@/utils/emoji";
 import io from "socket.io-client";
 import { store } from "@/store";
-import { ServerMessage } from "@/models";
+import { ServerMessage, User } from "@/models";
 
 export let connection: SocketIOClient.Socket;
+let isConnected = false;
 
 export function connect() {
+  if (isConnected) {
+    return;
+  }
+
+  isConnected = true;
+
   const host = localStorage.getItem("gateway") || "chat-gateway.veld.dev";
   let id = "";
 
@@ -20,7 +27,11 @@ export function connect() {
     await store.dispatch("session/setUser", options.user);
     await store.dispatch("session/setToken", options.token);
     await store.dispatch("users/set", options.members);
-    await store.dispatch("channels/set", options.channels);
+    await store.dispatch("channels/set", options.channels.map(c => ({
+      ...c,
+      members: c.members.map(e => e.id)
+    })));
+    await store.dispatch("channels/setCurrentChannel", options.mainChannel);
 
     localStorage.setItem("token", options.token);
 
@@ -28,10 +39,9 @@ export function connect() {
   });
 
   connection.on("member:create", (memberJoinEvent) => {
-    store.dispatch("users/update", memberJoinEvent.user);
     store.dispatch("channels/addMember", {
       id: memberJoinEvent.channel.id,
-      member: memberJoinEvent.user,
+      member: memberJoinEvent.user.id,
     });
   });
 
@@ -42,12 +52,17 @@ export function connect() {
     });
   });
 
-  connection.on("channel:create", (channelEvent) => {
-    store.dispatch("users/update", channelEvent.user);
-    store.dispatch("channels/update", channelEvent.channel);
-  });
-
+  connection.on("channel:create", (channel) => store.dispatch("channels/update", channel));
   connection.on("user:update", (user) => store.dispatch("users/update", user));
+
+  connection.on("user:join", (user) => store.dispatch("users/update", user));
+  connection.on("user:leave", (user: User) => {
+    if (store.state.channels.channels.some(c => c.members.includes(user.id))) {
+      return store.dispatch("users/update", user);
+    } else {
+      return store.dispatch("users/remove", user)
+    }
+  });
 
   connection.on("channel:delete", (channelEvent) => {
     if (channelEvent.user.id == id) {
@@ -62,8 +77,7 @@ export function connect() {
   connection.on("user:typing", (user) => store.dispatch("users/setTyping", user.id));
 
   connection.on("message:create", (message) => {
-    console.log(message);
-    store.dispatch("messages/add", message)
+    store.dispatch("channels/addMessage", message)
   });
 
   connection.on("sys-error",
