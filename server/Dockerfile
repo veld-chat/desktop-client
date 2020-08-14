@@ -1,4 +1,4 @@
-FROM node:buster
+FROM node:12.17.0
 
 WORKDIR /app
 COPY package.json .
