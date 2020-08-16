@@ -1,0 +1,26 @@
+@import "variables";
+
+.button {
+  background-color: var(--editor-bg);
+  margin-top: 0.5rem;
+  margin-right: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+
+  &.primary {
+  }
+
+  &.outline {
+    border: 1px solid var(--editor-bg);
+    background-color: transparent;
+  }
+}
+
+.input {
+  color: white;
+  background-color: var(--sidebar-bg);
+  padding: 0.5rem;
+  border-radius: 4px;
+  outline: 0;
+  border: 0;
+}

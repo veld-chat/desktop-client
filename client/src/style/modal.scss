@@ -1,0 +1,33 @@
+@import "variables";
+
+.modal {
+  z-index: 998;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: #00000044;
+  display: none;
+
+  &.open {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.modal-close {
+  position: fixed;
+  right: 0;
+  top: 0;
+  margin: 2rem;
+}
+
+.modal-content {
+  z-index: 999;
+  background-color: var(--body-bg);
+  min-width: 40vw;
+  padding: 2rem;
+  border-radius: 8px;
+}

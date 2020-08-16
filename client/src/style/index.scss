@@ -7,6 +7,8 @@
 @import "autocomplete";
 @import "embed";
 @import "flex";
+@import "modal";
+@import "button";
 
 a,
 button {
@@ -274,7 +276,8 @@ $listWidth: 300px;
     opacity: 0.4;
   }
 
-  &.is-selected, &:hover {
+  &.is-selected,
+  &:hover {
     opacity: 1;
   }
 
