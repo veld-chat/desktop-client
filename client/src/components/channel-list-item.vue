@@ -4,15 +4,20 @@
     @click="setChannel"
   >
     <span class="flex text-centered">
-      <i class="icon fas fa-hashtag"></i>
+      <i class="icon fas fa-hashtag" />
       {{ channel.name }}
     </span>
     <div class="flex">
       <div
         v-if="channel.mentionAmount && channel.mentionAmount > 0"
         class="badge is-danger"
-      >{{channel.mentionAmount}}</div>
-      <div v-if="!channel.system" class="badge is-secondary">{{onlineMembers}}/{{totalMembers}}</div>
+      >{{ channel.mentionAmount }}</div>
+      <div 
+        v-if="!channel.system"
+        class="badge is-secondary"
+      >
+        {{ onlineMembers }}/{{ totalMembers }}
+      </div>
     </div>
   </a>
 </template>

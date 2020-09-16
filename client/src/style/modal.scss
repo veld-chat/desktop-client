@@ -12,22 +12,33 @@
 
   &.open {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
   }
 }
 
+.modal-container {
+  min-width: 40rem;
+  border-radius: 8px;
+}
+
+.modal-header {
+  position: relative;
+  display: flex;
+  flex-direction: row-reverse;
+  width: 100%;
+  background-color: var(--sidebar-bg);
+  border-radius: 8px 8px 0px 0px;
+}
+
 .modal-close {
-  position: fixed;
-  right: 0;
-  top: 0;
-  margin: 2rem;
+  padding: 1rem;
 }
 
 .modal-content {
   z-index: 999;
   background-color: var(--body-bg);
-  min-width: 40vw;
   padding: 2rem;
-  border-radius: 8px;
+  border-radius: 0px 0px 8px 8px;
 }

@@ -1,10 +1,14 @@
 <template>
   <div :class="['modal', open && 'open']">
-    <div class="modal-close" @click.prevent="closeModal">
-      <i class="fas fa-times"></i>
-    </div>
-    <div class="modal-content">
-      <slot />
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="modal-close" @click.prevent="closeModal">
+          <i class="fas fa-times" />
+        </div>
+      </div>
+      <div class="modal-content">
+        <slot />
+      </div>
     </div>
   </div>
 </template>

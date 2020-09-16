@@ -12,4 +12,8 @@
   &.space-between {
     justify-content: space-between;
   }
+
+  &.is-right {
+    flex-direction: flex-end;
+  }
 }

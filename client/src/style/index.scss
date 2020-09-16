@@ -10,9 +10,19 @@
 @import "modal";
 @import "button";
 
+* { 
+    -moz-box-sizing: border-box; 
+    -webkit-box-sizing: border-box; 
+     box-sizing: border-box; 
+}
+
 a,
 button {
   cursor: pointer;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: 1.5rem;
 }
 
 * {
@@ -163,6 +173,10 @@ li {
 
 .icon {
   margin: 0.25rem;
+}
+
+.error-label {
+  color: var(--danger-bg);
 }
 
 .msg-instance {
