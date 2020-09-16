@@ -166,7 +166,6 @@ li {
 }
 
 .msg-instance {
-  margin: 0px 0px;
   font-weight: 100;
   font-size: 12px;
   padding: 5px 5px;
@@ -394,7 +393,6 @@ select:-webkit-autofill:focus .textfield:hover,
 .msg-instance-title {
   color: var(--message-author-color);
   font-size: 1.25rem;
-  font-weight: bold;
   word-break: break-all;
   white-space: nowrap;
   margin: 0 0 4px 0;
@@ -407,9 +405,7 @@ select:-webkit-autofill:focus .textfield:hover,
 }
 
 .msg-instance-container {
-  background: var(--message-bg);
   color: var(--message-color);
-  margin: 8px 16px;
   width: auto;
   padding: 12px;
   border-radius: 4px;

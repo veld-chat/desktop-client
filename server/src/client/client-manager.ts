@@ -63,16 +63,18 @@ export const clientManager = new class {
     sendMessage(userId: string, channelId: string, content: string, embed?: EmbedPayload) {
         const isMain = channelId === this.mainChannel;
 
+        let msg = {
+            id: generateId(),
+            channelId: channelId,
+            user: userId,
+            content: escapeHtml(content),
+            embed: validateEmbed(embed),
+            mentions: this.getMentions(content)
+        };
+
         for (const client of this.clients.values()) {
             if (isMain || client.user.channels.includes(channelId)) {
-                client.emit(GatewayEvents.createMessage, {
-                    id: generateId(),
-                    channelId: channelId,
-                    user: userId,
-                    content: escapeHtml(content),
-                    embed: validateEmbed(embed),
-                    mentions: this.getMentions(content)
-                });
+                client.emit(GatewayEvents.createMessage, msg);
             }
         }
     }

@@ -78,7 +78,16 @@ export const channelService = new class {
     return channels.map(users => this.serialize(users, usersById));
   }
 
-  serialize(channel: ChannelDoc, users?: {[id: string]: ApiUser} ): ApiChannel {
+  async list(amount = 100, offset = 0, withUsers = false): Promise<ApiChannel[]> {
+    let channels = await Channel.find().limit(amount).skip(offset).exec();
+    const usersById = withUsers
+      ? await userService.getAsObject(selectMany(channels.map(c => c.members), i => i))
+      : undefined;
+
+    return channels.map(channel => this.serialize(channel, usersById))
+  }
+
+  serialize(channel: ChannelDoc, users?: { [id: string]: ApiUser }): ApiChannel {
     return {
       id: channel.id,
       system: channel.system,

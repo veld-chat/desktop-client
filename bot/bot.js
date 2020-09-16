@@ -49,14 +49,15 @@ connection.on("channel:leave", (user) => {
 })
 
 connection.on('message:create', async (message) => {
+  console.log(message);
   if (!message.content || message.bot) {
     return;
   }
 
+
   if (message.content == "!check") {
     try {
-      await axios.post("https://chat-gateway.veld.dev/api/v1/channels/0/messages", {
-        channelId: "0",
+      await axios.post(`https://chat-gateway.veld.dev/api/v1/channels/${message.channelId}/messages`, {
         embed: {
           title: "Hi I'm Veld's test bot!",
           description: "Thanks for checking me out :) Long text to test max-width on the embed....",
@@ -72,24 +73,22 @@ connection.on('message:create', async (message) => {
       return;
     }
   }
-  if (message.content.startsWith("!say")) {
-    let toSay = message.message.substring(4);
-    console.log(toSay);
 
-    connection.emit('usr-msg', {
-      content: toSay
-    });
-  }
-
-  if (message.content == "!help") {
-    connection.emit('usr-msg', {
-      content: "!help\n!say <message>\n!ping"
-    });
-  }
-
-  if (message.content.startsWith("!remind")) {
-    connection.emit('usr-msg', {
-      content: "haha... no. I am too lazy to write this."
-    });
+  if (message.content == "!avatar") {
+    try {
+      await axios.post(`https://chat-gateway.veld.dev/api/v1/channels/${message.channelId}/messages`, {
+        content: members[message.user].avatarUrl,
+        embed: {
+          title: "Your avatar!",
+        },
+      }, {
+        headers: {
+          Authorization: "Bearer " + token
+        }
+      })
+    } catch (err) {
+      console.log(err.response.data.details);
+      return;
+    }
   }
 });

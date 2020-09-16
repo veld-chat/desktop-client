@@ -45,7 +45,7 @@ export const channels: Module<ChannelState, RootState> = {
     },
     async update({ state, commit }, channel: Channel) {
       commit("setChannels", [
-        ...state.channels.filter(u => u.id !== channel.id),
+        ...state.channels.filter(u => u.id != channel.id),
         channel
       ]);
     },
@@ -77,7 +77,7 @@ export const channels: Module<ChannelState, RootState> = {
         part
       });
     },
-    setScroll({ commit, state }, payload: { id: string, scroll: ScrollPosition }) {
+    setScroll({ commit }, payload: { id: string, scroll: ScrollPosition }) {
       commit("setScroll", payload);
     },
   },
@@ -89,10 +89,10 @@ export const channels: Module<ChannelState, RootState> = {
       for (const channel of payload) {
         channeldById[channel.id] = {
           ...channel,
-          messages: [],
+          messages: channel.messages || [],
           scroll: "end",
-          unreadAmount: 0,
-          mentionAmount: 0
+          unreadAmount: channel.unreadAmount || 0,
+          mentionAmount: channel.mentionAmount || 0
         } as Channel;
       }
 
