@@ -1,5 +1,5 @@
 <template>
-  <div class="member-list-item">
+  <div class="member-list-item" v-if="user">
     <div
       v-if="user.avatarUrl"
       class="msg-instance-avatar"
@@ -8,7 +8,7 @@
     <div>
       <span class="flex text-centered fit-text">
         <div class="user-name fit-text">{{ user.name }}</div>
-        <div v-if="user.bot" class="badge">BOT</div>
+        <div v-if="user.bot" class="badge">Bot</div>
       </span>
       <div>{{ user.status.value }}</div>
     </div>
