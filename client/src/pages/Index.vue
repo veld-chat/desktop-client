@@ -1,8 +1,9 @@
 /* eslint-disable vue/no-v-html */
 <template>
   <div class="main">
-    <div class="sidebar">
+    <div class="sidebar flex column space-between">
       <channel-list />
+      <current-user-view />
     </div>
 
     <div class="chat-section">
@@ -56,11 +57,12 @@ import { namespace } from "vuex-class";
 import ChatMessage from "@/components/chat-message.vue";
 import { connect } from "@/connection";
 import ChannelList from "../components/channel-list.vue";
+import CurrentUserView from "../components/current-user";
 
 const channels = namespace("channels");
 
 @Component({
-  components: { ChatMessage, ChatBar, MemberList, ChannelList, Login },
+  components: { ChatMessage, ChatBar, MemberList, ChannelList, Login, CurrentUserView },
 })
 export default class Root extends Vue {
   @Ref() container: HTMLDivElement;

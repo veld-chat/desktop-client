@@ -53,7 +53,10 @@ export function connect() {
   });
 
   connection.on("channel:create", (channel) => store.dispatch("channels/update", channel));
-  connection.on("user:update", (user) => store.dispatch("users/update", user));
+  connection.on("user:update", (user) => {
+    store.dispatch("users/update", user);
+    store.dispatch("session/setUser", user);
+  });
 
   connection.on("user:join", (user) => store.dispatch("users/update", user));
   connection.on("user:leave", (user: User) => {
