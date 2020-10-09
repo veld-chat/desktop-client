@@ -24,16 +24,31 @@
               stroke-width="48"
             />
           </svg>
-          <login v-if="showLogin" @close="showLogin = false" />
-          <div class="btn btn-sm" @click.prevent="showLogin = true">
+          <login
+            v-if="showLogin"
+            @close="showLogin = false"
+          />
+          <div
+            class="btn btn-sm"
+            @click.prevent="showLogin = true"
+          >
             <i class="fa fa-user" />
             Login
           </div>
         </header>
       </div>
-      <div class="message-container" ref="container">
-        <div v-if="channel" class="messages">
-          <div v-for="(message, id) in channel.messages" :key="id">
+      <div
+        ref="container"
+        class="message-container"
+      >
+        <div
+          v-if="channel"
+          class="messages"
+        >
+          <div
+            v-for="(message, id) in channel.messages"
+            :key="id"
+          >
             <chat-message :message="message" />
           </div>
         </div>

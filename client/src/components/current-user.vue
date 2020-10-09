@@ -1,5 +1,5 @@
 <template>
-  <member-list-item :user="user"/>
+  <member-list-item :user="user" />
 </template>
 <script lang="ts">
 import Vue from 'vue'

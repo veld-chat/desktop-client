@@ -66,7 +66,7 @@ export function autoComplete(word: string): AutoComplete[] {
           text: item.name,
           textLowerCased: itemName,
           avatar: item.avatarUrl,
-          value: "@" + item.name,
+          value: `@${item.name}`,
         });
 
         if (list.length >= 50) {
@@ -74,6 +74,26 @@ export function autoComplete(word: string): AutoComplete[] {
         }
       }
     }
+  } else if (word[0] === "#") {
+    const channelName = word.substr(1);
+
+    const channels = store.state
+      .channels.channels
+      .filter((channel) => channel.name.includes(channelName))
+      .map((channel) => {
+        return {
+          text: `#${channel.name}`,
+          textLowerCased: channel.name,
+          value: `{#${channel.id}}`
+        }
+
+        // Limit of 4 max channels, otherwise the list gets too long.
+      }).slice(0, 4);
+
+    // Add the channels that were found to the autocomplete list
+    channels.map((channel) => {
+      list.push(channel);
+    })
   }
 
   return list.sort((a,b) => (a.textLowerCased > b.textLowerCased)

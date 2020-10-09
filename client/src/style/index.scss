@@ -10,10 +10,10 @@
 @import "modal";
 @import "button";
 
-* { 
-    -moz-box-sizing: border-box; 
-    -webkit-box-sizing: border-box; 
-     box-sizing: border-box; 
+* {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+     box-sizing: border-box;
 }
 
 a,
@@ -197,7 +197,7 @@ li {
 
   &.is-mention {
     padding: 0 4px;
-    background: var(--message-mention-bg);
+    background: #3da5d425;
     color: var(--message-mention-color);
   }
 }
@@ -426,6 +426,12 @@ select:-webkit-autofill:focus .textfield:hover,
   min-width: 120px;
   display: flex;
   flex-direction: row;
+}
+
+.channel-mention {
+  padding: 1px 0;
+  background: var(--message-mention-bg);
+  color: var(--message-mention-color);
 }
 
 @include mobile {
