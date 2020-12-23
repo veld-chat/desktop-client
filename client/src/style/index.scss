@@ -131,6 +131,8 @@ li {
   display: flex;
   flex-direction: row;
   width: 100vw;
+  height: 100vh; // fallback for browsers not supporting variables.
+  height: calc(var(--vh, 1vh) * 100);
 }
 
 @include desktop {
