@@ -1626,7 +1626,7 @@ const emojiDefinitions: {[key: string]: string} = {
   "part_alternation_mark": "〽️",
   "congratulations": "㊗️",
   "secret": "㊙️"
-};
+} as const;
 
 export interface Emoji {
   name: string;

@@ -1,16 +1,15 @@
 import "reflect-metadata";
-import express from 'express';
-import bodyParser from "body-parser";
-import { Server } from 'http';
-import io from 'socket.io';
-import fs from "fs";
 import "./commands/avatar";
 import "./commands/nick";
-import * as path from "path";
-import SocketIO from "socket.io";
+import express from "express";
+import bodyParser from "body-parser";
+import io, { Server as IOServer } from 'socket.io';
+import fs from "fs";
 import { RegisterErrorHandler, RegisterRoutes, RegisterSwagger } from "@/api";
-import mongoose from "mongoose";
+import { connect } from "mongoose";
 import { clientManager } from "@/client";
+import { Server } from "http";
+import * as path from "path";
 
 export interface Config {
   secret: string;
@@ -18,13 +17,13 @@ export interface Config {
 }
 
 export const server = new class {
-  io: SocketIO.Server;
+  io: IOServer;
   options: Config;
 
   async start() {
     const config: Config = JSON.parse(fs.readFileSync("config/config.json").toString());
 
-    await mongoose.connect(config.connectionString, {
+    await connect(config.connectionString, {
       useNewUrlParser: true,
       useUnifiedTopology: true
     });
@@ -38,7 +37,7 @@ export const server = new class {
       res.setHeader("Access-Control-Allow-Headers", "*");
       res.setHeader("Access-Control-Allow-Methods", "*");
       next();
-    })
+    });
 
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
@@ -54,8 +53,8 @@ export const server = new class {
     this.options = config;
 
     await clientManager.start();
-  }
-}
+  };
+};
 
 // noinspection JSIgnoredPromiseFromCall
 server.start();
