@@ -2,7 +2,7 @@ export class RateLimit {
   private readonly maxCount: number;
   private readonly ms: number;
   private readonly interval: NodeJS.Timeout;
-  private items: {[key: string]: {count: number, lastReset: number}} = {};
+  private items: { [key: string]: { count: number; lastReset: number } } = {};
 
   constructor(amount: number, ms: number) {
     this.maxCount = amount;
@@ -16,7 +16,7 @@ export class RateLimit {
     const now = Date.now();
 
     if (!item) {
-      item = {count: 0, lastReset: now};
+      item = { count: 0, lastReset: now };
       this.items[id] = item;
     } else if (now - item.lastReset >= this.ms) {
       item.lastReset = now;

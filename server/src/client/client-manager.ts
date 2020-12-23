@@ -1,10 +1,10 @@
 import { Client } from "@/client";
 import { RateLimit } from "@/utils/rate-limit";
 import { commandManager } from "@/commands/command-manager";
-import SocketIO from "socket.io";
+import { Socket } from "socket.io";
 import { validateEmbed } from "@/utils/embed-validator";
 import { escapeHtml, normalizeName } from "@/utils/string-validator";
-import { User, Channel, ChannelDoc } from "@/db";
+import { User, Channel } from "@/db";
 import { logger } from "@/logger";
 import { selectMany } from "@/utils/map";
 import { server } from "@/server";
@@ -25,6 +25,15 @@ export const GatewayEvents = {
     channelCreate: "channel:create",
     memberCreate: "member:create",
     memberDelete: "member:delete",
+} as const;
+
+export interface Message {
+    id: string;
+    channelId: string;
+    user: string;
+    content: string;
+    embed: EmbedPayload;
+    mentions: Array<string>;
 }
 
 export const clientManager = new class {
@@ -63,7 +72,7 @@ export const clientManager = new class {
     sendMessage(userId: string, channelId: string, content: string, embed?: EmbedPayload) {
         const isMain = channelId === this.mainChannel;
 
-        let msg = {
+        let msg: Message = {
             id: generateId(),
             channelId: channelId,
             user: userId,
@@ -99,7 +108,7 @@ export const clientManager = new class {
         );
     }
 
-    private onClientConnected(socket: SocketIO.Socket) {
+    private onClientConnected(socket: Socket) {
         logger.info("client", socket.id, " connected");
 
         socket.on("disconnect", () => this.onClientDisconnect(socket));
@@ -108,7 +117,7 @@ export const clientManager = new class {
         socket.emit("channel:commands", commandManager.commands);
     }
 
-    private async onClientAuthenticated(socket: SocketIO.Socket, request: ClientAuthRequest) {
+    private async onClientAuthenticated(socket: Socket, request: ClientAuthRequest) {
         if (this.sockets.has(socket.id)) {
             await this.onClientDisconnect(socket);
         }
@@ -120,9 +129,7 @@ export const clientManager = new class {
             try {
                 id = tokenService.decode(request.token).id;
                 token = request.token;
-            } catch {
-                // ignore
-            }
+            } catch { }
         }
 
         if (!id) {
@@ -145,9 +152,7 @@ export const clientManager = new class {
             if (request.name) {
                 try {
                     user.name = normalizeName(request.name);
-                } catch {
-                    // ignore
-                }
+                } catch { }
             }
 
             user.lastLogin = new Date();
@@ -180,7 +185,7 @@ export const clientManager = new class {
         server.io.emit(GatewayEvents.userJoin, client.serialize());
     }
 
-    private async onClientDisconnect(socket: SocketIO.Socket) {
+    private async onClientDisconnect(socket: Socket) {
         const client = this.sockets.get(socket.id);
         this.sockets.delete(socket.id);
 
@@ -190,7 +195,7 @@ export const clientManager = new class {
         }
     }
 
-    private onClientStartTyping(socket: SocketIO.Socket) {
+    private onClientStartTyping(socket: Socket) {
         const client = this.sockets.get(socket.id);
 
         server.io.emit(GatewayEvents.userTyping, {
@@ -199,7 +204,7 @@ export const clientManager = new class {
         });
     }
 
-    private async onClientMessageReceived(socket: SocketIO.Socket, msg: any) {
+    private async onClientMessageReceived(socket: Socket, msg: any) {
         const client = this.sockets.get(socket.id);
 
         if (commandManager.handle(client, msg.content)) {

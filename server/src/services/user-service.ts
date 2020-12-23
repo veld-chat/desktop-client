@@ -13,7 +13,7 @@ export const userService = new class {
 
   async getAsObject(userIds: string[]) {
     const users = await userService.getAll(userIds);
-    const usersById: {[id: string]: ApiUser} = {}
+    const usersById: { [id: string]: ApiUser } = {}
 
     for (const user of users) {
       usersById[user.id] = user;
