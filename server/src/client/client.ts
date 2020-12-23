@@ -1,5 +1,5 @@
 import { UserDoc } from "@/db";
-import SocketIO from "socket.io";
+import { Socket } from "socket.io";
 import { normalizeName } from "@/utils/string-validator";
 import { clientManager } from "@/client/client-manager";
 import { userService } from "@/services";
@@ -7,7 +7,7 @@ import { imageService } from "@/services/image-service";
 import { ApiUser, UserStatusValue } from "@/models";
 
 export class Client {
-    private sockets: SocketIO.Socket[] = [];
+    private sockets: Socket[] = [];
 
     user: UserDoc;
     status: UserStatusValue = "online";
@@ -62,11 +62,11 @@ export class Client {
         }
     }
 
-    registerSocket(socket: SocketIO.Socket) {
+    registerSocket(socket: Socket) {
         this.sockets = [...this.sockets, socket];
     }
 
-    unregisterSocket(socket: SocketIO.Socket) {
+    unregisterSocket(socket: Socket) {
         this.sockets = this.sockets.filter(e => e.id !== socket.id);
         return this.sockets.length === 0;
     }
