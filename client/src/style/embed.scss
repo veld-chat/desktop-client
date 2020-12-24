@@ -6,13 +6,12 @@
 
 .embed {
   overflow: hidden;
-  margin-top: 1rem;
+  margin: 0.5rem 0;
   background-color: var(--embed-bg);
   padding: 0.25rem 1rem;
   border-radius: 4px;
   min-width: 8rem;
   max-width: 24rem;
-  border-left: 4px solid #333333;
 }
 
 .embed-top {
@@ -27,6 +26,7 @@
   overflow: hidden;
   word-wrap: break-word;
   overflow-wrap: break-all;
+  font-size: 14px;
 }
 
 .embed-author {
@@ -44,8 +44,9 @@
 }
 
 .embed-title {
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 600;
+  margin-bottom: 0.5rem;
 }
 
 .embed-footer {
@@ -59,8 +60,8 @@
 
 .embed-icon {
   width: 4rem;
-  height: 4rem;
   margin: 0;
+  border-radius: 4px;
 }
 
 .embed-image-container {
@@ -76,7 +77,6 @@
   width: 4rem;
   height: 4rem;
   margin-left: 1rem;
-  border-radius: 4px;
   overflow: hidden;
 }
 
