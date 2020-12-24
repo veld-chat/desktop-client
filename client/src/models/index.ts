@@ -18,12 +18,25 @@ export type ServerMessage = {
   user: string;
   embed?: Embed;
   content: string;
-  mentions: string[];
+  sentTimestamp: number;
+  mentions: Array<string>;
+};
+
+export type ServerEditMessage = {
+  id: string;
+  channelId: string;
+  user: string;
+  oldEmbed?: Embed;
+  newEmbed?: Embed;
+  oldContent: string;
+  newContent: string;
+  editedTimestamp: number;
+  mentions: Array<string>;
 };
 
 type MessageBase = {
   user: User;
-  mentions: string[];
+  mentions: Array<string>;
 };
 
 export type ScrollPosition = number | "end";
@@ -39,7 +52,7 @@ export type Channel = {
   id: string;
   system: boolean;
   name: string;
-  members: string[];
+  members: Array<string>;
   messages: Message[];
   scroll: ScrollPosition;
   lastMessageId?: string;

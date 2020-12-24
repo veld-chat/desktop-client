@@ -27,7 +27,7 @@ export const GatewayEvents = {
     channelCreate: "channel:create",
     memberCreate: "member:create",
     memberDelete: "member:delete",
-}
+} as const;
 
 export interface Message {
     id: string,
