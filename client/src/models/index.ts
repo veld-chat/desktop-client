@@ -19,7 +19,7 @@ export type ServerMessage = {
   embed?: Embed;
   content: string;
   sentTimestamp: number;
-  mentions: Array<string>;
+  mentions: string[];
 };
 
 export interface ServerEditMessage extends ServerMessage {
@@ -30,7 +30,7 @@ export interface ServerEditMessage extends ServerMessage {
 
 type MessageBase = {
   user: User;
-  mentions: Array<string>;
+  mentions: string[];
 };
 
 export type ScrollPosition = number | "end";
@@ -46,7 +46,7 @@ export type Channel = {
   id: string;
   system: boolean;
   name: string;
-  members: Array<string>;
+  members: string[];
   messages: Message[];
   scroll: ScrollPosition;
   lastMessageId?: string;
