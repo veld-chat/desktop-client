@@ -23,6 +23,7 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-user-drag: none;
   margin: 0;
   padding: 0;
+  overflow-wrap: break-word;
 }
 
 @keyframes fadein {
@@ -303,6 +304,7 @@ $listWidth: 300px;
   overflow-y: scroll;
   padding: 1rem;
   width: $listWidth;
+  flex-shrink: 0;
   background: var(--sidebar-bg);
 }
 
@@ -422,10 +424,16 @@ select:-webkit-autofill:focus .textfield:hover,
   flex-direction: row;
 }
 
-.channel-mention {
-  padding: 1px 0;
-  background: var(--message-mention-bg);
+.mention {
+  cursor: pointer;
+  padding: 0 0.25rem;
+  background-color: var(--active-200);
+  border-radius: 8px;
   color: var(--message-mention-color);
+}
+
+.mention:hover {
+  background-color: var(--active-100);
 }
 
 @include mobile {

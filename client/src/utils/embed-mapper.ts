@@ -78,6 +78,5 @@ const getEmbedFromHtml = async (res: Response): Promise<Embed> => {
         }
     }
 
-    console.log(embed);
     return embed;
 }

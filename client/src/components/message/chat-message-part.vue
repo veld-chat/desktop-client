@@ -7,13 +7,11 @@
         <span
           v-if="messagePart.mentionType !== undefined"
           :key="index"
-          class="channel-mention"
+          class="mention"
           @click="joinChannel(messagePart.mentionId)"
         >{{ messagePart.content }}</span>
-
-        <template v-else>
-          {{ messagePart.content }}
-        </template>
+        <span v-else v-html="messagePart.content">
+        </span>
       </template>
     </p>
 
@@ -24,10 +22,10 @@
 <script lang="ts">
 import Vue from "vue";
 import { Prop, Component } from "vue-property-decorator";
-import { MessagePart, MessagePartContent } from "@/models";
+import { MessagePart, MessagePartContent } from "../../models";
 import { namespace } from "vuex-class";
 
-import chatEmbed from './chat-embed-part.vue'
+import chatEmbed from './chat-embed-part.vue'  
 
 const session = namespace("session");
 
@@ -50,33 +48,41 @@ export default class ChatMessagePart extends Vue {
     const regex = new RegExp('{#([0-9]*)}')
 
     if (!content.match(regex)) {
-      return [{
-        content: content
-      }]
+      return [
+        { content },
+      ]
     }
 
-    return content.split(' ')
-      .map((content) => {
-        if (!content.match(regex)) {
-          return {
-            content: content
-          }
-        }
+    let parts: MessagePartContent[] = [];
+    let capture: RegExpExecArray;
+    while(capture = regex.exec(content)) { 
+      if(capture.index > 0) {
+        parts.push({
+          content: content.substring(0, capture.index),
+        });
+      }
+      console.log(capture[0])
+      console.log(capture.index);
+      parts.push({
+        content: this.getChannelName(capture[1]),
+        mentionType: "channel",
+        mentionId: capture[1],
+      });
+      content = content.substring(capture.index + capture[0].length); 
+    }
 
-        // Extract channel ID
-        const channelID = content.match(regex)[1];
-
-        return {
-          content: `#${this.getChannelName(channelID)}`,
-          mentionType: "channel",
-          mentionId: channelID
-        }
+    if(content.length != 0) {
+      parts.push({
+        content
       })
+    }
+
+    console.log(JSON.stringify(parts));
+    return parts;
   }
 
   getChannelName(id: string): string {
-    // Not possible yet cuz Veld lazy
-    return 'channel-name'
+    return id
   }
 
   async joinChannel(id: string) {
