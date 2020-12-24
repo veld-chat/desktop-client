@@ -9,7 +9,7 @@
     <div class="chat-section">
       <div class="heading-wrapper">
         <header class="heading">
-          <span>
+          <span v-if="channel">
             <i class="icon fa fa-hashtag"/>
             <b style="heading-title" v-text="channel.name"></b>
           </span>
