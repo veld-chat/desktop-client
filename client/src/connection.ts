@@ -95,7 +95,7 @@ export function connect() {
   });
 
   // eslint-disable-next-line
-  connection.on("message:edit", async (editMessage: ServerEditMessage) => {
+  connection.on("message:update", async (editMessage: ServerEditMessage) => {
     // Update message content at frontend, and append edited + edited timestamp
   });
 

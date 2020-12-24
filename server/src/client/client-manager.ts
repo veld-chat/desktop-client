@@ -18,7 +18,7 @@ export const GatewayEvents = {
     login: "login",
     createMessage: "message:create",
     deleteMessage: "message:delete",
-    editMessage: "message:edit",
+    editMessage: "message:update",
     userJoin: "user:join",
     userLeave: "user:leave",
     userTyping: "user:typing",
@@ -100,7 +100,7 @@ export const clientManager = new class {
         }
     }
 
-    editMessage(userId: string, channelId: string, content: string, embed?: EmbedPayload) {
+    updateMessage(userId: string, channelId: string, content: string, embed?: EmbedPayload) {
         const isMain = channelId === this.mainChannel;
 
         let msg: EditMessage = {
