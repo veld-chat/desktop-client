@@ -18,8 +18,15 @@ export type ServerMessage = {
   user: string;
   embed?: Embed;
   content: string;
+  sentTimestamp: number;
   mentions: string[];
 };
+
+export interface ServerEditMessage extends ServerMessage {
+  newContent: string;
+  newEmbed?: Embed;
+  updatedTimestamp: number;
+}
 
 type MessageBase = {
   user: User;

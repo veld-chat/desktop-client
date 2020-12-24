@@ -1,7 +1,7 @@
 import { Emoji, registerEmoji } from "@/utils/emoji";
 import io from "socket.io-client";
 import { store } from "@/store";
-import { ServerMessage, User } from "@/models";
+import { ServerEditMessage, ServerMessage, User } from "@/models";
 import proxyfetch from "./utils/proxyfetch";
 import { mapToEmbed } from "./utils/embed-mapper";
 
@@ -92,6 +92,16 @@ export function connect() {
       }
     }
     store.dispatch("channels/addMessage", message)
+  });
+
+  // eslint-disable-next-line
+  connection.on("message:update", async (editMessage: ServerEditMessage) => {
+    // Update message content at frontend, and append edited + edited timestamp
+  });
+
+  // eslint-disable-next-line
+  connection.on("message:delete", async (editMessage: ServerEditMessage) => {
+    // Delete message content at frontend
   });
 
   connection.on("sys-error",
