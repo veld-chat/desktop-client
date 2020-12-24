@@ -22,17 +22,11 @@ export type ServerMessage = {
   mentions: Array<string>;
 };
 
-export type ServerEditMessage = {
-  id: string;
-  channelId: string;
-  user: string;
-  oldEmbed?: Embed;
-  newEmbed?: Embed;
-  oldContent: string;
+export interface ServerEditMessage extends ServerMessage {
   newContent: string;
-  editedTimestamp: number;
-  mentions: Array<string>;
-};
+  newEmbed?: Embed;
+  updatedTimestamp: number;
+}
 
 type MessageBase = {
   user: User;
