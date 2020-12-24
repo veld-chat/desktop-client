@@ -1,7 +1,7 @@
 import { Client } from "@/client";
 import { RateLimit } from "@/utils/rate-limit";
 import { commandManager } from "@/commands/command-manager";
-import SocketIO from "socket.io";
+import { Socket } from "socket.io";
 import { validateEmbed } from "@/utils/embed-validator";
 import { escapeHtml, normalizeName } from "@/utils/string-validator";
 import { User, Channel, ChannelDoc } from "@/db";
@@ -17,6 +17,8 @@ export const GatewayEvents = {
     ready: "ready",
     login: "login",
     createMessage: "message:create",
+    deleteMessage: "message:delete",
+    editMessage: "message:edit",
     userJoin: "user:join",
     userLeave: "user:leave",
     userTyping: "user:typing",
@@ -25,6 +27,25 @@ export const GatewayEvents = {
     channelCreate: "channel:create",
     memberCreate: "member:create",
     memberDelete: "member:delete",
+}
+
+export interface Message {
+    id: string,
+    channelId: string,
+    user: string,
+    content: string,
+    embed: EmbedPayload,
+    mentions: Array<string>,
+}
+
+export interface EditMessage {
+    id: string;
+    channelId: string;
+    user: string;
+    oldContent: string;
+    newContent: string;
+    embed: EmbedPayload;
+    mentions: Array<string>;
 }
 
 export const clientManager = new class {
@@ -63,7 +84,7 @@ export const clientManager = new class {
     sendMessage(userId: string, channelId: string, content: string, embed?: EmbedPayload) {
         const isMain = channelId === this.mainChannel;
 
-        let msg = {
+        let msg: Message = {
             id: generateId(),
             channelId: channelId,
             user: userId,
@@ -75,6 +96,26 @@ export const clientManager = new class {
         for (const client of this.clients.values()) {
             if (isMain || client.user.channels.includes(channelId)) {
                 client.emit(GatewayEvents.createMessage, msg);
+            }
+        }
+    }
+
+    editMessage(userId: string, channelId: string, content: string, embed?: EmbedPayload) {
+        const isMain = channelId === this.mainChannel;
+
+        let msg: EditMessage = {
+            id: generateId(),
+            channelId: channelId,
+            user: userId,
+            oldContent: escapeHtml(content/* old message content thing here */),
+            newContent: escapeHtml(content),
+            embed: validateEmbed(embed),
+            mentions: this.getMentions(content)
+        };
+
+        for (const client of this.clients.values()) {
+            if (isMain || client.user.channels.includes(channelId)) {
+                client.emit(GatewayEvents.editMessage, msg);
             }
         }
     }
@@ -99,7 +140,7 @@ export const clientManager = new class {
         );
     }
 
-    private onClientConnected(socket: SocketIO.Socket) {
+    private onClientConnected(socket: Socket) {
         logger.info("client", socket.id, " connected");
 
         socket.on("disconnect", () => this.onClientDisconnect(socket));
@@ -108,7 +149,7 @@ export const clientManager = new class {
         socket.emit("channel:commands", commandManager.commands);
     }
 
-    private async onClientAuthenticated(socket: SocketIO.Socket, request: ClientAuthRequest) {
+    private async onClientAuthenticated(socket: Socket, request: ClientAuthRequest) {
         if (this.sockets.has(socket.id)) {
             await this.onClientDisconnect(socket);
         }
@@ -180,7 +221,7 @@ export const clientManager = new class {
         server.io.emit(GatewayEvents.userJoin, client.serialize());
     }
 
-    private async onClientDisconnect(socket: SocketIO.Socket) {
+    private async onClientDisconnect(socket: Socket) {
         const client = this.sockets.get(socket.id);
         this.sockets.delete(socket.id);
 
@@ -190,7 +231,7 @@ export const clientManager = new class {
         }
     }
 
-    private onClientStartTyping(socket: SocketIO.Socket) {
+    private onClientStartTyping(socket: Socket) {
         const client = this.sockets.get(socket.id);
 
         server.io.emit(GatewayEvents.userTyping, {
@@ -199,7 +240,7 @@ export const clientManager = new class {
         });
     }
 
-    private async onClientMessageReceived(socket: SocketIO.Socket, msg: any) {
+    private async onClientMessageReceived(socket: Socket, msg: any) {
         const client = this.sockets.get(socket.id);
 
         if (commandManager.handle(client, msg.content)) {
