@@ -2,9 +2,12 @@ import { Emoji, registerEmoji } from "@/utils/emoji";
 import io from "socket.io-client";
 import { store } from "@/store";
 import { ServerMessage, User } from "@/models";
+import proxyfetch from "./utils/proxyfetch";
+import { mapToEmbed } from "./utils/embed-mapper";
 
 export let connection: SocketIOClient.Socket;
 let isConnected = false;
+const urlRegex = /((http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)/;
 
 export function connect() {
   if (isConnected) {
@@ -79,7 +82,15 @@ export function connect() {
 
   connection.on("user:typing", (user) => store.dispatch("users/setTyping", user.id));
 
-  connection.on("message:create", (message) => {
+  connection.on("message:create", async (message: ServerMessage) => {
+    if(message.embed == null) {
+      const urls = urlRegex.exec(message.content);
+      if(urls != null) {
+        const res = await proxyfetch(urls[0]);
+        console.log(res);
+        message.embed = await mapToEmbed(res);
+      }
+    }
     store.dispatch("channels/addMessage", message)
   });
 
