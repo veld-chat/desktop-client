@@ -74,6 +74,9 @@ export default class Root extends Vue {
     }
 
     window.addEventListener("resize", this.updateScroll);
+    window.addEventListener("resize", this.setMobileSize);
+    this.setMobileSize();
+    
     this.container.addEventListener("scroll", this.setChannelScroll);
   }
 
@@ -93,6 +96,11 @@ export default class Root extends Vue {
     if (this.channel.scroll !== scroll) {
       this.$store.dispatch("channels/setScroll", { id: this.channel.id, scroll });
     }
+  }
+  
+  setMobileSize() {
+    let vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
   }
 
   @Watch("channel.messages")

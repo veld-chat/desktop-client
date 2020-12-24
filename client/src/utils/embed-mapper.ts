@@ -42,6 +42,7 @@ const getEmbedFromHtml = async (res: Response): Promise<Embed> => {
                 if(!embed.title) {
                     continue;
                 }
+
                 embed.title = tag.getAttribute("content");;
                 break;
             }
@@ -55,6 +56,7 @@ const getEmbedFromHtml = async (res: Response): Promise<Embed> => {
             case "og:image": 
             case "image": {
                 let imageUrl = tag.getAttribute("content");
+
                 if(imageUrl.startsWith("/")) {
                     imageUrl = res.url + imageUrl;
                 }
