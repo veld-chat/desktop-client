@@ -16,4 +16,8 @@
   &.is-right {
     flex-direction: flex-end;
   }
+
+  &.align-bottom {
+    align-items: flex-end;
+  }
 }

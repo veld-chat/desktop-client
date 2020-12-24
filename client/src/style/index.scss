@@ -10,22 +10,14 @@
 @import "modal";
 @import "button";
 
-* {
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-     box-sizing: border-box;
-}
-
-a,
-button {
-  cursor: pointer;
-}
-
 h1, h2, h3, h4, h5, h6 {
   margin-bottom: 1.5rem;
 }
 
 * {
+  -moz-box-sizing: border-box; 
+  -webkit-box-sizing: border-box; 
+  box-sizing: border-box; 
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
   -webkit-overflow-scrolling: touch;
   -webkit-user-drag: none;
@@ -154,7 +146,7 @@ li {
 }
 
 .badge {
-  background-color: var(--message-mention-bg);
+  background-color: var(--active-200);
   color: white;
   padding: 0.125rem 0.25rem;
   margin-left: 0.5rem;
@@ -197,7 +189,7 @@ li {
 
   &.is-mention {
     padding: 0 4px;
-    background: #3da5d425;
+    background: var(--active-200);
     color: var(--message-mention-color);
   }
 }
@@ -217,12 +209,12 @@ html,
 body {
   margin: 0;
   padding: 0;
+  color: white;
 }
 
 .wrapper {
   display: flex;
   flex-direction: column;
-  color: white;
   flex-grow: 1;
 }
 
@@ -230,20 +222,20 @@ body {
   position: relative;
 }
 
-.heading-wrapper {
-  color: white;
-  margin: 0.25rem 0;
-  padding: 0.25rem 0;
-}
-
 .heading {
   padding: 16px 16px 16px 24px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--editor-bg);
 
   svg {
     margin-right: 32px;
   }
+}
+
+.heading-title {
+  font-size: 16px;
 }
 
 @include mobile {
