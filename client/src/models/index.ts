@@ -87,3 +87,9 @@ export type UserTyping = {
   id: string;
   lastTypingTime: number;
 }
+
+export type MessagePartContent = {
+  content: string
+  mentionType?: "user" | "channel"
+  mentionId?: string
+}

@@ -1,11 +1,20 @@
 <template>
   <div>
     <strong class="category">Channels</strong>
-    <div v-for="(channel, id) in channels" :key="id">
+    <div
+      v-for="(channel, id) in channels"
+      :key="id"
+    >
       <channel-list-item :channel="channel" />
     </div>
-    <create-channel-modal :open="modalOpen" @close="closeModal" />
-    <a @click="openModal" class="channel-list-item flex text-centered selected">
+    <create-channel-modal
+      :open="modalOpen"
+      @close="closeModal"
+    />
+    <a
+      class="channel-list-item flex text-centered selected"
+      @click="openModal"
+    >
       <span>
         <i class="icon fas fa-plus-square" />
         New Channel

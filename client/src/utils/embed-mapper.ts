@@ -1,5 +1,4 @@
 import { Embed } from "@/models";
-import { parse } from "marked";
 import { PROXY_PREFIX } from "./proxyfetch";
 
 let parser: DOMParser = null;
@@ -79,6 +78,5 @@ const getEmbedFromHtml = async (res: Response): Promise<Embed> => {
         }
     }
 
-    console.log(embed);
     return embed;
 }

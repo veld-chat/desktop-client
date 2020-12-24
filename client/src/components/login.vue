@@ -1,10 +1,16 @@
 <template>
   <div class="login">
-    <div class="close" @click.prevent="$emit('close')">
-      <i class="fas fa-times"></i>
+    <div
+      class="close"
+      @click.prevent="$emit('close')"
+    >
+      <i class="fas fa-times" />
     </div>
     <div class="login-inner">
-      <div class="col" v-show="step <= 1">
+      <div
+        v-show="step <= 1"
+        class="col"
+      >
         <div class="qrcode">
           <h1>Your code</h1>
           <div class="qrcode-image">
@@ -36,7 +42,10 @@
               </a>
             </div>
             <div class="cancel">
-              or just <a href="#" @click.prevent="$emit('close')">give up</a>
+              or just <a
+                href="#"
+                @click.prevent="$emit('close')"
+              >give up</a>
             </div>
           </div>
 

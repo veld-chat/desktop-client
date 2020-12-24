@@ -1,14 +1,26 @@
 <template>
-  <div ref="wrapper" class="controls-wrapper">
+  <div
+    ref="wrapper"
+    class="controls-wrapper"
+  >
     <div class="controls">
-      <div v-show="autoComplete.length > 0" ref="container" class="autocomplete">
+      <div
+        v-show="autoComplete.length > 0"
+        ref="container"
+        class="autocomplete"
+      >
         <div
           v-for="(item, index) in autoComplete"
           :key="item.text"
           :class="['autocomplete-item', autoCompleteIndex === index && 'active']"
           @click="handleAutoComplete(index)"
         >
-          <img v-if="item.image" :src="item.image" class="autocomplete-image" alt="Image" />
+          <img
+            v-if="item.image"
+            :src="item.image"
+            class="autocomplete-image"
+            alt="Image"
+          >
           <div
             v-if="item.avatar"
             class="autocomplete-avatar"
@@ -29,7 +41,10 @@
         maxlength="256"
         :disabled="!ready"
       />
-      <a class="sendbutton flex-end" @click="send()">
+      <a
+        class="sendbutton flex-end"
+        @click="send()"
+      >
         <i class="fas fa-paper-plane" />
       </a>
     </div>

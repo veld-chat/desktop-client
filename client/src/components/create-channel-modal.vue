@@ -1,16 +1,29 @@
 <template>
   <div>
-    <modal :open="open" @close="closeModal">
+    <modal
+      :open="open"
+      @close="closeModal"
+    >
       <h2> Create a new Channel </h2>
       <p>Name</p>
-      <input class="input" type="text" v-model="channelName" />
-      <p class="input-error error-label" v-if="error">
+      <input
+        v-model="channelName"
+        class="input"
+        type="text"
+      >
+      <p
+        v-if="error"
+        class="input-error error-label"
+      >
         <i class="fas fa-exclamation-circle" />
         {{ error }}
       </p>
 
       <div class="flex is-right">
-        <a class="button primary" @click.prevent="createChannel">Create Channel</a>
+        <a
+          class="button primary"
+          @click.prevent="createChannel"
+        >Create Channel</a>
         <a class="button outline secondary">Back</a>
       </div>
     </modal>

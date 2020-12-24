@@ -9,31 +9,24 @@
     <div class="chat-section">
       <div class="heading-wrapper">
         <header class="heading">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            style="height: 2rem;"
-            viewBox="0 0 674.731 463.131"
-          >
-            <path
-              d="M8433.373,1216.334l236.061-406.322,161.628,286.636,67.489,119.687H9051.3l-205.974-362.35-68.206,120.93"
-              transform="translate(-8400.564 -786.011)"
-              fill="none"
-              stroke="#fff"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="48"
-            />
-          </svg>
-          <login v-if="showLogin" @close="showLogin = false" />
-          <div class="btn btn-sm" @click.prevent="showLogin = true">
-            <i class="fa fa-user" />
-            Login
-          </div>
+          <span>
+            <i class="icon fa fa-hashtag"/>
+            <b style="heading-title" v-text="channel.name"></b>
+          </span>
         </header>
       </div>
-      <div class="message-container" ref="container">
-        <div v-if="channel" class="messages">
-          <div v-for="(message, id) in channel.messages" :key="id">
+      <div
+        ref="container"
+        class="message-container"
+      >
+        <div
+          v-if="channel"
+          class="messages"
+        >
+          <div
+            v-for="(message, id) in channel.messages"
+            :key="id"
+          >
             <chat-message :message="message" />
           </div>
         </div>
@@ -67,8 +60,6 @@ const channels = namespace("channels");
 export default class Root extends Vue {
   @Ref() container: HTMLDivElement;
   @channels.Getter("current") channel: Channel;
-
-  showLogin = false;
 
   currentUserId = "";
   message = "";
