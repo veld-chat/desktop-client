@@ -43,10 +43,10 @@ export const channels: Module<ChannelState, RootState> = {
     async setCurrentChannel({ commit }, channel: string) {
       commit("setCurrentChannel", channel);
     },
-    async update({ state, commit }, channel: Channel) {
+    update({ state, commit }, channel: Channel) {
       commit("setChannels", [
+        channel,
         ...state.channels.filter(u => u.id != channel.id),
-        channel
       ]);
     },
     async remove({ state, commit }, channelOrId: Channel | string) {

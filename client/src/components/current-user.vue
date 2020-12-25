@@ -3,7 +3,7 @@
     <login v-if="showLogin" @close="showLogin = false" />
     <div class="flex space-between align-bottom">
       <member-list-item :user="user"/>
-      <a style="color: var(--active-200);" @click.prevent="showLogin = true">
+      <a class="btn alt" style="cursor: pointer; font-size: 12px" @click.prevent="showLogin = true">
         Not you?
       </a>
     </div>
@@ -13,6 +13,7 @@
 import Vue from 'vue'
 import Component from 'vue-class-component';
 import MemberListItem from "./member-list-item.vue";
+import Login from "./login.vue";
 import { Getter, namespace } from "vuex-class";
 import { User } from '../models';
 
@@ -20,7 +21,8 @@ const session = namespace("session");
 
 @Component({
   components: {
-    MemberListItem
+    MemberListItem,
+    Login
   }
 })
 export default class CurrentUserView extends Vue {

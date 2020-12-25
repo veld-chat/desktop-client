@@ -584,12 +584,15 @@ img {
   flex-direction: column;
   box-sizing: border-box;
   text-align: center;
-  width: 10em;
-  padding: 1em;
-  background: var(--editor-bg);
+  padding: 0.5rem 1rem;
+  background-color: var(--editor-bg);
   color: var(--editor-color);
   overflow: hidden;
   border-radius: 5px;
+
+  &.alt {
+    background-color: unset;
+  }
 
   i {
     display: block;
@@ -606,6 +609,9 @@ img {
       font-size: 1.5rem;
     }
   }
+}
+.btn:hover {
+  text-decoration: underline;
 }
 
 .center {

@@ -24,10 +24,10 @@ export const channelService = new class {
   }
 
   async addMember(id: string, userId: string) {
-    const channel = await Channel.findOne({ id });
+    const channel = await this.get(id, true);
 
     if (channel === null) {
-      return false;
+      throw new Error("Channel not found");
     }
 
     const client = clientManager.get(userId);
@@ -44,7 +44,7 @@ export const channelService = new class {
     }
 
     if (user.channels.includes(id)) {
-      return true;
+      return channel;
     }
 
     user.channels.push(id);
@@ -58,7 +58,7 @@ export const channelService = new class {
       channel: channel,
     });
 
-    return true;
+    return channel;
   }
 
   async get(id: string, withUsers = false): Promise<ApiChannel> {

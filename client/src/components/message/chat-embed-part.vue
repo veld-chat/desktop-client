@@ -3,7 +3,11 @@
     v-if="part.embed"
     class="embed"
   >
-    <div class="embed-top">
+    <div class="embed-top" 
+      v-if="part.embed.author 
+        || part.embed.title 
+        || part.embed.description 
+        || part.embed.imageUrl">
       <div class="embed-info">
         <a
           v-if="part.embed.author"

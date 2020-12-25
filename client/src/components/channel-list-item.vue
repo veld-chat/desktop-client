@@ -49,13 +49,13 @@ export default class ChannelListItem extends Vue {
 
   get onlineMembers(): number {
     return this.channel.members
-      .map((x) => this.users[x] || null)
+      ?.map((x) => this.users[x] || null)
       .filter((x) => x)
-      .filter((x) => x.status.value !== "offline").length;
+      .filter((x) => x.status.value !== "offline").length || 0;
   }
 
   get totalMembers(): number {
-    return this.channel.members.length;
+    return this.channel.members?.length || 0;
   }
 }
 </script>

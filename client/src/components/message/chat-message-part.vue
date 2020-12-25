@@ -9,7 +9,10 @@
           :key="index"
           class="mention"
           @click="joinChannel(messagePart.mentionId)"
-        >{{ messagePart.content }}</span>
+        >
+        <i class="fas fa-hashtag"/>
+        {{ messagePart.content }}
+        </span>
         <span v-else v-html="messagePart.content">
         </span>
       </template>
@@ -22,25 +25,27 @@
 <script lang="ts">
 import Vue from "vue";
 import { Prop, Component } from "vue-property-decorator";
-import { MessagePart, MessagePartContent } from "../../models";
+import { Channel, MessagePart, MessagePartContent } from "../../models";
 import { namespace } from "vuex-class";
+import { store } from "../../store";
 
 import chatEmbed from './chat-embed-part.vue'  
 
 const session = namespace("session");
+const channels = namespace("channels");
 
 @Component({
   components: { chatEmbed },
 })
 export default class ChatMessagePart extends Vue {
   @session.State("token") token: string;
+  @channels.State("channels") channels: Channel[];
   @Prop() part: MessagePart;
 
   messageParts = []
 
   mounted() {
     this.messageParts = this.channelMention(this.part.content as string)
-
     console.log(this.messageParts)
   }
 
@@ -82,19 +87,19 @@ export default class ChatMessagePart extends Vue {
   }
 
   getChannelName(id: string): string {
-    return id
+    return this.channels.find(x => x.id == id)?.name || "unknown channel";
   }
 
   async joinChannel(id: string) {
     const host = localStorage.getItem("gateway") || "chat-gateway.veld.dev";
 
-    await fetch(`https://${host}/api/v1/channels/${id}/join`, {
+    const res = await fetch(`https://${host}/api/v1/channels/${id}/join`, {
       method: "POST",
       headers: {
         Authorization: "Bearer " + this.token,
         "Content-Type": "application/json",
       },
-    }).catch((x) => console.log(x));
+    });
   }
 }
 </script>
