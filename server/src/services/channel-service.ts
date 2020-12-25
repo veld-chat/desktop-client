@@ -24,10 +24,12 @@ export const channelService = new class {
   }
 
   async addMember(id: string, userId: string) {
-    const channel = await Channel.findOne({ id });
+    const channel: ChannelDoc = await Channel.findOne({ id });
     if (channel === null) {
       throw new Error("Channel not found");
     }
+
+    const usersById = await userService.getAsObject(channel.members.map(x => x.id));
 
     const client = clientManager.get(userId);
     let user: UserDoc;
@@ -43,7 +45,7 @@ export const channelService = new class {
     }
 
     if (user.channels.includes(id)) {
-      return channel;
+      return this.serialize(channel. usersById);
     }
 
     user.channels.push(id);
@@ -57,7 +59,7 @@ export const channelService = new class {
       channel: channel,
     });
 
-    return channel;
+    return this.serialize(channel. usersById);
   }
 
   async get(id: string, withUsers = false): Promise<ApiChannel> {
