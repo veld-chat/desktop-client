@@ -110,10 +110,11 @@ li {
 }
 
 .chat-section {
-  height: 100vh;
-  flex-grow: 1;
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
+  grid-column-start: 2;
+  overflow-y: scroll;
 }
 
 .msg-container {
@@ -121,7 +122,10 @@ li {
 }
 
 .main {
-  display: flex;
+  display: grid;
+  grid-template-columns: 300px 1fr 300px;
+  grid-template-rows: 60px 1fr;
+  overflow: hidden;
   flex-direction: row;
   width: 100vw;
   height: 100vh; // fallback for browsers not supporting variables.
@@ -135,6 +139,16 @@ li {
 }
 
 @include mobile {
+  .main {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 60px 1fr 20px;
+  }
+
+  .chat-section {
+    grid-column-end: 4;
+  }
+
   .hide-mobile {
     display: none;
   }
@@ -225,12 +239,19 @@ body {
   position: relative;
 }
 
+.heading-wrapper {
+  grid-column-start: 2;
+  grid-column-end: 4;
+}
+
 .heading {
   padding: 16px 16px 16px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid var(--editor-bg);
+  width: 100%;
+  height: 100%;
 
   svg {
     margin-right: 32px;
@@ -300,12 +321,22 @@ $listWidth: 300px;
 
 .sidebar {
   box-sizing: border-box;
-  height: 100vh;
+  height: 100%;
   overflow-y: scroll;
   padding: 1rem;
   width: $listWidth;
   flex-shrink: 0;
   background: var(--sidebar-bg);
+
+  &.channel {
+    grid-row-end: 3;
+    grid-row-start: 1;    
+  }
+
+  &.users {
+    grid-column-start: 3;
+    grid-row-start: 2;
+  }
 }
 
 @include mobile {
@@ -602,6 +633,7 @@ img {
   }
 
   &-sm {
+    flex:1;
     font-size: 0.75rem;
     padding: 0.75rem;
 

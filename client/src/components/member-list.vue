@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar">
+  <div class="sidebar users">
     <div v-for="user in currentUsers" :key="user.id">
       <member-list-item :user="user" />
     </div>

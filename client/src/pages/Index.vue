@@ -1,12 +1,11 @@
 /* eslint-disable vue/no-v-html */
 <template>
   <div class="main">
-    <div class="sidebar flex column space-between">
+    <div class="sidebar channel flex column space-between">
       <channel-list />
       <current-user-view />
     </div>
 
-    <div class="chat-section">
       <div class="heading-wrapper">
         <header class="heading">
           <span v-if="channel">
@@ -15,27 +14,29 @@
           </span>
         </header>
       </div>
-      <div
-        ref="container"
-        class="message-container"
-      >
+      
+      <div class="chat-section">
         <div
-          v-if="channel"
-          class="messages"
+          ref="container"
+          class="message-container"
         >
           <div
-            v-for="(message, id) in channel.messages"
-            :key="id"
+            v-if="channel"
+            class="messages"
           >
-            <chat-message :message="message" />
+            <div
+              v-for="(message, id) in channel.messages"
+              :key="id"
+            >
+              <chat-message :message="message" />
+            </div>
           </div>
         </div>
-      </div>
 
-      <chat-bar />
+        <chat-bar />
+      </div>
+      <member-list />
     </div>
-    <member-list />
-  </div>
 </template>
 
 <script lang="ts">
