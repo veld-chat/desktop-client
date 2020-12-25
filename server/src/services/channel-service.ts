@@ -24,8 +24,7 @@ export const channelService = new class {
   }
 
   async addMember(id: string, userId: string) {
-    const channel = await this.get(id, true);
-
+    const channel = await Channel.findOne({ id });
     if (channel === null) {
       throw new Error("Channel not found");
     }
