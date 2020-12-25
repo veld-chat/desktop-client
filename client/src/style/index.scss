@@ -146,6 +146,7 @@ li {
   }
 
   .chat-section {
+    grid-column-start: 1;
     grid-column-end: 4;
   }
 
@@ -242,6 +243,12 @@ body {
 .heading-wrapper {
   grid-column-start: 2;
   grid-column-end: 4;
+}
+
+@include mobile {
+  .heading-wrapper {
+    grid-column-start: 1;
+  }
 }
 
 .heading {
