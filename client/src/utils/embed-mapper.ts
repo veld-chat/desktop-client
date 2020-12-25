@@ -43,7 +43,7 @@ const getEmbedFromHtml = async (res: Response): Promise<Embed> => {
                     continue;
                 }
 
-                embed.title = tag.getAttribute("content");;
+                embed.title = tag.getAttribute("content");
                 break;
             }
 

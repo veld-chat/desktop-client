@@ -103,10 +103,11 @@ export function connect() {
   });
 
   connection.on("sys-error",
-    (e) => store.dispatch("messages/add", {
+    (e) => store.dispatch("channels/addMessage", {
       user: "system",
       mentions: [],
-      content: e.content
+      content: e.content,
+      channelId: store.state.channels.currentChannel,
     } as ServerMessage));
 
   connection.on("connect", () => {

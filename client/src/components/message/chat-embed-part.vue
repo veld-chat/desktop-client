@@ -18,28 +18,25 @@
             class="embed-author-image"
             :src="part.embed.author.iconUrl"
           >
-          <span v-if="part.embed.author.value">{{ part.embed.author.value }}</span>
+          <span v-if="part.embed.author.value" v-html="part.embed.author.value"></span>
         </a>
         <span
           v-if="part.embed.title"
+          v-html="part.embed.title"
           class="embed-title"
-        >{{ part.embed.title }}</span>
-        <p v-if="part.embed.description">
-          {{ part.embed.description }}
-        </p>
-        <p
-          v-if="part.embed.footer"
+        ></span>
+        <p v-if="part.embed.description" v-html="part.embed.description "></p>
+        <p v-if="part.embed.footer"
+          v-html="part.embed.footer"
           class="embed-footer"
-        >
-          {{ part.embed.footer }}
-        </p>
+        ></p>
       </div>
       <div
         v-if="part.embed.imageUrl"
         class="embed-icon-container"
       >
-        <div
-          :style="`background: url(${part.embed.imageUrl}) center; background-size: contain`"
+        <img
+          :src="part.embed.imageUrl"
           class="embed-icon"
         />
       </div>

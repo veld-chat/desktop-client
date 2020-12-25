@@ -100,6 +100,9 @@ export default class ChatMessagePart extends Vue {
         "Content-Type": "application/json",
       },
     });
+    if(res.ok) {
+      store.dispatch("channels/update", await res.json());
+    }
   }
 }
 </script>
