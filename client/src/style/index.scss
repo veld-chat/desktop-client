@@ -254,6 +254,7 @@ body {
 
   &.third {
     background-color: var(--sidebar-bg);
+    grid-row-start: 1;
     grid-column-start: 3;
     grid-column-end: 4;
   }
