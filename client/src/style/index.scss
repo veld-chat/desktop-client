@@ -241,13 +241,33 @@ body {
 }
 
 .heading-wrapper {
-  grid-column-start: 2;
-  grid-column-end: 4;
+  &.first {
+    background-color: var(--sidebar-bg);
+    grid-column-start: 0;
+    grid-column-end: 2;
+  }
+
+  &.second {
+    grid-column-start: 2;
+    grid-column-end: 3;
+  }
+
+  &.third {
+    background-color: var(--sidebar-bg);
+    grid-column-start: 3;
+    grid-column-end: 4;
+  }
 }
 
 @include mobile {
   .heading-wrapper {
-    grid-column-start: 1;
+    &.first {
+      display: none;
+    }
+
+    &.second {
+      grid-column-start: 1;
+    }
   }
 }
 
@@ -337,7 +357,7 @@ $listWidth: 300px;
 
   &.channel {
     grid-row-end: 3;
-    grid-row-start: 1;    
+    grid-row-start: 2;    
   }
 
   &.users {

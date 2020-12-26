@@ -1,41 +1,53 @@
 /* eslint-disable vue/no-v-html */
 <template>
   <div class="main">
+    <div class="heading-wrapper first">
+      <header class="heading">
+        Veld.Chat
+      </header>
+    </div>
+
     <div class="sidebar channel flex column space-between">
       <channel-list />
       <current-user-view />
     </div>
 
-      <div class="heading-wrapper">
-        <header class="heading">
-          <span v-if="channel">
-            <i class="icon fa fa-hashtag"/>
-            <b style="heading-title" v-text="channel.name"></b>
-          </span>
-        </header>
-      </div>
-      
-      <div class="chat-section">
+    <div class="heading-wrapper second">
+      <header class="heading">
+        <span v-if="channel">
+          <i class="icon fa fa-hashtag"/>
+          <b style="heading-title" v-text="channel.name"></b>
+        </span>
+      </header>
+    </div>
+    
+    <div class="chat-section">
+      <div
+        ref="container"
+        class="message-container"
+      >
         <div
-          ref="container"
-          class="message-container"
+          v-if="channel"
+          class="messages"
         >
           <div
-            v-if="channel"
-            class="messages"
+            v-for="(message, id) in channel.messages"
+            :key="id"
           >
-            <div
-              v-for="(message, id) in channel.messages"
-              :key="id"
-            >
-              <chat-message :message="message" />
-            </div>
+            <chat-message :message="message" />
           </div>
         </div>
-
-        <chat-bar />
       </div>
-      <member-list />
+
+      <chat-bar />
+    </div>
+
+    <div class="heading-wrapper third">
+      <header class="heading">
+        Members
+      </header>
+    </div>
+    <member-list />
     </div>
 </template>
 
