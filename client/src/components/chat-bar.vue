@@ -57,7 +57,7 @@ import Vue from "vue";
 import { Component, Ref } from "vue-property-decorator";
 import TypingBar from "./typing-bar.vue";
 import { autoComplete, AutoComplete } from "@/utils/autocomplete";
-import { connection } from "@/connection";
+// import { connection } from "@/connection";
 import { namespace } from "vuex-class";
 const HyperMD = process.isClient ? require("../hypermd") : null;
 const CodeMirror = process.isClient ? require("codemirror") : null;
@@ -269,7 +269,7 @@ export default class ChatBar extends Vue {
     }
 
     this.lastTimeTyping = new Date().getTime();
-    connection.emit("user:typing");
+  //  connection.emit("user:typing");
   }
 
   send(): void {
@@ -277,12 +277,12 @@ export default class ChatBar extends Vue {
     if (message.length == 0) {
       return;
     }
-
+/*
     connection.emit("message:create", {
       content: message,
       channelId: this.currentChannel,
     });
-
+*/
     this.editor.setValue("");
     this.editor.focus();
   }

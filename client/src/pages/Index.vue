@@ -24,8 +24,7 @@
     <div class="chat-section">
       <div
         ref="container"
-        class="message-container"
-      >
+        class="message-container">
         <div
           v-if="channel"
           class="messages"
@@ -57,13 +56,13 @@ import { Component, Ref, Watch } from "vue-property-decorator";
 import Login from "../components/login.vue";
 import ChatBar from "../components/chat-bar.vue";
 import MemberList from "../components/member-list.vue";
-import { Channel, User } from "@/models";
-import { store } from "@/store";
+import { Channel, User } from "../models";
+import { store } from "../store";
 import { namespace } from "vuex-class";
-import ChatMessage from "@/components/chat-message.vue";
-import { connect } from "@/connection";
+import ChatMessage from "../components/chat-message.vue";
+import { connect } from "../connection";
 import ChannelList from "../components/channel-list.vue";
-import CurrentUserView from "../components/current-user";
+import CurrentUserView from "../components/current-user.vue";
 
 const channels = namespace("channels");
 

@@ -1,13 +1,40 @@
 import { Emoji, registerEmoji } from "@/utils/emoji";
-import io from "socket.io-client";
 import { store } from "@/store";
 import { ServerEditMessage, ServerMessage, User } from "@/models";
 import proxyfetch from "./utils/proxyfetch";
 import { mapToEmbed } from "./utils/embed-mapper";
+import { encode, decode } from "msgpack-lite";
 
-export let connection: SocketIOClient.Socket;
+export let websocket: WebSocket;
 let isConnected = false;
 const urlRegex = /((http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)/;
+let id = "";
+
+const messageType = {
+  authorize: 0,
+  ready: 1,
+  messageCreate: 2,
+  messageUpdate: 3,
+  messageDelete: 4,
+}
+
+async function ready(data) {
+  id = data.user.id;
+  await store.dispatch("session/setUser", data.user);
+  await store.dispatch("session/setToken", data.token);
+}
+
+async function messageCreate(data) {
+  if(data.embed == null) {
+    const urls = urlRegex.exec(data.content);
+    if(urls != null) {
+      const res = await proxyfetch(urls[0]);
+      console.log(res);
+      data.embed = await mapToEmbed(res);
+    }
+  }
+  await store.dispatch("channels/addMessage", data);
+}
 
 export function connect() {
   if (isConnected) {
@@ -16,16 +43,33 @@ export function connect() {
 
   isConnected = true;
 
-  const host = localStorage.getItem("gateway") || "chat-gateway.veld.dev";
-  let id = "";
+  const host = localStorage.getItem("gateway") || "wss://chat-gateway.veld.dev";
 
-  connection = io(host);
+  websocket = new WebSocket(host);
+
+  websocket.onopen = (ev) => {
+    console.log("connected", ev);
+
+    websocket.send(encode({
+      t: 0,
+      d: {
+        token: localStorage.get("token"),
+      }
+    }));
+  };
+
+  websocket.onmessage = async (ev) => {
+    const payload = decode(ev.data);
+    switch(payload.t) {
+      case messageType.ready: await ready(payload.d);
+      case messageType.messageCreate: await messageCreate(payload.d);
+  }
 
   fetch(`//${host}/api/v1/emojis`)
     .then(r => r.json())
     .then((r: Emoji[]) => r.forEach(registerEmoji));
 
-  connection.on("ready", async (options) => {
+  /*connection.on("ready", async (options) => {
     id = options.user.id;
     await store.dispatch("session/setUser", options.user);
     await store.dispatch("session/setToken", options.token);
@@ -114,5 +158,6 @@ export function connect() {
     connection.emit("login", {
       token: localStorage.getItem("token") || null
     });
-  });
-}
+  });*/
+  }
+} 
