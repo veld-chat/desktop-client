@@ -19,6 +19,8 @@ const messageType = {
 }
 
 async function ready(data) {
+  console.log("ready!");
+    
   id = data.user.id;
   await store.dispatch("session/setUser", data.user);
   await store.dispatch("session/setToken", data.token);
@@ -50,16 +52,19 @@ export function connect() {
   websocket.onopen = (ev) => {
     console.log("connected", ev);
 
-    websocket.send(encode({
+    websocket.send(JSON.stringify({
       t: 0,
       d: {
-        token: localStorage.get("token"),
+        token: localStorage.getItem("token"),
       }
     }));
   };
 
   websocket.onmessage = async (ev) => {
-    const payload = decode(ev.data);
+    const text = await ev.data.text();
+    console.log(text);
+    const payload = JSON.parse(text);
+    console.log("payload received", payload);
     switch(payload.t) {
       case messageType.ready: await ready(payload.d);
       case messageType.messageCreate: await messageCreate(payload.d);
