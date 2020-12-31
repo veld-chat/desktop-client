@@ -29,7 +29,7 @@ import { Channel, MessagePart, MessagePartContent } from "../../models";
 import { namespace } from "vuex-class";
 import { store } from "../../store";
 
-import chatEmbed from './chat-embed-part.vue'  
+import chatEmbed from "./chat-embed-part.vue";
 
 const session = namespace("session");
 const channels = namespace("channels");
@@ -42,44 +42,42 @@ export default class ChatMessagePart extends Vue {
   @channels.State("channels") channels: Channel[];
   @Prop() part: MessagePart;
 
-  messageParts = []
+  messageParts = [];
 
   mounted() {
-    this.messageParts = this.channelMention(this.part.content as string)
-    console.log(this.messageParts)
+    this.messageParts = this.channelMention(this.part.content as string);
+    console.log(this.messageParts);
   }
 
   channelMention(content: string): MessagePartContent[] {
-    const regex = new RegExp('{#([0-9]*)}')
+    const regex = new RegExp("{#([0-9]*)}");
 
     if (!content.match(regex)) {
-      return [
-        { content },
-      ]
+      return [{ content }];
     }
 
     let parts: MessagePartContent[] = [];
     let capture: RegExpExecArray;
-    while(capture = regex.exec(content)) { 
-      if(capture.index > 0) {
+    while ((capture = regex.exec(content))) {
+      if (capture.index > 0) {
         parts.push({
           content: content.substring(0, capture.index),
         });
       }
-      console.log(capture[0])
+      console.log(capture[0]);
       console.log(capture.index);
       parts.push({
         content: this.getChannelName(capture[1]),
         mentionType: "channel",
         mentionId: capture[1],
       });
-      content = content.substring(capture.index + capture[0].length); 
+      content = content.substring(capture.index + capture[0].length);
     }
 
-    if(content.length != 0) {
+    if (content.length != 0) {
       parts.push({
-        content
-      })
+        content,
+      });
     }
 
     console.log(JSON.stringify(parts));
@@ -87,20 +85,20 @@ export default class ChatMessagePart extends Vue {
   }
 
   getChannelName(id: string): string {
-    return this.channels.find(x => x.id == id)?.name || "unknown channel";
+    return this.channels.find((x) => x.id == id)?.name || "unknown channel";
   }
 
   async joinChannel(id: string) {
     const host = localStorage.getItem("gateway") || "chat-gateway.veld.dev";
 
-    const res = await fetch(`https://${host}/api/v1/channels/${id}/join`, {
+    const res = await fetch(`https://${host}/channels/${id}/join`, {
       method: "POST",
       headers: {
         Authorization: "Bearer " + this.token,
         "Content-Type": "application/json",
       },
     });
-    if(res.ok) {
+    if (res.ok) {
       store.dispatch("channels/update", await res.json());
     }
   }

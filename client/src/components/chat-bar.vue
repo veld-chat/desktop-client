@@ -61,6 +61,7 @@ import { autoComplete, AutoComplete } from "@/utils/autocomplete";
 import { namespace } from "vuex-class";
 const HyperMD = process.isClient ? require("../hypermd") : null;
 const CodeMirror = process.isClient ? require("codemirror") : null;
+import { ApiClient, client } from "../api-client";
 
 const channels = namespace("channels");
 
@@ -269,20 +270,17 @@ export default class ChatBar extends Vue {
     }
 
     this.lastTimeTyping = new Date().getTime();
-  //  connection.emit("user:typing");
+    //  connection.emit("user:typing");
   }
 
-  send(): void {
+  async send() {
     const message = this.editor.getValue();
     if (message.length == 0) {
       return;
     }
-/*
-    connection.emit("message:create", {
-      content: message,
-      channelId: this.currentChannel,
-    });
-*/
+
+    await client().sendMessage(this.currentChannel, message);
+
     this.editor.setValue("");
     this.editor.focus();
   }

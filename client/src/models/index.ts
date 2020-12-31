@@ -15,11 +15,11 @@ export type UserStatus = {
 export type ServerMessage = {
   id: string;
   channelId: string;
-  user: string;
+  author: User;
   embed?: Embed;
   content: string;
-  sentTimestamp: number;
-  mentions: string[];
+  timestamp: number;
+  //  mentions: string[];
 };
 
 export interface ServerEditMessage extends ServerMessage {
@@ -79,7 +79,7 @@ export type MessagePart = {
 
 export type Message = {
   id: string;
-  user: User;
+  author: User;
   parts: MessagePart[];
 }
 

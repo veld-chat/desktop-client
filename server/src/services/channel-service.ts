@@ -45,7 +45,7 @@ export const channelService = new class {
     }
 
     if (user.channels.includes(id)) {
-      return this.serialize(channel. usersById);
+      return this.serialize(channel.usersById);
     }
 
     user.channels.push(id);
@@ -59,7 +59,7 @@ export const channelService = new class {
       channel: channel,
     });
 
-    return this.serialize(channel. usersById);
+    return this.serialize(channel.usersById);
   }
 
   async get(id: string, withUsers = false): Promise<ApiChannel> {

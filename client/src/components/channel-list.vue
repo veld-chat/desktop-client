@@ -1,12 +1,18 @@
 <template>
   <div>
     <strong class="category">Channels</strong>
-    <div
-      v-for="(channel, id) in channels"
-      :key="id"
-    >
-      <channel-list-item :channel="channel" />
+    <div v-if="channels">
+      <div
+        v-for="(channel, id) in channels"
+        :key="id"
+      >
+        <channel-list-item :channel="channel" />
+      </div>
     </div>
+    <div v-else>
+      <p>No channels yet!</p>
+    </div>
+    
     <create-channel-modal
       :open="modalOpen"
       @close="closeModal"
@@ -27,7 +33,7 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import ChannelListItem from "./channel-list-item.vue";
 import CreateChannelModal from "./create-channel-modal.vue";
-import { Channel } from "@/models";
+import { Channel } from "../models";
 import { namespace } from "vuex-class";
 
 const channels = namespace("channels");

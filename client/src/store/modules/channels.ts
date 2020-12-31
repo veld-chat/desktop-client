@@ -69,8 +69,8 @@ export const channels: Module<ChannelState, RootState> = {
     },
     addMessage({ commit, rootState }, message: ServerMessage) {
       const { id } = rootState.session.user;
-      const isMention = message.mentions.includes(id);
-      const part = processMessage(message, isMention);
+      //const isMention = message.mentions.includes(id);
+      const part = processMessage(message, false);
 
       commit("addMessage", {
         message,
@@ -127,13 +127,8 @@ export const channels: Module<ChannelState, RootState> = {
         return;
       }
 
-      const user = store.state.users.usersById[message.user];
-      if (!user) {
-        return;
-      }
-
       const data: Message = {
-        user,
+        author: message.author,
         id: message.id,
         parts: [part]
       };
@@ -143,7 +138,7 @@ export const channels: Module<ChannelState, RootState> = {
       const lastMessageId = messages.length - 1;
       const lastMessage = messages[lastMessageId];
 
-      if (lastMessage && lastMessage.user.id === message.user) {
+      if (lastMessage && lastMessage.author.id === message.author.id) {
         Vue.set(messages, lastMessageId, {
           ...data,
           id: lastMessage.id,

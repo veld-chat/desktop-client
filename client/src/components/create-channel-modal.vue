@@ -47,7 +47,7 @@ export default class CreateChannelModal extends Vue {
   @session.State("token") token: string;
 
   async createChannel() {
-    if(!this.channelName || this.channelName.length == 0) {
+    if (!this.channelName || this.channelName.length == 0) {
       this.error = "Cannot create a channel without name.";
       return;
     }
@@ -57,14 +57,14 @@ export default class CreateChannelModal extends Vue {
     });
 
     const host = localStorage.getItem("gateway") || "chat-gateway.veld.dev";
-    await fetch(`https://${host}/api/v1/channels`, {
+    await fetch(`https://${host}/channels`, {
       method: "POST",
       body: json,
       headers: {
         Authorization: "Bearer " + this.token,
         "Content-Type": "application/json",
       },
-    }).catch((x) => this.error = x.message);
+    }).catch((x) => (this.error = x.message));
     this.closeModal();
   }
 

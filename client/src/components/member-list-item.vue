@@ -1,16 +1,23 @@
 <template>
-  <div class="member-list-item" v-if="user">
+  <div 
+    v-if="user"
+    class="member-list-item" 
+  >
     <div
-      v-if="user.avatarUrl"
       class="msg-instance-avatar"
-      :style="{ backgroundImage: `url('${user.avatarUrl}')` }"
+      :style="{ backgroundImage: `url('https://cdn.miki.bot/chat/avatars/${user.avatarUrl || user.id % 5}.png')` }"
     />
     <div>
       <span class="flex text-centered fit-text">
         <div class="user-name fit-text">{{ user.name }}</div>
-        <div v-if="user.bot" class="badge">Bot</div>
+        <div 
+          v-if="user.isBot"
+          class="badge"
+        >
+          Bot
+        </div>
       </span>
-      <div>{{ user.status.value }}</div>
+      <div>Online</div>
     </div>
   </div>
 </template>
@@ -18,7 +25,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Prop, Component } from "vue-property-decorator";
-import { User } from "@/models";
+import { User } from "../models";
 
 @Component
 export default class MemberListItem extends Vue {
