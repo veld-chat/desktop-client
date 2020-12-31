@@ -1,6 +1,6 @@
 import { Module } from "vuex";
 import { RootState, store } from "@/store";
-import { Channel, Message, MessagePart, ScrollPosition, ServerMessage, User } from "@/models";
+import { Channel, Message, MessagePart, ScrollPosition, ServerMessage, User } from "../../models";
 import Vue from "vue";
 import { processMessage } from "@/utils/string";
 
@@ -130,7 +130,8 @@ export const channels: Module<ChannelState, RootState> = {
       const data: Message = {
         author: message.author,
         id: message.id,
-        parts: [part]
+        timestamp: new Date(message.timestamp),
+        parts: [part],
       };
 
       const messages = channel.messages;
@@ -142,10 +143,14 @@ export const channels: Module<ChannelState, RootState> = {
         Vue.set(messages, lastMessageId, {
           ...data,
           id: lastMessage.id,
+          timestamp: lastMessage.timestamp,
           parts: [...lastMessage.parts, ...data.parts]
         })
       } else {
-        messages.push(data);
+        messages.push({
+          ...data,
+
+        });
 
         if (isCurrent) {
           Vue.set(channel, "lastMessageId", data.id);

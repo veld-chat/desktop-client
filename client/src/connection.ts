@@ -1,27 +1,31 @@
-import { Emoji, registerEmoji } from "@/utils/emoji";
-import { store } from "@/store";
-import { ServerEditMessage, ServerMessage, User } from "./models";
+import { store } from "./store";
 import proxyfetch from "./utils/proxyfetch";
 import { mapToEmbed } from "./utils/embed-mapper";
 import { client } from "./api-client";
+import { createLogger } from "./services/logger";
 
+const logger = createLogger("WebSocket");
 export let websocket: WebSocket;
 
 let isConnected = false;
 const urlRegex = /((http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)/;
 let id = "";
 
-const messageType = {
-  authorize: 0,
-  ready: 1,
-  messageCreate: 2,
-  messageUpdate: 3,
-  messageDelete: 4,
+interface WebSocketPayload {
+  t: MessageType;
+  d: unknown;
+}
+
+enum MessageType {
+  Authorize = 0,
+  Ready = 1,
+  MessageCreate = 2,
+  MessageUpdate = 3,
+  MessageDelete = 4,
+  UserUpdate = 8,
 }
 
 async function ready(data) {
-  console.log("ready!");
-
   id = data.user.id;
   await store.dispatch("session/setUser", data.user);
   await store.dispatch("session/setToken", data.token);
@@ -49,6 +53,13 @@ async function messageCreate(data) {
   await store.dispatch("channels/addMessage", data);
 }
 
+async function userUpdate(data) {
+  if (id == data.id) {
+    await store.dispatch("session/setUser", data);
+  }
+  await store.dispatch("users/update", data);
+}
+
 export function connect() {
   if (isConnected) {
     return;
@@ -56,106 +67,104 @@ export function connect() {
 
   const host = localStorage.getItem("gateway") || "api.veld.chat";
 
-  console.log("connecting to " + `wss://${host}`)
+  logger.log("connecting to", `wss://${host}`)
   websocket = new WebSocket(`wss://${host}`);
-  websocket.onopen = (ev) => {
+  websocket.onopen = () => {
     isConnected = true;
-    console.log("connected", ev);
 
     websocket.send(JSON.stringify({
-      t: messageType.authorize,
+      t: MessageType.Authorize,
       d: {
         token: localStorage.getItem("token"),
       }
     }));
   };
 
-  websocket.onclose = (ev: CloseEvent) => {
-    console.log("connection closed", ev.reason);
-  }
-
-  websocket.onmessage = async (ev) => {
-    console.log(ev);
-    const text = await ev.data;
-    const payload = JSON.parse(text);
-    console.log("payload received", payload);
-    switch (payload.t) {
-      case messageType.ready:
-        ready(payload.d);
-        break;
-      case messageType.messageCreate:
-        messageCreate(payload.d);
-        break;
-    }
-
-    return false;
+  websocket.onclose = () => {
+    logger.log("closed");
+    isConnected = false;
+    connect();
   };
 
-  fetch(`//${host}/emojis`)
-    .then(r => r.json())
-    .then((r: Emoji[]) => r.forEach(registerEmoji));
-  /*
- 
+  websocket.onmessage = async (ev) => {
+    const payload = JSON.parse(ev.data) as WebSocketPayload;
+    logger.log(`received payload ${MessageType[payload.t] || "Unknown"}`, payload.d)
+
+    switch (payload.t) {
+      case MessageType.Ready:
+        ready(payload.d);
+        break;
+      case MessageType.MessageCreate:
+        messageCreate(payload.d);
+        break;
+      case MessageType.UserUpdate:
+        userUpdate(payload.d);
+        break;
+    }
+    return false;
+  };
+}
+
+/*
 connection.on("member:delete", (memberJoinEvent) => {
-  store.dispatch("channels/removeMember", {
-    id: memberJoinEvent.channel.id,
-    member: memberJoinEvent.user.id,
-  });
+store.dispatch("channels/removeMember", {
+id: memberJoinEvent.channel.id,
+member: memberJoinEvent.user.id,
 });
- 
+});
+
 connection.on("channel:create", (channel) => store.dispatch("channels/update", channel));
 connection.on("user:update", (user) => {
-  store.dispatch("users/update", user);
-  store.dispatch("session/setUser", user);
+store.dispatch("users/update", user);
+store.dispatch("session/setUser", user);
 });
- 
+
 connection.on("user:join", (user) => store.dispatch("users/update", user));
 connection.on("user:leave", (user: User) => {
-  if (store.state.channels.channels.some(c => c.members.includes(user.id))) {
-    return store.dispatch("users/update", user);
-  } else {
-    return store.dispatch("users/remove", user)
-  }
-});
- 
-connection.on("channel:delete", (channelEvent) => {
-  if (channelEvent.user.id == id) {
-    store.dispatch("channels/remove", channelEvent.channel.id);
-    store.dispatch("messages/removeChannel", channelEvent.channel.id);
-  } else {
-    store.dispatch("channels/update", channelEvent.channel);
-  }
-  store.dispatch("users/remove", channelEvent.user.id);
-});
- 
-connection.on("user:typing", (user) => store.dispatch("users/setTyping", user.id));
- 
-connection.on("message:create", async (message: ServerMessage) => {
-  if(message.embed == null) {
-    const urls = urlRegex.exec(message.content);
-    if(urls != null) {
-      const res = await proxyfetch(urls[0]);
-      console.log(res);
-      message.embed = await mapToEmbed(res);
-    }
-  }
-  store.dispatch("channels/addMessage", message)
-});
- 
-connection.on("message:update", async (editMessage: ServerEditMessage) => {
-  // Update message content at frontend, and append edited + edited timestamp
-});
- 
-connection.on("message:delete", async (editMessage: ServerEditMessage) => {
-  // Delete message content at frontend
-});
- 
-connection.on("sys-error",
-  (e) => store.dispatch("channels/addMessage", {
-    user: "system",
-    mentions: [],
-    content: e.content,
-    channelId: store.state.channels.currentChannel,
-  } as ServerMessage));
-}*/
+if (store.state.channels.channels.some(c => c.members.includes(user.id))) {
+return store.dispatch("users/update", user);
+} else {
+return store.dispatch("users/remove", user)
 }
+});
+
+connection.on("channel:delete", (channelEvent) => {
+if (channelEvent.user.id == id) {
+store.dispatch("channels/remove", channelEvent.channel.id);
+store.dispatch("messages/removeChannel", channelEvent.channel.id);
+} else {
+store.dispatch("channels/update", channelEvent.channel);
+}
+store.dispatch("users/remove", channelEvent.user.id);
+});
+
+connection.on("user:typing", (user) => store.dispatch("users/setTyping", user.id));
+
+connection.on("message:create", async (message: ServerMessage) => {
+if(message.embed == null) {
+const urls = urlRegex.exec(message.content);
+if(urls != null) {
+  const res = await proxyfetch(urls[0]);
+  console.log(res);
+  message.embed = await mapToEmbed(res);
+}
+}
+store.dispatch("channels/addMessage", message)
+});
+
+connection.on("message:update", async (editMessage: ServerEditMessage) => {
+// Update message content at frontend, and append edited + edited timestamp
+});
+
+connection.on("message:delete", async (editMessage: ServerEditMessage) => {
+// Delete message content at frontend
+});
+
+connection.on("sys-error",
+(e) => store.dispatch("channels/addMessage", {
+user: "system",
+mentions: [],
+content: e.content,
+channelId: store.state.channels.currentChannel,
+} as ServerMessage));
+}*/

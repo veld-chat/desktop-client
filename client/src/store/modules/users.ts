@@ -22,6 +22,12 @@ export const users: Module<UserState, RootState> = {
   },
 
   actions: {
+    async add({ state, commit }, users: User[]) {
+      commit("setUsers", [
+        ...state.users.filter(u => users.find(x => x.id == u.id)),
+        ...users,
+      ])
+    },
     async clear({ commit }) {
       commit("setUsers", []);
     },

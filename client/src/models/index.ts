@@ -18,7 +18,7 @@ export type ServerMessage = {
   author: User;
   embed?: Embed;
   content: string;
-  timestamp: number;
+  timestamp: Date;
   //  mentions: string[];
 };
 
@@ -80,6 +80,7 @@ export type MessagePart = {
 export type Message = {
   id: string;
   author: User;
+  timestamp: Date;
   parts: MessagePart[];
 }
 

@@ -1,9 +1,10 @@
+import { User } from "../models";
 import axios, { AxiosError } from "axios";
-import { session } from "../store";
+import { session, SessionState } from "../store";
 
 export function client() {
   const host = localStorage.getItem("gateway") || "api.veld.chat";
-  const token = (session.state as any).token;
+  const token = (session.state as SessionState)?.token || "";
 
   console.log(`creating new api client with host '${host}' on token '${token}'.`)
   return new ApiClient(
@@ -19,6 +20,29 @@ export class ApiClient {
   constructor(baseUrl, token) {
     this.baseUrl = `https://${baseUrl}/`;
     this.token = token;
+  }
+
+  async getChannelMembers(channelId): Promise<Array<User>> {
+    const response = await axios.get(
+      `${this.baseUrl}channels/${channelId}/members`, {
+      headers: {
+        "Authorization": `Bearer ${this.token}`
+      }
+    });
+    console.log(response);
+    return response.data;
+  }
+
+  async editUser(name) {
+    const response = await axios.patch(
+      `${this.baseUrl}users/me`, {
+      name,
+    }, {
+      headers: {
+        "Authorization": `Bearer ${this.token}`
+      }
+    });
+    return response.data;
   }
 
   async joinChannel(channelName) {

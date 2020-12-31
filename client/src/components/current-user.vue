@@ -1,9 +1,27 @@
 <template>
   <div>
-    <login v-if="showLogin" @close="showLogin = false" />
+    <edit-user-modal 
+      :open="editUserModalOpen" 
+      @close="editUserModalOpen = false"
+    />
+    <login 
+      v-if="showLogin" 
+      @close="showLogin = false"
+    />
     <div class="flex space-between align-bottom">
-      <member-list-item :user="user"/>
-      <a class="btn alt" style="cursor: pointer; font-size: 12px" @click.prevent="showLogin = true">
+      <a 
+        class="hoverable"
+        @click.prevent="editUserModalOpen = true"
+      >
+        <member-list-item 
+          :user="user" 
+        />
+      </a>
+      <a 
+        class="btn alt" 
+        style="cursor: pointer; font-size: 12px"
+        @click.prevent="showLogin = true"
+      >
         Not you?
       </a>
     </div>
@@ -12,6 +30,7 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
+import EditUserModal from "./edit-user-modal.vue";
 import MemberListItem from "./member-list-item.vue";
 import Login from "./login.vue";
 import { namespace } from "vuex-class";
@@ -21,6 +40,7 @@ const session = namespace("session");
 
 @Component({
   components: {
+    EditUserModal,
     MemberListItem,
     Login,
   },
@@ -28,5 +48,6 @@ const session = namespace("session");
 export default class CurrentUserView extends Vue {
   @session.State("user") user: User;
   showLogin = false;
+  editUserModalOpen = false;
 }
 </script>

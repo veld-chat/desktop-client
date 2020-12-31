@@ -10,6 +10,8 @@
 @import "modal";
 @import "button";
 
+@import "utils/layout.scss";
+
 h1, h2, h3, h4, h5, h6 {
   margin-bottom: 1.5rem;
 }
@@ -161,6 +163,11 @@ li {
   margin: 2px 8px;
   overflow-x: hidden;
   text-overflow: ellipsis;
+
+  .subtitle {
+    font-size: 16px;
+    color: var(--text-secondary);
+  }
 }
 
 .badge {
@@ -617,6 +624,10 @@ img {
       padding: 0.5rem 1rem;
     }
   }
+}
+
+.hoverable:hover {
+  background-color: #212121;
 }
 
 .btn-group {

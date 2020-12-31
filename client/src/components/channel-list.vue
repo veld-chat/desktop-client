@@ -22,8 +22,8 @@
       @click="openModal"
     >
       <span>
-        <i class="icon fas fa-plus-square" />
-        New Channel
+        <i class="icon fas fa-plus" />
+        Create channel
       </span>
     </a>
   </div>

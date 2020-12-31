@@ -67,7 +67,14 @@ import CurrentUserView from "../components/current-user.vue";
 const channels = namespace("channels");
 
 @Component({
-  components: { ChatMessage, ChatBar, MemberList, ChannelList, Login, CurrentUserView },
+  components: {
+    ChatMessage,
+    ChatBar,
+    MemberList,
+    ChannelList,
+    Login,
+    CurrentUserView,
+  },
 })
 export default class Root extends Vue {
   @Ref() container: HTMLDivElement;
@@ -88,7 +95,7 @@ export default class Root extends Vue {
     window.addEventListener("resize", this.updateScroll);
     window.addEventListener("resize", this.setMobileSize);
     this.setMobileSize();
-    
+
     this.container.addEventListener("scroll", this.setChannelScroll);
   }
 
@@ -106,13 +113,16 @@ export default class Root extends Vue {
     }
 
     if (this.channel.scroll !== scroll) {
-      this.$store.dispatch("channels/setScroll", { id: this.channel.id, scroll });
+      this.$store.dispatch("channels/setScroll", {
+        id: this.channel.id,
+        scroll,
+      });
     }
   }
-  
+
   setMobileSize() {
     let vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
   }
 
   @Watch("channel.messages")

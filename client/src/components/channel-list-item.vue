@@ -1,6 +1,10 @@
 <template>
   <a
-    :class="['channel-list-item', currentChannel === channel.id && 'is-selected', channel.unreadAmount === 0 && 'is-read']"
+    :class="[
+      'channel-list-item', 
+      currentChannel === channel.id && 'is-selected', 
+      channel.unreadAmount === 0 && 'is-read',
+    ]"
     @click="setChannel"
   >
     <span class="flex text-centered">
@@ -25,7 +29,7 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import { Prop } from "vue-property-decorator";
-import { Channel, User } from "@/models";
+import { Channel, User } from "../models";
 import { namespace } from "vuex-class";
 
 let users = namespace("users");
@@ -48,10 +52,12 @@ export default class ChannelListItem extends Vue {
   }
 
   get onlineMembers(): number {
-    return this.channel.members
-      ?.map((x) => this.users[x] || null)
-      .filter((x) => x)
-      .filter((x) => x.status.value !== "offline").length || 0;
+    return (
+      this.channel.members
+        ?.map((x) => this.users[x] || null)
+        .filter((x) => x)
+        .filter((x) => x.status.value !== "offline").length || 0
+    );
   }
 
   get totalMembers(): number {
