@@ -29,7 +29,6 @@ export class ApiClient {
         "Authorization": `Bearer ${this.token}`
       }
     });
-    console.log(response);
     return response.data;
   }
 

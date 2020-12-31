@@ -1,9 +1,10 @@
-const isDebug = localStorage.getItem("debug") == "1";
 
-class LoggerInstance {
+export class LoggerInstance {
+  isDebug: boolean;
   category: string;
 
   constructor(category: string) {
+    this.isDebug = process.isClient ? localStorage.getItem("debug") == "1" : false;
     this.category = category;
   }
 
@@ -12,19 +13,13 @@ class LoggerInstance {
   }
 
   log(...message: unknown[]) {
-    log(this.category, ...message);
+    if (!this.isDebug) {
+      return;
+    }
+    console.log(`[${this.category}]`, ...message)
   }
 }
 
 export function createLogger(category: string): LoggerInstance {
   return new LoggerInstance(category);
 }
-
-export function log(category: string, ...message: unknown[]) {
-  if (!isDebug) {
-    return;
-  }
-
-  console.log(`[${category}]`, ...message)
-}
-
