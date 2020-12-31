@@ -34,15 +34,14 @@ export class ApiClient {
 
   async joinChannel(channelName) {
     return await this.request(
-      `${this.baseUrl}channels/join`, "POST", {
+      `channels/join`, "POST", {
       channel: channelName,
     });
   }
 
   async sendMessage(channelId: string, content: string) {
     return await this.request(
-      `channels/${channelId}/messages`,
-      "POST", {
+      `channels/${channelId}/messages`, "POST", {
       content,
     });
   }
