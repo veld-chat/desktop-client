@@ -46,7 +46,6 @@ export default class ChatMessagePart extends Vue {
 
   mounted() {
     this.messageParts = this.channelMention(this.part.content as string);
-    console.log(this.messageParts);
   }
 
   channelMention(content: string): MessagePartContent[] {

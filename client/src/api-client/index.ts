@@ -1,12 +1,12 @@
 import { User } from "../models";
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, Method } from "axios";
 import { session, SessionState } from "../store";
+import { createLogger, LoggerInstance } from "../services/logger";
 
 export function client() {
   const host = localStorage.getItem("gateway") || "api.veld.chat";
   const token = (session.state as SessionState)?.token || "";
 
-  console.log(`creating new api client with host '${host}' on token '${token}'.`)
   return new ApiClient(
     host,
     token,
@@ -16,59 +16,54 @@ export function client() {
 export class ApiClient {
   baseUrl: string;
   token: string;
+  logger: LoggerInstance;
 
   constructor(baseUrl, token) {
     this.baseUrl = `https://${baseUrl}/`;
     this.token = token;
+    this.logger = createLogger("ApiClient");
   }
 
   async getChannelMembers(channelId): Promise<Array<User>> {
-    const response = await axios.get(
-      `${this.baseUrl}channels/${channelId}/members`, {
-      headers: {
-        "Authorization": `Bearer ${this.token}`
-      }
-    });
-    return response.data;
+    return await this.request(`channels/${channelId}/members`, "GET");
   }
 
   async editUser(name) {
-    const response = await axios.patch(
-      `${this.baseUrl}users/me`, {
-      name,
-    }, {
-      headers: {
-        "Authorization": `Bearer ${this.token}`
-      }
-    });
-    return response.data;
+    return await this.request("users/me", "PATCH", { name });
   }
 
   async joinChannel(channelName) {
-    const response = await axios.post(
-      `${this.baseUrl}channels/join`, {
+    return await this.request(
+      `${this.baseUrl}channels/join`, "POST", {
       channel: channelName,
-    }, {
-      headers: {
-        "Authorization": `Bearer ${this.token}`
-      }
     });
-    return response.data;
   }
 
   async sendMessage(channelId: string, content: string) {
+    return await this.request(
+      `channels/${channelId}/messages`,
+      "POST", {
+      content,
+    });
+  }
+
+  private async request<TRes, TReq>(url: string, method: Method, body?: TReq): Promise<TRes> {
+    this.logger.log(method, url, body);
     try {
-      const response = await axios.post(
-        `${this.baseUrl}channels/${channelId}/messages`, {
-        content,
-      }, {
+      const response = await axios({
+        url: `${this.baseUrl}${url}`,
+        method,
         headers: {
-          "Authorization": `Bearer ${this.token}`
-        }
-      })
-      return response.data;
+          "Authorization": `Bearer ${this.token}`,
+          "Content-Type": "application/json",
+        },
+        data: body
+      });
+      this.logger.log(method, url, response.data);
+      return response.data as TRes;
     } catch (err) {
-      console.log((err as AxiosError).response);
+      this.logger.log(method, url, err);
     }
+    return null;
   }
 }

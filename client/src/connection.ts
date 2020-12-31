@@ -46,7 +46,6 @@ async function messageCreate(data) {
     const urls = urlRegex.exec(data.content);
     if (urls != null) {
       const res = await proxyfetch(urls[0]);
-      console.log(res);
       data.embed = await mapToEmbed(res);
     }
   }
@@ -145,7 +144,6 @@ if(message.embed == null) {
 const urls = urlRegex.exec(message.content);
 if(urls != null) {
   const res = await proxyfetch(urls[0]);
-  console.log(res);
   message.embed = await mapToEmbed(res);
 }
 }
