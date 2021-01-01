@@ -31,7 +31,7 @@
           class="messages"
         >
           <chat-message
-            v-for="(message, id) in getMessages(channel.id)"
+            v-for="(message, id) in channelMessages"
             :key="id" 
             :message="message" 
           />
@@ -87,6 +87,10 @@ export default class Root extends Vue {
   token = "";
   scroll: boolean;
 
+  get channelMessages() {
+    return this.getMessages(this.channel.id);
+  }
+
   mounted(): void {
     connect();
 
@@ -127,8 +131,9 @@ export default class Root extends Vue {
     document.documentElement.style.setProperty("--vh", `${vh}px`);
   }
 
-  @Watch("getMessages")
+  @Watch("channelMessages")
   updateScroll() {
+    console.log("UPDATE SCROLL");
     if (this.channel.scroll === "end") {
       this.$nextTick(() => {
         this.container.scroll(0, this.container.scrollHeight);

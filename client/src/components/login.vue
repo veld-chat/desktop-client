@@ -100,7 +100,7 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import { Html5Qrcode } from "@/utils/qrcode-scanner.js";
+import { Html5Qrcode } from "../utils/qrcode-scanner.js";
 import { Ref, Watch } from "vue-property-decorator";
 
 type Camera = {
@@ -120,8 +120,8 @@ export default class TypingBar extends Vue {
   step = 0;
 
   mounted() {
-      this.token = localStorage.getItem("token");
-      this.qrcode = new Html5Qrcode("reader", false);
+    this.token = localStorage.getItem("token");
+    this.qrcode = new Html5Qrcode("reader", false);
   }
 
   async handleFile(e: { target: HTMLInputElement }) {
@@ -149,7 +149,7 @@ export default class TypingBar extends Vue {
       } else {
         this.step = 1;
       }
-    } catch(e) {
+    } catch (e) {
       this.step = 0;
     }
   }
@@ -176,12 +176,13 @@ export default class TypingBar extends Vue {
             },
             () => {
               // ignore
-            })
+            }
+          );
         } catch {
           this.isScanning = false;
           this.step = 0;
         }
-      })
+      });
     } catch {
       this.isScanning = false;
       this.step = 0;

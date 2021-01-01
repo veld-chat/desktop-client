@@ -1,8 +1,7 @@
 import { Module } from "vuex";
 import { RootState } from "../../store";
-import { Channel, Message, MessagePart, ScrollPosition, ServerMessage } from "../../models";
+import { Channel, ScrollPosition } from "../../models";
 import Vue from "vue";
-import { processMessage } from "../../utils/string";
 
 export interface ChannelState {
   channels: readonly Channel[];
@@ -66,6 +65,9 @@ export const channels: Module<ChannelState, RootState> = {
         members: state.channelsById[payload.id].members
           .filter(x => x !== payload.member)
       });
+    },
+    setScroll({ commit }, payload: { id: string, scroll: ScrollPosition }) {
+      commit("setScroll", payload);
     }
   },
 
