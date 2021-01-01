@@ -24,6 +24,10 @@ export function processMessage(message: ServerMessage, isMention: boolean): Mess
 }
 
 export function processString(input: string) {
+  if (!input || input.length == 0) {
+    return input;
+  }
+
   return replaceEmojis(
     DOMPurify.sanitize(
       marked(input, {
