@@ -31,6 +31,9 @@ export function processString(input: string) {
         headerIds: false,
         breaks: true,
         highlight: (code, lang) => {
+          if (!lang) {
+            return code;
+          }
           const value = hljs.highlight(lang, code).value;
           logger.log("Trying to highlight for", lang, value);
           return value;
