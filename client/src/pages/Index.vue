@@ -22,6 +22,23 @@
     </div>
     
     <div class="chat-section">
+      <div 
+        v-if="!hideWarning"
+        class="flex text-centered"
+        style="background-color: #FFCC00; width: 100%; color: black; padding: 0.5rem; justify-content: space-between;"
+      >
+        <span>
+          <i class="icon fas fa-exclamation-triangle" />
+          Warning: this client is going to be deprecated soon! 
+          Migrate to <a href="https://veld.chat">veld.chat</a>.
+        </span>
+        <a 
+          style="cursor: pointer;" 
+          @click.prevent="hideWarning = true"
+        >
+          <i class="icon fas fa-times" />
+        </a>
+      </div>
       <div
         ref="container"
         class="message-container"
@@ -48,7 +65,7 @@
       </header>
     </div>
     <member-list />
-    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -68,7 +85,14 @@ import CurrentUserView from "../components/current-user";
 const channels = namespace("channels");
 
 @Component({
-  components: { ChatMessage, ChatBar, MemberList, ChannelList, Login, CurrentUserView },
+  components: {
+    ChatMessage,
+    ChatBar,
+    MemberList,
+    ChannelList,
+    Login,
+    CurrentUserView,
+  },
 })
 export default class Root extends Vue {
   @Ref() container: HTMLDivElement;
@@ -78,6 +102,7 @@ export default class Root extends Vue {
   message = "";
   token = "";
   scroll: boolean;
+  hideWarning = false;
 
   mounted(): void {
     connect();
@@ -89,7 +114,7 @@ export default class Root extends Vue {
     window.addEventListener("resize", this.updateScroll);
     window.addEventListener("resize", this.setMobileSize);
     this.setMobileSize();
-    
+
     this.container.addEventListener("scroll", this.setChannelScroll);
   }
 
@@ -107,13 +132,16 @@ export default class Root extends Vue {
     }
 
     if (this.channel.scroll !== scroll) {
-      this.$store.dispatch("channels/setScroll", { id: this.channel.id, scroll });
+      this.$store.dispatch("channels/setScroll", {
+        id: this.channel.id,
+        scroll,
+      });
     }
   }
-  
+
   setMobileSize() {
     let vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
   }
 
   @Watch("channel.messages")
