@@ -91,6 +91,9 @@ export default class Root extends Vue {
   scroll: boolean;
 
   get channelMessages() {
+    if(this.channel == null) {
+      return [];
+    }
     return this.getMessages(this.channel.id);
   }
 
