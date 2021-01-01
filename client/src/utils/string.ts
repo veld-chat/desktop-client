@@ -19,11 +19,13 @@ export function processString(input: string) {
   return replaceEmojis(
     DOMPurify.sanitize(
       marked(input, {
+        sanitize: true,
+        gfm: true,
         headerIds: false,
         breaks: true,
       }),
       {
-        ALLOWED_TAGS: ["b", "i", "em", "strong", "a", "br", "code", "span"],
+        ALLOWED_TAGS: ["b", "i", "em", "strong", "a", "br", "p", "code", "span", "pre"],
         ALLOWED_ATTR: ["href"],
       }
     )

@@ -123,6 +123,10 @@ li {
   margin: 5px 5px;
 }
 
+.msg-part {
+  margin-bottom: 0.25rem;
+}
+
 .main {
   display: grid;
   grid-template-columns: 300px 1fr 300px;
@@ -168,6 +172,13 @@ li {
     font-size: 16px;
     color: var(--text-secondary);
   }
+}
+
+pre {
+  padding: 0.5rem;
+  border-radius: 4px;
+  width: 100%;
+  background-color: #212121;
 }
 
 .badge {
@@ -482,7 +493,7 @@ select:-webkit-autofill:focus .textfield:hover,
 
 .msg-instance-container {
   color: var(--message-color);
-  width: auto;
+  width: 100%;
   padding: 12px;
   border-radius: 4px;
   min-width: 120px;
@@ -509,10 +520,10 @@ select:-webkit-autofill:focus .textfield:hover,
 }
 
 .msg-content-wrapper {
-  display: flex;
   flex-direction: column;
   align-items: flex-start;
   overflow: hidden;
+  width: 100%;
 }
 
 .msg-instance-avatar {

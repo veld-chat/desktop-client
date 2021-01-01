@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="msg-part">
     <p
       :class="['msg-instance', part.isMention && 'is-mention', part.isEmojiOnly && 'is-emoji-only']"
     >
@@ -13,7 +13,10 @@
         <i class="fas fa-hashtag"/>
         {{ messagePart.content }}
         </span>
-        <span v-else v-html="messagePart.content">
+        <span 
+          v-else 
+          v-html="messagePart.content"
+        >
         </span>
       </template>
     </p>

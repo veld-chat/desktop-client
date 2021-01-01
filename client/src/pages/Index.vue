@@ -24,17 +24,17 @@
     <div class="chat-section">
       <div
         ref="container"
-        class="message-container">
+        class="message-container"
+      >
         <div
           v-if="channel"
           class="messages"
         >
-          <div
+          <chat-message
             v-for="(message, id) in channel.messages"
-            :key="id"
-          >
-            <chat-message :message="message" />
-          </div>
+            :key="id" 
+            :message="message" 
+          />
         </div>
       </div>
 

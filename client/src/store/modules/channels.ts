@@ -1,8 +1,8 @@
 import { Module } from "vuex";
-import { RootState, store } from "@/store";
-import { Channel, Message, MessagePart, ScrollPosition, ServerMessage, User } from "../../models";
+import { RootState } from "../../store";
+import { Channel, Message, MessagePart, ScrollPosition, ServerMessage } from "../../models";
 import Vue from "vue";
-import { processMessage } from "@/utils/string";
+import { processMessage } from "../../utils/string";
 
 export interface ChannelState {
   channels: readonly Channel[];

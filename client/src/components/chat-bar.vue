@@ -61,7 +61,7 @@ import { autoComplete, AutoComplete } from "@/utils/autocomplete";
 import { namespace } from "vuex-class";
 const HyperMD = process.isClient ? require("../hypermd") : null;
 const CodeMirror = process.isClient ? require("codemirror") : null;
-import { ApiClient, client } from "../api-client";
+import { client } from "../api-client";
 
 const channels = namespace("channels");
 
@@ -91,12 +91,13 @@ export default class ChatBar extends Vue {
     }
 
     this.editor = HyperMD.fromTextArea(this.input, {
-      theme: "hypermd-light",
+      theme: "hypermd-dark",
       placeholder: "Send a message",
       scrollbarStyle: "null",
       lineNumbers: false,
       viewportMargin: Infinity,
       autoCloseBrackets: false,
+      highlightFormatting: true,
       extraKeys: {
         Enter: this.handleEnter,
         Up: this.moveUp,
@@ -275,13 +276,13 @@ export default class ChatBar extends Vue {
 
   async send() {
     const message = this.editor.getValue();
-    if (message.length == 0) {
+    if (message.trim().length == 0) {
       return;
     }
 
+    this.editor.setValue("");
     await client().sendMessage(this.currentChannel, message);
 
-    this.editor.setValue("");
     this.editor.focus();
   }
 }
