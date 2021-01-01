@@ -66,20 +66,7 @@ export const channels: Module<ChannelState, RootState> = {
         members: state.channelsById[payload.id].members
           .filter(x => x !== payload.member)
       });
-    },
-    addMessage({ commit, rootState }, message: ServerMessage) {
-      const { id } = rootState.session.user;
-      //const isMention = message.mentions.includes(id);
-      const part = processMessage(message, false);
-
-      commit("addMessage", {
-        message,
-        part
-      });
-    },
-    setScroll({ commit }, payload: { id: string, scroll: ScrollPosition }) {
-      commit("setScroll", payload);
-    },
+    }
   },
 
   mutations: {
@@ -89,7 +76,6 @@ export const channels: Module<ChannelState, RootState> = {
       for (const channel of payload) {
         channeldById[channel.id] = {
           ...channel,
-          messages: channel.messages || [],
           scroll: "end",
           unreadAmount: channel.unreadAmount || 0,
           mentionAmount: channel.mentionAmount || 0
@@ -120,50 +106,6 @@ export const channels: Module<ChannelState, RootState> = {
         ...state.channelsById,
         [payload.id]: channel,
       });
-    },
-    addMessage(state, { message, part }: { message: ServerMessage, part: MessagePart }) {
-      const channel = state.channelsById[message.channelId];
-      if (!channel) {
-        return;
-      }
-
-      const data: Message = {
-        author: message.author,
-        id: message.id,
-        timestamp: new Date(message.timestamp),
-        parts: [part],
-      };
-
-      const messages = channel.messages;
-      const isCurrent = channel.id === state.currentChannel;
-      const lastMessageId = messages.length - 1;
-      const lastMessage = messages[lastMessageId];
-
-      if (lastMessage && lastMessage.author.id === message.author.id) {
-        Vue.set(messages, lastMessageId, {
-          ...data,
-          id: lastMessage.id,
-          timestamp: lastMessage.timestamp,
-          parts: [...lastMessage.parts, ...data.parts]
-        })
-      } else {
-        messages.push({
-          ...data,
-
-        });
-
-        if (isCurrent) {
-          Vue.set(channel, "lastMessageId", data.id);
-        }
-      }
-
-      if (!isCurrent) {
-        Vue.set(channel, "unreadAmount", channel.unreadAmount + 1);
-
-        if (part.isMention) {
-          Vue.set(channel, "mentionAmount", channel.mentionAmount + 1);
-        }
-      }
     },
     setScroll(state, { id, scroll }: { id: string, scroll: ScrollPosition }) {
       const channel = state.channelsById[id];

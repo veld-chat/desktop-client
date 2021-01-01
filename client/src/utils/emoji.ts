@@ -1,5 +1,4 @@
-import { emojisItems } from "@/utils/autocomplete";
-
+import { emojisItems } from "../utils/autocomplete";
 export interface Emoji {
   name: string;
   value: string;
@@ -8,8 +7,8 @@ export interface Emoji {
 
 const isOnlyEmojiRegex = /^(?:<img class="emoji"[^>]+>|\s+)*$/;
 const emojiRegex = /:([A-Za-z_0-9]+):/g;
-export const emojis: {[name: string]: Emoji} = {};
-export const emojisByValue: {[name: string]: Emoji} = {};
+export const emojis: { [name: string]: Emoji } = {};
+export const emojisByValue: { [name: string]: Emoji } = {};
 
 export function registerEmoji(emoji: Emoji) {
   emojis[name] = emoji;

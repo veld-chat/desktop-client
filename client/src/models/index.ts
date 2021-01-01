@@ -47,7 +47,6 @@ export type Channel = {
   system: boolean;
   name: string;
   members: string[];
-  messages: Message[];
   scroll: ScrollPosition;
   lastMessageId?: string;
   unreadAmount: number;

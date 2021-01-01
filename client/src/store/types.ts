@@ -1,6 +1,13 @@
-import { NotificationState, UserState, SessionState, ChannelState } from "@/store/modules";
+import {
+  NotificationState,
+  UserState,
+  SessionState,
+  ChannelState,
+  MessagesState
+} from "../store/modules";
 
 export interface RootState {
+  messages?: MessagesState,
   channels?: ChannelState,
   users?: UserState,
   notifications?: NotificationState,

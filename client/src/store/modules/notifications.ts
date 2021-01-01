@@ -66,9 +66,9 @@ export const notifications: Module<NotificationState, RootState> = {
       state.notifications = state.notifications.map(n =>
         n.id === id
           ? {
-              ...n,
-              visible
-            }
+            ...n,
+            visible
+          }
           : n
       );
     }

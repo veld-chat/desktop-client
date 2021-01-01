@@ -1,4 +1,4 @@
-import { store } from "@/store";
+import { store } from "../store";
 
 export interface AutoComplete {
   text: string;
@@ -12,20 +12,6 @@ export interface AutoComplete {
 
 export const emojisItems: AutoComplete[] = [];
 const commandItems: AutoComplete[] = [];
-
-commandItems.push({
-  text: "avatar",
-  textLowerCased: "avatar",
-  value: `/avatar`,
-  description: "Changes your avatar to a random avatar.",
-});
-
-commandItems.push({
-  text: "nick",
-  textLowerCased: "nick",
-  value: `/nick`,
-  description: "Changes your nickname.",
-});
 
 function add(name: string, list: AutoComplete[], source: AutoComplete[]) {
   for (let i = 0; i < source.length; i++) {
@@ -96,7 +82,7 @@ export function autoComplete(word: string): AutoComplete[] {
     })
   }
 
-  return list.sort((a,b) => (a.textLowerCased > b.textLowerCased)
+  return list.sort((a, b) => (a.textLowerCased > b.textLowerCased)
     ? 1
     : ((b.textLowerCased > a.textLowerCased) ? -1 : 0))
 }

@@ -31,7 +31,7 @@
           class="messages"
         >
           <chat-message
-            v-for="(message, id) in channel.messages"
+            v-for="(message, id) in getMessages(channel.id)"
             :key="id" 
             :message="message" 
           />
@@ -56,7 +56,7 @@ import { Component, Ref, Watch } from "vue-property-decorator";
 import Login from "../components/login.vue";
 import ChatBar from "../components/chat-bar.vue";
 import MemberList from "../components/member-list.vue";
-import { Channel, User } from "../models";
+import { Channel, Message, User } from "../models";
 import { store } from "../store";
 import { namespace } from "vuex-class";
 import ChatMessage from "../components/chat-message.vue";
@@ -65,6 +65,7 @@ import ChannelList from "../components/channel-list.vue";
 import CurrentUserView from "../components/current-user.vue";
 
 const channels = namespace("channels");
+const messages = namespace("messages");
 
 @Component({
   components: {
@@ -79,6 +80,7 @@ const channels = namespace("channels");
 export default class Root extends Vue {
   @Ref() container: HTMLDivElement;
   @channels.Getter("current") channel: Channel;
+  @messages.Getter("byChannel") getMessages: (id: string) => Message[];
 
   currentUserId = "";
   message = "";
@@ -125,7 +127,7 @@ export default class Root extends Vue {
     document.documentElement.style.setProperty("--vh", `${vh}px`);
   }
 
-  @Watch("channel.messages")
+  @Watch("getMessages")
   updateScroll() {
     if (this.channel.scroll === "end") {
       this.$nextTick(() => {

@@ -54,7 +54,7 @@ async function messageCreate(data) {
       data.embed = await mapToEmbed(res);
     }
   }
-  await store.dispatch("channels/addMessage", data);
+  await store.dispatch("messages/create", data);
 }
 
 async function userUpdate(data) {
@@ -81,6 +81,7 @@ export function connect() {
 
   logger.log("connecting to", `wss://${host}`)
   websocket = new WebSocket(`wss://${host}`);
+
   websocket.onopen = () => {
     isConnected = true;
 
@@ -91,6 +92,10 @@ export function connect() {
       }
     }));
   };
+
+  websocket.onerror = (ev) => {
+    logger.log("error", ev);
+  }
 
   websocket.onclose = () => {
     logger.log("closed");
