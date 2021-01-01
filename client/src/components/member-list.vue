@@ -34,7 +34,6 @@ export default class MemberList extends Vue {
     }
 
     var members = await client().getChannelMembers(this.channel.id);
-    console.log(members);
     store.dispatch("users/add", members);
     store.dispatch(
       "channels/setMembers",

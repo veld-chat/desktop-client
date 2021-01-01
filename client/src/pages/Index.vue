@@ -15,8 +15,11 @@
     <div class="heading-wrapper second">
       <header class="heading">
         <span v-if="channel">
-          <i class="icon fa fa-hashtag"/>
-          <b style="heading-title" v-text="channel.name"></b>
+          <i class="icon fa fa-hashtag" />
+          <b 
+            style="heading-title" 
+            v-text="channel.name" 
+          />
         </span>
       </header>
     </div>
@@ -133,7 +136,6 @@ export default class Root extends Vue {
 
   @Watch("channelMessages")
   updateScroll() {
-    console.log("UPDATE SCROLL");
     if (this.channel.scroll === "end") {
       this.$nextTick(() => {
         this.container.scroll(0, this.container.scrollHeight);
