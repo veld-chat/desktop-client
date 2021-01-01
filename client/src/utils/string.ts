@@ -2,6 +2,11 @@ import { isEmojiOnly, replaceEmojis } from "@/utils/emoji";
 import DOMPurify from "dompurify";
 import marked from "marked";
 import { Embed, MessagePart, ServerMessage } from "@/models";
+import hljs from "highlight.js";
+import { createLogger } from "../services/logger";
+
+hljs.initHighlightingOnLoad();
+const logger = createLogger("StringTransformations");
 
 export function processMessage(message: ServerMessage, isMention: boolean): MessagePart {
   const content = processString(message.content);
@@ -19,14 +24,18 @@ export function processString(input: string) {
   return replaceEmojis(
     DOMPurify.sanitize(
       marked(input, {
-        sanitize: true,
         gfm: true,
         headerIds: false,
         breaks: true,
+        highlight: (code, lang) => {
+          const value = hljs.highlight(lang, code).value;
+          logger.log("Trying to highlight for", lang, value);
+          return value;
+        }
       }),
       {
         ALLOWED_TAGS: ["b", "i", "em", "strong", "a", "br", "p", "code", "span", "pre"],
-        ALLOWED_ATTR: ["href"],
+        ALLOWED_ATTR: ["href", "class"],
       }
     )
   );

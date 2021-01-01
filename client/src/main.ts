@@ -1,7 +1,7 @@
 import "./style/index.scss";
 import "./connection";
 import Vuex from 'vuex';
-import { store } from "@/store";
+import { store } from "./store";
 import DOMPurify from "dompurify";
 
 if (process.isClient) {
@@ -28,11 +28,16 @@ export default (Vue, { head, isClient, appOptions }): void => {
   head.script.push({
     src: "https://kit.fontawesome.com/19e31512ed.js",
     crossorigin: "anonymous"
-  })
+  });
+
+  head.link.push({
+    rel: "stylesheet",
+    href: "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/rainbow.min.css"
+  });
 
   head.link.push({
     rel: "apple-touch-icon",
     sizes: "180x180",
     href: "/apple-touch-icon.png",
-  })
+  });
 };

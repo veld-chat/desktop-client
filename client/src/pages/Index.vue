@@ -47,7 +47,7 @@
       </header>
     </div>
     <member-list />
-    </div>
+  </div>
 </template>
 
 <script lang="ts">
