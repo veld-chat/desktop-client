@@ -7,6 +7,7 @@ import { createLogger } from "./services/logger";
 const logger = createLogger("WebSocket");
 export let websocket: WebSocket;
 
+let heartbeatInterval = null;
 let isConnected = false;
 const urlRegex = /((http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)/;
 let id = "";
@@ -23,6 +24,8 @@ enum MessageType {
   MessageUpdate = 3,
   MessageDelete = 4,
   UserUpdate = 8,
+  Heartbeat = 1000,
+  HeartbeatAck = 1001,
 }
 
 async function ready(data) {
@@ -38,6 +41,8 @@ async function ready(data) {
   await store.dispatch("channels/setCurrentChannel", data.channels[0].id);
 
   localStorage.setItem("token", data.token);
+  heartbeatInterval = setInterval(heartbeat, 15000);
+
   console.log(`Logged in as ${data.user.name} (${data.user.id})`);
 }
 
@@ -57,6 +62,14 @@ async function userUpdate(data) {
     await store.dispatch("session/setUser", data);
   }
   await store.dispatch("users/update", data);
+}
+
+async function heartbeat() {
+  logger.log("sending heartbeat");
+  websocket.send(JSON.stringify({
+    t: MessageType.Heartbeat,
+    d: null,
+  }))
 }
 
 export function connect() {
@@ -81,6 +94,8 @@ export function connect() {
 
   websocket.onclose = () => {
     logger.log("closed");
+
+    clearInterval(heartbeatInterval);
     isConnected = false;
     connect();
   };
@@ -103,6 +118,8 @@ export function connect() {
     return false;
   };
 }
+
+
 
 /*
 connection.on("member:delete", (memberJoinEvent) => {
