@@ -5,7 +5,10 @@ import { Embed, MessagePart, ServerMessage } from "@/models";
 import hljs from "highlight.js";
 import { createLogger } from "../services/logger";
 
-hljs.initHighlightingOnLoad();
+if (process.isClient) {
+  hljs.initHighlightingOnLoad();
+}
+
 const logger = createLogger("StringTransformations");
 
 export function processMessage(message: ServerMessage, isMention: boolean): MessagePart {

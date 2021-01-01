@@ -57,10 +57,15 @@ import Vue from "vue";
 import { Component, Ref } from "vue-property-decorator";
 import TypingBar from "./typing-bar.vue";
 import { autoComplete, AutoComplete } from "@/utils/autocomplete";
-// import { connection } from "@/connection";
 import { namespace } from "vuex-class";
-const HyperMD = process.isClient ? require("../hypermd") : null;
-const CodeMirror = process.isClient ? require("codemirror") : null;
+
+let CodeMirror = null;
+let HyperMD = null;
+if (process.isClient) {
+  CodeMirror = require("codemirror");
+  HyperMD = require("../hypermd");
+}
+
 import { client } from "../api-client";
 
 const channels = namespace("channels");
