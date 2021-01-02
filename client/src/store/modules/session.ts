@@ -19,11 +19,9 @@ export const session: Module<SessionState, RootState> = {
 
   actions: {
     async setUser({ state, commit }, user: User) {
-      console.log(user);
-      console.log(state.user);
-      if(state.user && state.user.id != user.id) {
+      if (state.user && state.user.id != user.id) {
         return;
-      }  
+      }
       commit("setUser", user);
     },
     async setToken({ commit }, token: string) {

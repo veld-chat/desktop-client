@@ -1,7 +1,7 @@
-import { isEmojiOnly, replaceEmojis } from "@/utils/emoji";
+import { isEmojiOnly, replaceEmojis } from "./emoji";
 import DOMPurify from "dompurify";
 import marked from "marked";
-import { Embed, MessagePart, ServerMessage } from "@/models";
+import { Embed, MessagePart, ServerMessage } from "../models";
 import hljs from "highlight.js";
 import { createLogger } from "../services/logger";
 

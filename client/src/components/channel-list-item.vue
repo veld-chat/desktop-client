@@ -29,7 +29,7 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import { Prop } from "vue-property-decorator";
-import { Channel, User } from "../models";
+import { Channel, User, StatusType } from "../models";
 import { namespace } from "vuex-class";
 
 let users = namespace("users");
@@ -56,7 +56,7 @@ export default class ChannelListItem extends Vue {
       this.channel.members
         ?.map((x) => this.users[x] || null)
         .filter((x) => x)
-        .filter((x) => x.status.value !== "offline").length || 0
+        .filter((x) => x.status.value !== StatusType.Online).length || 0
     );
   }
 

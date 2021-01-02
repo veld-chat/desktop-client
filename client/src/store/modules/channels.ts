@@ -2,7 +2,9 @@ import { Module } from "vuex";
 import { RootState } from "../../store";
 import { Channel, ScrollPosition } from "../../models";
 import Vue from "vue";
+import { createLogger } from "../../services/logger";
 
+const logger = createLogger("ChannelStore");
 export interface ChannelState {
   channels: readonly Channel[];
   channelsById: { [id: string]: Channel };
@@ -21,10 +23,16 @@ export const channels: Module<ChannelState, RootState> = {
   getters: {
     byId: state => id => state.channelsById[id],
     current: state => state.currentChannel ? state.channelsById[state.currentChannel] : null,
+    currentId: state => state.currentChannel,
   },
 
   actions: {
     async addMember({ state, commit }, payload: { id: string, member: string }) {
+      if (!state.channelsById[payload.id]) {
+        logger.log(`channel '${payload.id}' not found.`)
+        return;
+      }
+
       commit("setMembers", {
         id: payload.id,
         members: [
@@ -80,7 +88,8 @@ export const channels: Module<ChannelState, RootState> = {
           ...channel,
           scroll: "end",
           unreadAmount: channel.unreadAmount || 0,
-          mentionAmount: channel.mentionAmount || 0
+          mentionAmount: channel.mentionAmount || 0,
+          members: [],
         } as Channel;
       }
 

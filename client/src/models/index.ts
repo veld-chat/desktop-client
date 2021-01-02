@@ -1,3 +1,8 @@
+export enum StatusType {
+  Online = 0,
+  Offline = 1,
+}
+
 export type User = {
   id: string;
   name: string;
@@ -6,10 +11,9 @@ export type User = {
   status: UserStatus;
 };
 
-export type UserStatusValue = "online" | "offline" | "dnd" | "away";
 export type UserStatus = {
   statusText?: string;
-  value: UserStatusValue;
+  value: StatusType;
 };
 
 export type ServerMessage = {
@@ -28,10 +32,11 @@ export interface ServerEditMessage extends ServerMessage {
   updatedTimestamp: number;
 }
 
-type MessageBase = {
-  user: User;
-  mentions: string[];
-};
+export type PresenceUpdateArgs = {
+  userId: string;
+  statusType: StatusType;
+  statusText?: string;
+}
 
 export type ScrollPosition = number | "end";
 

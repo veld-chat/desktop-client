@@ -24,6 +24,9 @@ enum MessageType {
   MessageUpdate = 3,
   MessageDelete = 4,
   UserUpdate = 8,
+  MemberCreate = 9,
+  MemberDelete = 11,
+  PresenceUpdate = 12,
   Heartbeat = 1000,
   HeartbeatAck = 1001,
 }
@@ -46,6 +49,16 @@ async function ready(data) {
   console.log(`Logged in as ${data.user.name} (${data.user.id})`);
 }
 
+async function memberCreate(data) {
+  await store.dispatch("users/update", data);
+  await store.dispatch("channels/addMember", data);
+}
+
+async function memberDelete(data) {
+  await store.dispatch("users/remove", data);
+  await store.dispatch("channels/removeMember", data);
+}
+
 async function messageCreate(data) {
   if (data.embed == null) {
     const urls = urlRegex.exec(data.content);
@@ -55,6 +68,10 @@ async function messageCreate(data) {
     }
   }
   await store.dispatch("messages/create", data);
+}
+
+async function presenceUpdate(data) {
+  await store.dispatch("users/setStatus", data);
 }
 
 async function userUpdate(data) {
@@ -118,6 +135,15 @@ export function connect() {
         break;
       case MessageType.UserUpdate:
         userUpdate(payload.d);
+        break;
+      case MessageType.MemberCreate:
+        memberCreate(payload.d);
+        break;
+      case MessageType.MemberDelete:
+        memberDelete(payload.d);
+        break;
+      case MessageType.PresenceUpdate:
+        presenceUpdate(payload.d);
         break;
     }
     return false;

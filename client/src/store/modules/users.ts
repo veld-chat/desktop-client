@@ -1,6 +1,6 @@
 import { Module } from "vuex";
-import { RootState } from "@/store";
-import { User, UserTyping } from "@/models";
+import { RootState } from "../../store";
+import { PresenceUpdateArgs, User, UserTyping } from "../../models";
 
 export interface UserState {
   users: readonly User[]
@@ -24,7 +24,11 @@ export const users: Module<UserState, RootState> = {
   actions: {
     async add({ state, commit }, users: User[]) {
       commit("setUsers", [
-        ...state.users.filter(u => users.find(x => x.id == u.id)),
+        ...state.users.filter(u => {
+          const u2 = users.find(x => x.id !== u.id);
+          console.log(u2);
+          return u2;
+        }),
         ...users,
       ])
     },
@@ -37,6 +41,22 @@ export const users: Module<UserState, RootState> = {
     async update({ state, commit }, user: User) {
       commit("setUsers", [
         ...state.users.filter(u => u.id !== user.id),
+        user
+      ]);
+    },
+    async setStatus({ state, commit }, args: PresenceUpdateArgs) {
+      const user = state.usersById[args.userId];
+      if (!user) {
+        return;
+      }
+
+      user.status = {
+        value: args.statusType,
+        statusText: args.statusText,
+      };
+
+      commit("setUsers", [
+        ...state.users.filter(u => u.id !== args.userId),
         user
       ]);
     },
@@ -69,6 +89,7 @@ export const users: Module<UserState, RootState> = {
       state.users = Object.freeze(payload);
       state.usersById = Object.freeze(usersById);
     },
+
     setTyping(state, payload: UserTyping[]) {
       state.typing = payload;
     }
