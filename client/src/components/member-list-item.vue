@@ -32,6 +32,10 @@ export default class MemberListItem extends Vue {
   @Prop() user: User;
 
   get userStatusClass() {
+    if (!this.user.status) {
+      return "offline";
+    }
+
     return StatusType[this.user.status.statusType].toLowerCase();
   }
 

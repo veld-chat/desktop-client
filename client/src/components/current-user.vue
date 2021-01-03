@@ -37,6 +37,7 @@ import { namespace } from "vuex-class";
 import { User } from "../models";
 
 const session = namespace("session");
+const users = namespace("users");
 
 @Component({
   components: {
@@ -46,7 +47,14 @@ const session = namespace("session");
   },
 })
 export default class CurrentUserView extends Vue {
-  @session.State("user") user: User;
+  @session.State("user") userId: string;
+  @users.Getter("byId") getUser: (id: string) => User;
+
+  get user() {
+    console.log(this.getUser(this.userId));
+    return this.getUser(this.userId);
+  }
+
   showLogin = false;
   editUserModalOpen = false;
 }

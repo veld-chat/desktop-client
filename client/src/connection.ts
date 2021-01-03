@@ -34,7 +34,7 @@ enum MessageType {
 
 async function ready(data) {
   id = data.user.id;
-  await store.dispatch("session/setUser", data.user);
+  await store.dispatch("session/setUser", data.user.id);
   await store.dispatch("session/setToken", data.token);
 
   if (data.channels.length === 0) {
@@ -44,7 +44,6 @@ async function ready(data) {
   await store.dispatch("channels/set", data.channels);
   await store.dispatch("channels/setCurrentChannel", data.channels[0].id);
 
-  data.users.push(data.user);
   await store.dispatch("users/add", data.users.map(x => ({
     ...x,
     status: {

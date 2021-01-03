@@ -31,7 +31,7 @@ export const messages: Module<MessagesState, RootState> = {
 
   actions: {
     create({ commit, rootState }, message: ServerMessage) {
-      const { id } = rootState.session.user;
+      const id = rootState.session.user;
       //const isMention = message.mentions.includes(id);
       const part = processMessage(message, false);
 

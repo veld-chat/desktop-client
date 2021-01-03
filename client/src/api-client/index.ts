@@ -1,5 +1,5 @@
 import { User } from "../models";
-import axios, { AxiosError, Method } from "axios";
+import axios, { Method } from "axios";
 import { session, SessionState } from "../store";
 import { createLogger, LoggerInstance } from "../services/logger";
 

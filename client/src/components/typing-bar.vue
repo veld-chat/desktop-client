@@ -13,7 +13,7 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import { namespace } from "vuex-class";
-import { User, UserTyping } from "@/models";
+import { User, UserTyping } from "../models";
 
 const users = namespace("users");
 const session = namespace("session");
@@ -23,7 +23,7 @@ export default class TypingBar extends Vue {
   private timerId: number;
   currentlyTyping: UserTyping[] = [];
 
-  @session.State("user") user: User;
+  @session.State("user") userId: string;
   @users.State("typing") typing: UserTyping[];
   @users.Getter("byId") getUser: (id: string) => User;
 
@@ -37,14 +37,19 @@ export default class TypingBar extends Vue {
 
   update() {
     const now = Date.now();
-    this.currentlyTyping = this.typing.filter(typing => typing.id !== this.user.id && typing.lastTypingTime + 5000 > now);
+    this.currentlyTyping = this.typing.filter(
+      (typing) =>
+        typing.id !== this.userId && typing.lastTypingTime + 5000 > now
+    );
   }
 
   get userTypingText(): string {
     if (this.currentlyTyping.length > 3) {
       return `${this.currentlyTyping.length} users`;
     } else {
-      return this.currentlyTyping.map(typing => this.getUser(typing.id)?.name ?? "{unknown}").join(", ");
+      return this.currentlyTyping
+        .map((typing) => this.getUser(typing.id)?.name ?? "{unknown}")
+        .join(", ");
     }
   }
 }
