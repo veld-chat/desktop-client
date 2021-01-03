@@ -13,7 +13,7 @@
   }
 
   &-lines {
-    padding: 0 ;
+    padding: 0;
   }
 
   &-sizer {
@@ -25,15 +25,18 @@
   }
 
   &-placeholder {
-    color: var(--editor-placeholder-color) !important;
+    color: var(--mono-600) !important;
   }
 
   &-selected {
     background: #0A68D8 !important;
   }
 
-  &-code, .msg-instance {
-    code, .cm-inline-code {
+  &-code,
+  .msg-instance {
+
+    code,
+    .cm-inline-code {
       font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
       color: inherit;
 

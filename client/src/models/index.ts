@@ -7,13 +7,13 @@ export type User = {
   id: string;
   name: string;
   avatarUrl?: string;
-  bot: boolean;
-  status: UserStatus;
+  isBot: boolean;
+  status?: UserStatus;
 };
 
 export type UserStatus = {
   statusText?: string;
-  value: StatusType;
+  statusType: StatusType;
 };
 
 export type ServerMessage = {

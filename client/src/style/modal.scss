@@ -28,7 +28,7 @@
   display: flex;
   flex-direction: row-reverse;
   width: 100%;
-  background-color: var(--sidebar-bg);
+  background-color: var(--mono-300);
   border-radius: 8px 8px 0px 0px;
 }
 
@@ -38,7 +38,7 @@
 
 .modal-content {
   z-index: 999;
-  background-color: var(--body-bg);
+  background-color: var(--mono-400);
   padding: 2rem;
   border-radius: 0px 0px 8px 8px;
 }

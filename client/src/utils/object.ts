@@ -21,7 +21,7 @@ export function crudActions() {
 
 export function crudMutations(objName: string, keysName: string) {
   return {
-    replaceAll(state, payload: {[id: string]: any}) {
+    replaceAll(state, payload: { [id: string]: any }) {
       state[objName] = payload;
       state[keysName] = Object.keys(payload);
     },

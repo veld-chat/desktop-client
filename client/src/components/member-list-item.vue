@@ -1,7 +1,7 @@
 <template>
   <div 
     v-if="user"
-    class="member-list-item" 
+    :class="`member-list-item ${userStatusClass}`" 
   >
     <div
       class="msg-instance-avatar"
@@ -17,7 +17,7 @@
           Bot
         </div>
       </span>
-      <div>Online</div>
+      <div>{{ userStatus }}</div>
     </div>
   </div>
 </template>
@@ -25,10 +25,26 @@
 <script lang="ts">
 import Vue from "vue";
 import { Prop, Component } from "vue-property-decorator";
-import { User } from "../models";
+import { StatusType, User } from "../models";
 
 @Component
 export default class MemberListItem extends Vue {
   @Prop() user: User;
+
+  get userStatusClass() {
+    return StatusType[this.user.status.statusType].toLowerCase();
+  }
+
+  get userStatus() {
+    console.log(this.user);
+    if (!this.user.status) {
+      return "Offline";
+    }
+
+    if (!this.user.status.statusText) {
+      return StatusType[this.user.status.statusType];
+    }
+    return this.user.status.statusText;
+  }
 }
 </script>

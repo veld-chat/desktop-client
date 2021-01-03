@@ -37,7 +37,7 @@
         id="ui-input-field"
         ref="input"
         :placeholder="ready ? `type your message here!` : `connecting...`"
-        class="textfield"
+        class="textfield chat-bar"
         maxlength="256"
         :disabled="!ready"
       />
@@ -56,7 +56,7 @@
 import Vue from "vue";
 import { Component, Ref } from "vue-property-decorator";
 import TypingBar from "./typing-bar.vue";
-import { autoComplete, AutoComplete } from "@/utils/autocomplete";
+import { autoComplete, AutoComplete } from "../utils/autocomplete";
 import { namespace } from "vuex-class";
 
 let CodeMirror = null;

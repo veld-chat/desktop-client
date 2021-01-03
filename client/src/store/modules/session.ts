@@ -1,6 +1,6 @@
 import { Module } from "vuex";
-import { RootState } from "@/store";
-import { User } from "@/models";
+import { RootState } from "../../store";
+import { User } from "../../models";
 
 export interface SessionState {
   user: User;

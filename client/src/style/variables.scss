@@ -1,20 +1,21 @@
 :root {
-  --body-bg: #333333;
-  --sidebar-bg: #282828;
-  --editor-bg: #444444;
-  --editor-color: #ffffff;
-  --editor-placeholder-color: #848484;
-  --editor-container-bg: #333333;
-  --typing-color: #848484;
-  --message-bg: #212121;
-  --message-color: #dcddcd;
-  --text-secondary: #888888;
-  --active-200: #1d88b9;
-  --active-100: #0a638b;
-  --message-mention-color: #ffffff;
-  --message-author-color: #ffffff;
-  --active-bg: #444444;
-  --danger-bg: rgb(233, 44, 44);
+  --mono-900: #ffffff;
+  --mono-800: #cdd3dd;
+  --mono-700: #7f8694;
+  --mono-600: #6D707D;
+  --mono-500: #3d3e43;
+  --mono-400: #303136;
+  --mono-300: #26272b;
+  --mono-200: #212121;
+  --mono-100: #000000;
+  --accent-200: #3e4af8;
+  --accent-100: #373d97;
+  --warning-200: #ffe229;
+  --warning-100: #98892f;
+  --danger-200: #f83e3e;
+  --danger-100: #94373a;
+  --success-200: #48e921;
+  --success-100: #3c8d2b;
 }
 
 @mixin mobile {

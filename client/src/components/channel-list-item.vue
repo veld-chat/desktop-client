@@ -56,7 +56,7 @@ export default class ChannelListItem extends Vue {
       this.channel.members
         ?.map((x) => this.users[x] || null)
         .filter((x) => x)
-        .filter((x) => x.status.value !== StatusType.Online).length || 0
+        .filter((x) => x.status?.statusType == StatusType.Online).length || 0
     );
   }
 

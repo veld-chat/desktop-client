@@ -3,6 +3,7 @@ import proxyfetch from "./utils/proxyfetch";
 import { mapToEmbed } from "./utils/embed-mapper";
 import { client } from "./api-client";
 import { createLogger } from "./services/logger";
+import { StatusType, User } from "./models";
 
 const logger = createLogger("WebSocket");
 export let websocket: WebSocket;
@@ -43,6 +44,15 @@ async function ready(data) {
   await store.dispatch("channels/set", data.channels);
   await store.dispatch("channels/setCurrentChannel", data.channels[0].id);
 
+  data.users.push(data.user);
+  await store.dispatch("users/add", data.users.map(x => ({
+    ...x,
+    status: {
+      statusText: null,
+      statusType: StatusType.Online,
+    }
+  })))
+
   localStorage.setItem("token", data.token);
   heartbeatInterval = setInterval(heartbeat, 15000);
 
@@ -71,7 +81,13 @@ async function messageCreate(data) {
 }
 
 async function presenceUpdate(data) {
-  await store.dispatch("users/setStatus", data);
+  const user = data.user as User;
+  user.status = {
+    statusType: data.statusType,
+    statusText: data.statusText,
+  };
+
+  await store.dispatch("users/update", user);
 }
 
 async function userUpdate(data) {

@@ -103,7 +103,7 @@ html {
 body {
   background-size: contain;
   font-family: "Roboto", sans-serif;
-  background: var(--body-bg);
+  background: var(--mono-400);
   background-size: cover;
   background-attachment: fixed;
   background-position: center;
@@ -126,7 +126,7 @@ li {
   display: flex;
   flex-direction: column;
   grid-column-start: 2;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .msg-container {
@@ -180,7 +180,7 @@ li {
 
   .subtitle {
     font-size: 16px;
-    color: var(--text-secondary);
+    color: var(--mono-600);
   }
 }
 
@@ -193,7 +193,7 @@ pre {
 }
 
 .badge {
-  background-color: var(--active-200);
+  background-color: var(--accent-200);
   color: white;
   padding: 0.125rem 0.25rem;
   margin-left: 0.5rem;
@@ -201,7 +201,7 @@ pre {
   border-radius: 2px;
 
   &.is-secondary {
-    background-color: var(--body-bg);
+    background-color: var(--mono-400);
   }
 
   &.is-danger {
@@ -236,8 +236,8 @@ pre {
 
   &.is-mention {
     padding: 0 4px;
-    background: var(--active-200);
-    color: var(--message-mention-color);
+    background: var(--accent-200);
+    color: var(--mono-900);
   }
 }
 
@@ -271,7 +271,7 @@ body {
 
 .heading-wrapper {
   &.first {
-    background-color: var(--sidebar-bg);
+    background-color: var(--mono-300);
     grid-column-start: 0;
     grid-column-end: 2;
   }
@@ -282,7 +282,7 @@ body {
   }
 
   &.third {
-    background-color: var(--sidebar-bg);
+    background-color: var(--mono-300);
     grid-row-start: 1;
     grid-column-start: 3;
     grid-column-end: 4;
@@ -291,7 +291,9 @@ body {
 
 @include mobile {
   .heading-wrapper {
-    &.first {
+
+    &.first,
+    &.third {
       display: none;
     }
 
@@ -306,7 +308,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--editor-bg);
+  border-bottom: 1px solid var(--mono-600);
   width: 100%;
   height: 100%;
 
@@ -368,11 +370,11 @@ $listWidth: 300px;
   }
 
   &.is-selected {
-    background-color: var(--body-bg);
+    background-color: var(--mono-400);
   }
 
   &:hover {
-    background-color: var(--body-bg);
+    background-color: var(--mono-400);
   }
 }
 
@@ -383,7 +385,7 @@ $listWidth: 300px;
   padding: 1rem;
   width: $listWidth;
   flex-shrink: 0;
-  background: var(--sidebar-bg);
+  background: var(--mono-300);
 
   &.channel {
     grid-row-end: 3;
@@ -412,12 +414,13 @@ $listWidth: 300px;
   padding-bottom: 0.5rem;
   display: flex;
   justify-items: center;
+  align-items: center;
   text-overflow: ellipsis;
   overflow: hidden;
 }
 
 .user-name {
-  color: white;
+  color: var(--mono-900);
   font-size: 18px;
 }
 
@@ -428,8 +431,8 @@ $listWidth: 300px;
 
 .controls {
   position: relative;
-  background: var(--editor-bg);
-  color: var(--editor-color);
+  background: var(--mono-500);
+  color: var(--mono-900);
   display: flex;
   border-radius: 4px;
   padding: 16px 12px;
@@ -443,7 +446,6 @@ $listWidth: 300px;
 }
 
 .controls-wrapper {
-  background: var(--editor-container-bg);
   padding: 0.5rem 0.5rem 0 0.5rem;
   flex-shrink: 0;
   z-index: 100;
@@ -485,11 +487,12 @@ select:-webkit-autofill:focus .textfield:hover,
 .textfield:focus {
   outline: none;
   -webkit-text-fill-color: white;
-  -webkit-box-shadow: 0 0 0px 100px var(--active-bg) inset;
+  -webkit-box-shadow: 0 0 0px 100px var(--mono-500) inset;
+  box-shadow: 0 0 0px 100px var(--mono-500) inset;
 }
 
 .msg-instance-title {
-  color: var(--message-author-color);
+  color: var(--mono-900);
   font-size: 1.25rem;
   word-break: break-all;
   white-space: nowrap;
@@ -503,7 +506,7 @@ select:-webkit-autofill:focus .textfield:hover,
 }
 
 .msg-instance-container {
-  color: var(--message-color);
+  color: var(--mono-800);
   width: 100%;
   padding: 12px;
   border-radius: 4px;
@@ -515,13 +518,13 @@ select:-webkit-autofill:focus .textfield:hover,
 .mention {
   cursor: pointer;
   padding: 0 0.25rem;
-  background-color: var(--active-200);
+  background-color: var(--accent-200);
   border-radius: 8px;
-  color: var(--message-mention-color);
+  color: var(--mono-900);
 }
 
 .mention:hover {
-  background-color: var(--active-100);
+  background-color: var(--accent-100);
 }
 
 @include mobile {
@@ -552,11 +555,11 @@ select:-webkit-autofill:focus .textfield:hover,
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #212121;
+  background: var(--mono-200);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #212121;
+  background: var(--mono-200);
 }
 
 @include desktop {
@@ -590,7 +593,7 @@ img {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--editor-bg);
+    background: var(--mono-600);
     color: var(--editor-color);
     border-radius: 50%;
     width: 2.5em;
@@ -649,7 +652,8 @@ img {
 }
 
 .hoverable:hover {
-  background-color: #212121;
+  cursor: pointer;
+  background-color: var(--mono-200);
 }
 
 .btn-group {
@@ -670,6 +674,10 @@ img {
   }
 }
 
+.offline {
+  opacity: 0.5;
+}
+
 .btn {
   cursor: pointer;
   display: flex;
@@ -677,10 +685,10 @@ img {
   box-sizing: border-box;
   text-align: center;
   padding: 0.5rem 1rem;
-  background-color: var(--editor-bg);
-  color: var(--editor-color);
+  background-color: var(--mono-500);
+  color: var(--mono-900);
   overflow: hidden;
-  border-radius: 5px;
+  border-radius: 2px;
 
   &.alt {
     background-color: unset;

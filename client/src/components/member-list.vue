@@ -1,10 +1,13 @@
 <template>
   <div class="sidebar users">
     <div 
-      v-for="user in currentUsers" 
-      :key="user.id"
+      v-if="currentUsers"
     >
-      <member-list-item :user="user" />
+      <member-list-item 
+        v-for="user in currentUsers" 
+        :key="user.id"
+        :user="user" 
+      />
     </div>
   </div>
 </template>
@@ -17,6 +20,7 @@ import { namespace } from "vuex-class";
 import MemberListItem from "./member-list-item.vue";
 import { client } from "../api-client";
 import { store } from "../store";
+import * as sorts from "../utils/sorts";
 
 const channels = namespace("channels");
 const users = namespace("users");
@@ -30,16 +34,7 @@ export default class MemberList extends Vue {
   @channels.Getter("currentId") channelId: string;
 
   get currentUsers() {
-    const { channel, users } = this;
-    if (!channel || channel.system) {
-      return users;
-    }
-
-    if (!channel.members) {
-      return users;
-    }
-
-    return users;
+    return [...this.users].sort(sorts.sortUserByStatusThenName);
   }
 
   @Watch("channelId")
@@ -50,13 +45,6 @@ export default class MemberList extends Vue {
 
     var members = await client().getChannelMembers(this.channel.id);
     await store.dispatch("users/add", members);
-
-    for (let member of members) {
-      await store.dispatch("channels/addMember", {
-        id: this.channel.id,
-        member: member.id,
-      });
-    }
   }
 }
 </script>
