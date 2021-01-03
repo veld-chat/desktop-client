@@ -23,7 +23,7 @@
         <a
           class="button primary"
           @click.prevent="commit"
-        >Create Channel</a>
+        >Change Username</a>
         <a 
           class="button outline secondary"
           @click.prevent="closeModal"
