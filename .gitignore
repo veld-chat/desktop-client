@@ -29,7 +29,7 @@ bower_components
 # node-waf configuration
 .lock-wscript
 
-# Compiled binary addons (http://nodejs.org/api/addons.html)
+# Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
 
 # Dependency directories
@@ -54,8 +54,9 @@ jspm_packages/
 # dotenv environment variables file
 .env
 
-config.json
-dist/
-.temp/
-secret.yml
+# next.js build output
+.next
+
+# WebStorm
 .idea/
+dist/
