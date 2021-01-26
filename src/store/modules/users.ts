@@ -75,6 +75,7 @@ export const users: Module<UserState, RootState> = {
           avatarUrl: x.avatarUrl || u.avatarUrl,
           isBot: x.isBot || u.isBot,
           status: x.status || u.status,
+          badges: x.badges || u.badges,
         };
       });
 

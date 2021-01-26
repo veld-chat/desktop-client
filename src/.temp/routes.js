@@ -1,5 +1,5 @@
-const c1 = () => import(/* webpackChunkName: "page--node-modules-gridsome-app-pages-404-vue" */ "D:\\Projects\\node-chat-server\\client\\node_modules\\gridsome\\app\\pages\\404.vue")
-const c2 = () => import(/* webpackChunkName: "page--src-pages-index-vue" */ "D:\\Projects\\node-chat-server\\client\\src\\pages\\Index.vue")
+const c1 = () => import(/* webpackChunkName: "page--node-modules-gridsome-app-pages-404-vue" */ "D:\\Projects\\node-chat-server\\node_modules\\gridsome\\app\\pages\\404.vue")
+const c2 = () => import(/* webpackChunkName: "page--src-pages-index-vue" */ "D:\\Projects\\node-chat-server\\src\\pages\\Index.vue")
 
 export default [
   {

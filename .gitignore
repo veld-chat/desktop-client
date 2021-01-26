@@ -60,3 +60,4 @@ jspm_packages/
 # WebStorm
 .idea/
 dist/
+.temp/

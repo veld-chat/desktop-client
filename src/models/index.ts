@@ -3,10 +3,18 @@ export enum StatusType {
   Offline = 1,
 }
 
+export enum UserBadges {
+  None = 0,
+  Supporter = 1,
+  Admin = 2,
+  Bot = 4,
+}
+
 export type User = {
   id: string;
   name: string;
   avatarUrl?: string;
+  badges: UserBadges;
   isBot: boolean;
   status?: UserStatus;
 };

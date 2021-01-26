@@ -8,15 +8,7 @@
       :style="{ backgroundImage: `url('https://cdn.miki.bot/chat/avatars/${user.avatarUrl || user.id % 5}.png')` }"
     />
     <div>
-      <span class="flex text-centered fit-text">
-        <div class="user-name fit-text">{{ user.name }}</div>
-        <div 
-          v-if="user.isBot"
-          class="badge"
-        >
-          Bot
-        </div>
-      </span>
+      <user-title :user="user" />
       <div>{{ userStatus }}</div>
     </div>
   </div>
@@ -26,8 +18,13 @@
 import Vue from "vue";
 import { Prop, Component } from "vue-property-decorator";
 import { StatusType, User } from "../models";
+import UserTitle from "./user-title.vue";
 
-@Component
+@Component({
+  components: {
+    UserTitle,
+  },
+})
 export default class MemberListItem extends Vue {
   @Prop() user: User;
 
