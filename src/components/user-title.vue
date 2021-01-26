@@ -21,6 +21,7 @@
       class="emoji"
       src="/assets/supporter.svg" 
     >
+    <slot />
   </div>
 </template>
 
