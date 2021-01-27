@@ -28,7 +28,7 @@
     "mongoose": "^5.9.28",
     "reflect-metadata": "^0.1.13",
     "snowyflake": "^1.0.2",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.4.0",
     "swagger-ui-express": "^4.1.4",
     "ts-mongoose": "^0.0.21",
     "tslog": "^2.7.0",
