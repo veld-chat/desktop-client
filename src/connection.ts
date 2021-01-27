@@ -111,15 +111,6 @@ export function connect() {
 
   const host = localStorage.getItem("gateway") || "api.veld.chat";
 
-  fetch(`https://${host}/emojis`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-  }).then((res) => res.json())
-    .then((data) => store.dispatch("emoji/set", data))
-    .catch((e) => console.warn("Could not load the emojis:", e.message));
-
   store.dispatch("emoji/set", <Emoji[]> [
     {
       name: "Bot Icon",
