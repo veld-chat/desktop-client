@@ -1,4 +1,4 @@
-import { store } from "./store";
+import { Emoji, store } from "./store";
 import proxyfetch from "./utils/proxyfetch";
 import { mapToEmbed } from "./utils/embed-mapper";
 import { client } from "./api-client";
@@ -110,6 +110,14 @@ export function connect() {
   }
 
   const host = localStorage.getItem("gateway") || "api.veld.chat";
+
+  store.dispatch("emoji/set", <Emoji[]> [
+    {
+      name: "Bot Icon",
+      value: ":bot:",
+      image: "/assets/bot.svg"
+    }
+  ])
 
   logger.log("connecting to", `wss://${host}`)
   websocket = new WebSocket(`wss://${host}`);

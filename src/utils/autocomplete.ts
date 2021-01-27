@@ -1,4 +1,4 @@
-import { store } from "../store";
+import { store } from "@/store";
 
 export interface AutoComplete {
   text: string;
@@ -10,7 +10,6 @@ export interface AutoComplete {
   description?: string;
 }
 
-export const emojisItems: AutoComplete[] = [];
 const commandItems: AutoComplete[] = [];
 
 function add(name: string, list: AutoComplete[], source: AutoComplete[]) {
@@ -33,7 +32,7 @@ export function autoComplete(word: string): AutoComplete[] {
   if (word[0] === "/") {
     add(word.substr(1), list, commandItems);
   } else if (word[0] === ":" && word.length > 2) {
-    add(word.substr(1), list, emojisItems);
+    add(word.substr(1), list, store.state.emoji.autoComplete);
   } else if (word[0] === "@") {
     const name = word.substr(1);
     const visited = [];
