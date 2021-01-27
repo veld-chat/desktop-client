@@ -9,17 +9,17 @@ import { Position } from 'codemirror'
 import { Addon, suggestedEditorConfig } from '../core'
 import { cm_t } from '../core/type'
 import { breakMark, FolderFunc, registerFolder, RequestRangeResult } from './fold'
-import { emojisByValue } from "@/utils/emoji";
+import { store } from "@/store";
 
 /********************************************************************************** */
 
 export type EmojiRenderer = (text: string) => HTMLElement;
 export type EmojiChecker = (text: string) => boolean;
 
-export const defaultChecker: EmojiChecker = (text) => text in emojisByValue
+export const defaultChecker: EmojiChecker = (text) => text in store.state.emoji.emojisByValue
 export const defaultRenderer: EmojiRenderer = (text) => {
   const ans = document.createElement("img")
-  ans.setAttribute("src",  emojisByValue[text].image);
+  ans.setAttribute("src",  store.state.emoji.emojisByValue[text].image);
   return ans
 }
 

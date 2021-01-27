@@ -3,3 +3,4 @@ export * from "./session";
 export * from "./users";
 export * from "./messages";
 export * from "./notifications";
+export * from "./emoji";

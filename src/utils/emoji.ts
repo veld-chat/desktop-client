@@ -1,29 +1,12 @@
-import { emojisItems } from "../utils/autocomplete";
-export interface Emoji {
-  name: string;
-  value: string;
-  image: string
-}
+import { store } from "@/store";
 
-const isOnlyEmojiRegex = /^(?:<img class="emoji"[^>]+>|\s+)*$/;
+const isOnlyEmojiRegex = /^(\s*<p>)?\s*<img class="emoji"[^>]+>\s*(<\/p>\s*)$/;
 const emojiRegex = /:([A-Za-z_0-9]+):/g;
-export const emojis: { [name: string]: Emoji } = {};
-export const emojisByValue: { [name: string]: Emoji } = {};
-
-export function registerEmoji(emoji: Emoji) {
-  emojis[name] = emoji;
-  emojisByValue[emoji.value] = emoji;
-
-  emojisItems.push({
-    text: emoji.name,
-    textLowerCased: emoji.name.toLowerCase(),
-    image: emoji.image,
-    value: emoji.value,
-  });
-}
 
 export function replaceEmojis(text: string) {
-  return text.replace(emojiRegex, (text, name) => {
+  const { emojisByValue } = store.state.emoji;
+
+  return text.replace(emojiRegex, (text) => {
     const e = emojisByValue[text];
     return e ? `<img class="emoji" alt="${e.value}" title="${e.value}" src="${e.image}" />` : text;
   })
