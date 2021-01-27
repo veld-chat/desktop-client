@@ -3,7 +3,13 @@
   <div class="main">
     <div class="heading-wrapper first">
       <header class="heading">
-        Veld.Chat
+        <span>
+          <img
+            src="/logo.svg"
+            class="emoji mr-3"
+          >
+          Veld Chat
+        </span>
       </header>
     </div>
 
@@ -16,14 +22,14 @@
       <header class="heading">
         <span v-if="channel">
           <i class="icon fa fa-hashtag" />
-          <b 
-            style="heading-title" 
-            v-text="channel.name" 
+          <b
+            style="heading-title"
+            v-text="channel.name"
           />
         </span>
       </header>
     </div>
-    
+
     <div class="chat-section">
       <div
         ref="container"
@@ -35,8 +41,8 @@
         >
           <chat-message
             v-for="(message, id) in channelMessages"
-            :key="id" 
-            :message="message" 
+            :key="id"
+            :message="message"
           />
         </div>
       </div>
@@ -91,7 +97,7 @@ export default class Root extends Vue {
   scroll: boolean;
 
   get channelMessages() {
-    if(this.channel == null) {
+    if (this.channel == null) {
       return [];
     }
     return this.getMessages(this.channel.id);

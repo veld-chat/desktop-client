@@ -1,6 +1,6 @@
 <template>
-  <div 
-    v-if="user" 
+  <div
+    v-if="user"
     class="flex text-centered fit-text"
   >
     <div class="user-name fit-text">
@@ -9,17 +9,17 @@
     <img
       v-if="hasBadge('Bot')"
       class="emoji"
-      src="/assets/bot.svg" 
+      src="/assets/bot.svg"
     >
-    <img 
+    <img
       v-if="hasBadge('Admin')"
       class="emoji"
-      src="/assets/admin.svg" 
+      src="/assets/admin.svg"
     >
-    <img 
+    <img
       v-if="hasBadge('Supporter')"
       class="emoji"
-      src="/assets/supporter.svg" 
+      src="/assets/supporter.svg"
     >
     <slot />
   </div>

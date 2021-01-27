@@ -5,6 +5,10 @@
     align-items: center;
   }
 
+  &.text-bottom {
+    align-items: flex-end;
+  }
+
   &.column {
     flex-direction: column;
   }

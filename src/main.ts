@@ -32,7 +32,7 @@ export default (Vue, { head, isClient, appOptions }): void => {
 
   head.link.push({
     rel: "stylesheet",
-    href: "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/rainbow.min.css"
+    href: "https://use.typekit.net/cep5qnb.css"
   });
 
   head.link.push({
@@ -40,4 +40,34 @@ export default (Vue, { head, isClient, appOptions }): void => {
     sizes: "180x180",
     href: "/apple-touch-icon.png",
   });
+
+  head.link.push({
+    rel: "icon",
+    type: "image/png",
+    sizes: "32x32",
+    href: "/favicon-32x32.png"
+  });
+
+  head.link.push({
+    rel: "icon",
+    type: "image/png",
+    sizes: "16x16",
+    href: "/favicon-16x16.png"
+  });
+
+  head.link.push({
+    rel: "mask-icon",
+    href: "/safari-pinned-tab.svg",
+    color: "#eb496a",
+  });
+
+  head.meta.push({
+    name: "msapplication-TileColor",
+    content: "#eb496a",
+  });
+
+  head.meta.push({
+    name: "theme-color",
+    content: "#eb496a"
+  })
 };
