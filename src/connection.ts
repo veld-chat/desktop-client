@@ -4,6 +4,8 @@ import { mapToEmbed } from "./utils/embed-mapper";
 import { client } from "./api-client";
 import { createLogger } from "./services/logger";
 import { StatusType, User } from "./models";
+import emojis from "./base-emojis.json";
+import { base } from "twemoji";
 
 const logger = createLogger("WebSocket");
 export let websocket: WebSocket;
@@ -16,6 +18,21 @@ let id = "";
 interface WebSocketPayload {
   t: MessageType;
   d: unknown;
+}
+
+function emojiUnicode(emoji) {
+  let comp: any;
+  if (emoji.length === 1) {
+    comp = emoji.charCodeAt(0);
+  }
+  comp = (
+    (emoji.charCodeAt(0) - 0xD800) * 0x400
+    + (emoji.charCodeAt(1) - 0xDC00) + 0x10000
+  );
+  if (comp < 0) {
+    comp = emoji.charCodeAt(0);
+  }
+  return comp.toString("16");
 }
 
 enum MessageType {
@@ -111,13 +128,13 @@ export function connect() {
 
   const host = localStorage.getItem("gateway") || "api.veld.chat";
 
-  store.dispatch("emoji/set", <Emoji[]> [
-    {
-      name: "Bot Icon",
-      value: ":bot:",
-      image: "/assets/bot.svg"
-    }
-  ])
+  const baseEmojis = Object.keys(emojis).map((x) => ({
+    name: x.split("_").map(x => x[0].toUpperCase() + x.substr(1)).join(" "),
+    value: `:${x}:`,
+    image: `https://twemoji.maxcdn.com/v/13.0.1/72x72/${emojiUnicode(emojis[x])}.png`,
+  } as Emoji))
+
+  store.dispatch("emoji/set", baseEmojis);
 
   logger.log("connecting to", `wss://${host}`)
   websocket = new WebSocket(`wss://${host}`);

@@ -9,6 +9,7 @@
     "downlevelIteration": true,
     "esModuleInterop": true,
     "noImplicitReturns": false,
+    "resolveJsonModule": true,
     "allowJs": true,
     "lib": [
       "dom",
