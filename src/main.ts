@@ -3,6 +3,7 @@ import "./connection";
 import Vuex from 'vuex';
 import { store } from "./store";
 import DOMPurify from "dompurify";
+import { connect, waitForReady } from "@/connection";
 
 if (process.isClient) {
   require("codemirror/addon/display/placeholder");
@@ -16,8 +17,14 @@ if (process.isClient) {
   });
 }
 
-export default (Vue, { head, isClient, appOptions }): void => {
+export default (Vue, { router, head, isClient, appOptions }): void => {
   Vue.use(Vuex);
+
+  connect();
+
+  router.beforeEach((to, from, next) => {
+    waitForReady().then(next);
+  });
 
   appOptions.store = store;
 

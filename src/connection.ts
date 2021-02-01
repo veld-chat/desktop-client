@@ -5,8 +5,9 @@ import { client } from "./api-client";
 import { createLogger } from "./services/logger";
 import { StatusType, User } from "./models";
 import emojis from "./base-emojis.json";
-import { base } from "twemoji";
+import { TaskCompletionSource } from "@/utils/task-completion-source";
 
+const readyCompletionSource = new TaskCompletionSource();
 const logger = createLogger("WebSocket");
 export let websocket: WebSocket;
 
@@ -73,6 +74,12 @@ async function ready(data) {
   heartbeatInterval = setInterval(heartbeat, 15000);
 
   console.log(`Logged in as ${data.user.name} (${data.user.id})`);
+
+  readyCompletionSource.setComplete();
+}
+
+export function waitForReady() {
+  return readyCompletionSource.wait();
 }
 
 async function memberCreate(data) {
@@ -168,22 +175,22 @@ export function connect() {
 
     switch (payload.t) {
       case MessageType.Ready:
-        ready(payload.d);
+        await ready(payload.d);
         break;
       case MessageType.MessageCreate:
-        messageCreate(payload.d);
+        await messageCreate(payload.d);
         break;
       case MessageType.UserUpdate:
-        userUpdate(payload.d);
+        await userUpdate(payload.d);
         break;
       case MessageType.MemberCreate:
-        memberCreate(payload.d);
+        await memberCreate(payload.d);
         break;
       case MessageType.MemberDelete:
-        memberDelete(payload.d);
+        await memberDelete(payload.d);
         break;
       case MessageType.PresenceUpdate:
-        presenceUpdate(payload.d);
+        await presenceUpdate(payload.d);
         break;
     }
     return false;

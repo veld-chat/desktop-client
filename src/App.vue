@@ -1,80 +1,86 @@
 /* eslint-disable vue/no-v-html */
 <template>
-  <div class="main">
-    <div class="heading-wrapper first">
-      <header class="heading">
-        <span>
-          <img
-            src="/logo.svg"
-            class="emoji mr-3"
-          >
-          Veld Chat
-        </span>
-      </header>
-    </div>
+  <div class="app">
+    <overlay />
 
-    <div class="sidebar channel flex column space-between">
-      <channel-list />
-      <current-user-view />
-    </div>
-
-    <div class="heading-wrapper second">
-      <header class="heading">
-        <span v-if="channel">
-          <i class="icon fa fa-hashtag" />
-          <b
-            style="heading-title"
-            v-text="channel.name"
-          />
-        </span>
-      </header>
-    </div>
-
-    <div class="chat-section">
-      <div
-        ref="container"
-        class="message-container"
-      >
-        <div
-          v-if="channel"
-          class="messages"
-        >
-          <chat-message
-            v-for="(message, id) in channelMessages"
-            :key="id"
-            :message="message"
-          />
-        </div>
+    <div class="main">
+      <div class="heading-wrapper first">
+        <header class="heading">
+          <span>
+            <img
+              src="/logo.svg"
+              class="emoji mr-3"
+            >
+            Veld Chat
+          </span>
+        </header>
       </div>
 
-      <chat-bar />
-    </div>
+      <div class="sidebar channel flex column space-between">
+        <channel-list />
+        <current-user-view />
+      </div>
 
-    <div class="heading-wrapper third">
-      <header class="heading">
-        Members
-      </header>
+      <div class="heading-wrapper second">
+        <header class="heading">
+          <span v-if="channel">
+            <i class="icon fa fa-hashtag" />
+            <b
+              style="heading-title"
+              v-text="channel.name"
+            />
+          </span>
+        </header>
+      </div>
+
+      <div class="chat-section">
+        <div
+          ref="container"
+          class="message-container"
+        >
+          <div
+            v-if="channel"
+            class="messages"
+          >
+            <chat-message
+              v-for="(message, id) in channelMessages"
+              :key="id"
+              :message="message"
+            />
+          </div>
+        </div>
+
+        <chat-bar />
+      </div>
+
+      <div class="heading-wrapper third">
+        <header class="heading">
+          Members
+        </header>
+      </div>
+      <member-list />
     </div>
-    <member-list />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import { Component, Ref, Watch } from "vue-property-decorator";
-import Login from "../components/login.vue";
-import ChatBar from "../components/chat-bar.vue";
-import MemberList from "../components/member-list.vue";
-import { Channel, Message, User } from "../models";
-import { store } from "../store";
+import Login from "./components/login.vue";
+import ChatBar from "./components/chat-bar.vue";
+import MemberList from "./components/member-list.vue";
+import Overlay from "./components/overlay.vue";
+import { Channel, Message, User } from "./models";
+import { store } from "./store";
 import { namespace } from "vuex-class";
-import ChatMessage from "../components/chat-message.vue";
-import { connect } from "../connection";
-import ChannelList from "../components/channel-list.vue";
-import CurrentUserView from "../components/current-user.vue";
+import ChatMessage from "./components/chat-message.vue";
+import { connect } from "./connection";
+import ChannelList from "./components/channel-list.vue";
+import CurrentUserView from "./components/current-user.vue";
 
 const channels = namespace("channels");
 const messages = namespace("messages");
+const session = namespace("session");
 
 @Component({
   components: {
@@ -84,10 +90,12 @@ const messages = namespace("messages");
     ChannelList,
     Login,
     CurrentUserView,
-  },
+    Overlay
+  }
 })
 export default class Root extends Vue {
   @Ref() container: HTMLDivElement;
+  @session.Getter("user") user: User;
   @channels.Getter("current") channel: Channel;
   @messages.Getter("byChannel") getMessages: (id: string) => Message[];
 
@@ -95,6 +103,10 @@ export default class Root extends Vue {
   message = "";
   token = "";
   scroll: boolean;
+
+  get isLoading() {
+    return !!this.user;
+  }
 
   get channelMessages() {
     if (this.channel == null) {
@@ -104,8 +116,6 @@ export default class Root extends Vue {
   }
 
   mounted(): void {
-    connect();
-
     if (Notification.permission !== "granted") {
       Notification.requestPermission();
     }

@@ -1,4 +1,4 @@
-import plugin_allanchain_gridsome_plugin_pwa_6 from "D:\\Projects\\node-chat-server\\node_modules\\@allanchain\\gridsome-plugin-pwa\\gridsome.client.js"
+import plugin_allanchain_gridsome_plugin_pwa_6 from "C:\\Sources\\veld\\node_modules\\@allanchain\\gridsome-plugin-pwa\\gridsome.client.js"
 
 export default [
   {

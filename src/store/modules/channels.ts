@@ -9,6 +9,7 @@ export interface ChannelState {
   channels: readonly Channel[];
   channelsById: { [id: string]: Channel };
   currentChannel: string;
+  currentName: string;
 }
 
 export const channels: Module<ChannelState, RootState> = {
@@ -17,6 +18,7 @@ export const channels: Module<ChannelState, RootState> = {
   state: {
     channels: [],
     channelsById: {},
+    currentName: "",
     currentChannel: null,
   },
 
@@ -101,6 +103,7 @@ export const channels: Module<ChannelState, RootState> = {
 
       if (channel) {
         state.currentChannel = payload;
+        state.currentName = channel.name;
         Vue.set(channel, "unreadAmount", 0);
         Vue.set(channel, "mentionAmount", 0);
       }

@@ -1,11 +1,13 @@
 @import "variables";
 
 .button {
+  cursor: pointer;
   background-color: var(--mono-600);
   margin-top: 0.5rem;
   margin-right: 0.5rem;
   padding: 0.5rem;
   border-radius: 4px;
+  user-select: none;
 
   &.primary {
   }

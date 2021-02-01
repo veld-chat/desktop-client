@@ -1,4 +1,4 @@
-@import "columns";
+@import "~bootstrap/dist/css/bootstrap-grid.css";
 @import "variables";
 
 @import "emoji";
@@ -8,6 +8,7 @@
 @import "flex";
 @import "modal";
 @import "button";
+@import "overlay";
 
 @import "utils/layout.scss";
 
@@ -80,6 +81,32 @@ h6 {
   to {
     opacity: 1;
   }
+}
+
+.text {
+  &-uppercase {
+    text-transform: uppercase;
+  }
+}
+
+.font {
+  &-weight {
+    &-bold {
+      font-weight: bold;
+    }
+  }
+}
+
+.bg-dark {
+  background: var(--mono-300);
+}
+
+.bg-white {
+  background: var(--mono-400);
+}
+
+.text-dark {
+  color: var(--mono-700)
 }
 
 .sidebar {

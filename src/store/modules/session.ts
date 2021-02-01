@@ -3,7 +3,7 @@ import { RootState } from "../../store";
 import { User } from "../../models";
 
 export interface SessionState {
-  user: string;
+  userId: string;
   token: string;
 }
 
@@ -11,11 +11,13 @@ export const session: Module<SessionState, RootState> = {
   namespaced: true,
 
   state: {
-    user: null,
+    userId: null,
     token: null
   },
 
-  getters: {},
+  getters: {
+    user: (state, getters, rootState) => rootState.users.usersById[state.userId],
+  },
 
   actions: {
     async setUser({ commit }, user: string) {
@@ -28,7 +30,7 @@ export const session: Module<SessionState, RootState> = {
 
   mutations: {
     setUser(state, user: string) {
-      state.user = user;
+      state.userId = user;
     },
     setToken(state, token: string) {
       state.token = token;

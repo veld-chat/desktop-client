@@ -23,7 +23,7 @@ export default class TypingBar extends Vue {
   private timerId: number;
   currentlyTyping: UserTyping[] = [];
 
-  @session.State("user") userId: string;
+  @session.State("userId") userId: string;
   @users.State("typing") typing: UserTyping[];
   @users.Getter("byId") getUser: (id: string) => User;
 

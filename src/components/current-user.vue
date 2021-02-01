@@ -1,29 +1,25 @@
 <template>
   <div>
-    <edit-user-modal 
-      :open="editUserModalOpen" 
+    <edit-user-modal
+      :open="editUserModalOpen"
       @close="editUserModalOpen = false"
     />
-    <login 
-      v-if="showLogin" 
+    <login
+      v-if="showLogin"
       @close="showLogin = false"
     />
     <div class="flex space-between align-bottom">
-      <a 
+      <a
         class="hoverable"
         @click.prevent="editUserModalOpen = true"
       >
-        <member-list-item 
-          :user="user" 
+        <member-list-item
+          :user="user"
         />
       </a>
-      <a 
-        class="btn alt" 
-        style="cursor: pointer; font-size: 12px"
-        @click.prevent="showLogin = true"
-      >
-        Not you?
-      </a>
+      <g-link to="/settings" class="btn alt">
+        Settings
+      </g-link>
     </div>
   </div>
 </template>
@@ -37,7 +33,6 @@ import { namespace } from "vuex-class";
 import { User } from "../models";
 
 const session = namespace("session");
-const users = namespace("users");
 
 @Component({
   components: {
@@ -47,13 +42,7 @@ const users = namespace("users");
   },
 })
 export default class CurrentUserView extends Vue {
-  @session.State("user") userId: string;
-  @users.Getter("byId") getUser: (id: string) => User;
-
-  get user() {
-    console.log(this.getUser(this.userId));
-    return this.getUser(this.userId);
-  }
+  @session.Getter("user") user: User;
 
   showLogin = false;
   editUserModalOpen = false;
