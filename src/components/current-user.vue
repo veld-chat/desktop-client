@@ -1,24 +1,12 @@
 <template>
   <div>
-    <edit-user-modal
-      :open="editUserModalOpen"
-      @close="editUserModalOpen = false"
-    />
-    <login
-      v-if="showLogin"
-      @close="showLogin = false"
-    />
-    <div class="flex space-between align-bottom">
-      <a
-        class="hoverable"
-        @click.prevent="editUserModalOpen = true"
+    <div class="flex space-between align-center">
+      <current-user-view />
+      <g-link
+        to="/settings"
+        class="btn square"
       >
-        <member-list-item
-          :user="user"
-        />
-      </a>
-      <g-link to="/settings" class="btn alt">
-        Settings
+        <i class="fas fa-cog" />
       </g-link>
     </div>
   </div>
@@ -28,6 +16,7 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import EditUserModal from "./edit-user-modal.vue";
 import MemberListItem from "./member-list-item.vue";
+import CurrentUserView from "./current-user-view.vue";
 import Login from "./login.vue";
 import { namespace } from "vuex-class";
 import { User } from "../models";
@@ -39,9 +28,10 @@ const session = namespace("session");
     EditUserModal,
     MemberListItem,
     Login,
+    CurrentUserView,
   },
 })
-export default class CurrentUserView extends Vue {
+export default class CurrentUser extends Vue {
   @session.Getter("user") user: User;
 
   showLogin = false;

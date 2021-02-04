@@ -7,7 +7,7 @@
     ]"
     @click="setChannel"
   >
-    <span class="flex text-centered">
+    <span class="flex align-center">
       <i class="icon fas fa-hashtag" />
       {{ channel.name }}
     </span>
@@ -16,7 +16,7 @@
         v-if="channel.mentionAmount && channel.mentionAmount > 0"
         class="badge is-danger"
       >{{ channel.mentionAmount }}</div>
-      <div 
+      <div
         v-if="!channel.system"
         class="badge is-secondary"
       >

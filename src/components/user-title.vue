@@ -1,24 +1,24 @@
 <template>
   <div
     v-if="user"
-    class="flex text-centered fit-text"
+    class="flex fit-text"
   >
-    <div class="user-name fit-text">
+    <span class="user-name fit-text">
       {{ user.name }}
-    </div>
+    </span>
     <img
       v-if="hasBadge('Bot')"
-      class="emoji"
+      class="ml-1 icon"
       src="/assets/bot.svg"
     >
     <img
       v-if="hasBadge('Admin')"
-      class="emoji"
+      class="ml-1 icon"
       src="/assets/admin.svg"
     >
     <img
       v-if="hasBadge('Supporter')"
-      class="emoji"
+      class="ml-1 icon"
       src="/assets/supporter.svg"
     >
     <slot />

@@ -1,0 +1,24 @@
+.image {
+  &-small {
+    width: 32px;
+    height: 32px;
+  }
+
+  &-normal {
+    width: 48px;
+    height: 48px;
+  }
+
+  &-large {
+    width: 96px;
+    height: 96px;
+  }
+
+  &.rounded {
+    border-radius: 100%;
+  }
+}
+
+.image:disabled {
+  opacity: 0.5;
+}

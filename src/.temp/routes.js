@@ -1,6 +1,6 @@
-const c1 = () => import(/* webpackChunkName: "page--src-pages-settings-vue" */ "C:\\Sources\\veld\\src\\pages\\settings.vue")
-const c2 = () => import(/* webpackChunkName: "page--node-modules-gridsome-app-pages-404-vue" */ "C:\\Sources\\veld\\node_modules\\gridsome\\app\\pages\\404.vue")
-const c3 = () => import(/* webpackChunkName: "page--src-pages-index-vue" */ "C:\\Sources\\veld\\src\\pages\\index.vue")
+const c1 = () => import(/* webpackChunkName: "page--src-pages-settings-vue" */ "D:\\Projects\\node-chat-server\\src\\pages\\settings.vue")
+const c2 = () => import(/* webpackChunkName: "page--node-modules-gridsome-app-pages-404-vue" */ "D:\\Projects\\node-chat-server\\node_modules\\gridsome\\app\\pages\\404.vue")
+const c3 = () => import(/* webpackChunkName: "page--src-pages-index-vue" */ "D:\\Projects\\node-chat-server\\src\\pages\\index.vue")
 
 export default [
   {

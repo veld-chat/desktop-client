@@ -1,10 +1,6 @@
 .flex {
   display: flex;
 
-  &.text-centered {
-    align-items: center;
-  }
-
   &.text-bottom {
     align-items: flex-end;
   }
@@ -17,11 +13,23 @@
     justify-content: space-between;
   }
 
+  &.justify-center {
+    justify-content: center;
+  }
+
   &.is-right {
     flex-direction: flex-end;
   }
 
   &.align-bottom {
     align-items: flex-end;
+  }
+
+  &.align-center {
+    align-items: center;
+  }
+
+  &.align-top {
+    align-items: flex-start;
   }
 }

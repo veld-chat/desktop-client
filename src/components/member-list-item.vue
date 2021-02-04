@@ -1,15 +1,18 @@
 <template>
-  <div 
+  <div
     v-if="user"
-    :class="`member-list-item ${userStatusClass}`" 
+    :class="`member-list-item ${userStatusClass}`"
   >
-    <div
-      class="msg-instance-avatar"
-      :style="{ backgroundImage: `url('https://cdn.miki.bot/chat/avatars/${user.avatarUrl || user.id % 5}.png')` }"
+    <avatar
+      class="mr-3"
+      :src="`https://cdn.miki.bot/chat/avatars/${user.avatarUrl || user.id % 5}.png`"
+      :rounded="true"
     />
     <div>
       <user-title :user="user" />
-      <div>{{ userStatus }}</div>
+      <span class="text-secondary">
+        {{ userStatus }}
+      </span>
     </div>
   </div>
 </template>
@@ -19,9 +22,11 @@ import Vue from "vue";
 import { Prop, Component } from "vue-property-decorator";
 import { StatusType, User } from "../models";
 import UserTitle from "./user-title.vue";
+import Avatar from "./avatar.vue";
 
 @Component({
   components: {
+    Avatar,
     UserTitle,
   },
 })
@@ -37,7 +42,6 @@ export default class MemberListItem extends Vue {
   }
 
   get userStatus() {
-    console.log(this.user);
     if (!this.user.status) {
       return "Offline";
     }

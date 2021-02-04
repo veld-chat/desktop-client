@@ -12,13 +12,13 @@
     <div v-else>
       <p>No channels yet!</p>
     </div>
-    
+
     <create-channel-modal
       :open="modalOpen"
       @close="closeModal"
     />
     <a
-      class="channel-list-item flex text-centered selected"
+      class="channel-list-item flex align-center selected"
       @click="openModal"
     >
       <span>

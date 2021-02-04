@@ -6,6 +6,7 @@
 @import "autocomplete";
 @import "embed";
 @import "flex";
+@import "image";
 @import "modal";
 @import "button";
 @import "overlay";
@@ -86,6 +87,14 @@ h6 {
 .text {
   &-uppercase {
     text-transform: uppercase;
+  }
+
+  &-secondary {
+    color: var(--mono-700);
+  }
+
+  &-s {
+    font-size: var(--text-s);
   }
 }
 
@@ -234,10 +243,6 @@ pre {
     background-color: var(--danger-bg);
     color: white;
   }
-}
-
-.icon {
-  margin: 0.25rem;
 }
 
 .error-label {
@@ -447,7 +452,7 @@ $listWidth: 300px;
 
 .user-name {
   color: var(--mono-900);
-  font-size: 18px;
+  font-size: var(--text-m);
 }
 
 .fit-text {
@@ -714,12 +719,14 @@ img {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  justify-content: center;
   text-align: center;
   padding: 0.5rem 1rem;
   background-color: var(--mono-500);
   color: var(--mono-900);
   overflow: hidden;
   border-radius: 2px;
+  text-decoration: none;
 
   &.alt {
     background-color: unset;
@@ -727,9 +734,7 @@ img {
 
   i {
     display: block;
-    font-size: 2rem;
     flex-grow: 1;
-    margin-bottom: 0.25em;
   }
 
   &-sm {
@@ -740,6 +745,10 @@ img {
     i {
       font-size: 1.5rem;
     }
+  }
+
+  &.square {
+    padding: 0.5rem;
   }
 }
 

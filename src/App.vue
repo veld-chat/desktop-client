@@ -9,7 +9,7 @@
           <span>
             <img
               src="/logo.svg"
-              class="emoji mr-3"
+              class="icon mr-3"
             >
             Veld Chat
           </span>
@@ -90,8 +90,8 @@ const session = namespace("session");
     ChannelList,
     Login,
     CurrentUserView,
-    Overlay
-  }
+    Overlay,
+  },
 })
 export default class Root extends Vue {
   @Ref() container: HTMLDivElement;
