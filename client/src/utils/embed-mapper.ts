@@ -60,7 +60,7 @@ const getEmbedFromHtml = async (res: Response): Promise<Embed> => {
                 if(imageUrl.startsWith("/")) {
                     imageUrl = res.url + imageUrl;
                 }
-                embed.imageUrl = PROXY_PREFIX + imageUrl;
+                embed.imageUrll = PROXY_PREFIX + imageUrl;
                 break;
             }
 
