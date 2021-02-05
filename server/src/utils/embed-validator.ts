@@ -32,8 +32,8 @@ export const validateEmbed = (embed: EmbedPayload) => {
     embed.footer = validate(embed.footer);
   }
 
-  if (embed.imageUrl) {
-    embed.imageUrl = proxyUrl + embed.imageUrl;
+  if (embed.imageUrll) {
+    embed.imageUrl = proxyUrl + embed.imageUrll;
   }
 
   if (embed.thumbnailUrl) {
