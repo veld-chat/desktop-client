@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@allanchain/gridsome-plugin-pwa": "^0.3.0",
-    "codemirror": "^5.56.0",
+    "codemirror": "^5.58.2",
     "dompurify": "^2.0.12",
     "gridsome": "^0.7.19",
     "marked": "^1.1.1",
