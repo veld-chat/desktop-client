@@ -1,11 +1,16 @@
-import Vue from "vue";
-import Vuex from "vuex";
-import * as modules from "./modules";
-import { RootState } from "../store";
+import { configureStore } from "@reduxjs/toolkit";
+import messages from "./reducers/messages";
+import emojis from "./reducers/emojis";
+import channels from "./reducers/channels";
+import sessions from "./reducers/session";
+import users from "./reducers/users";
 
-Vue.use(Vuex);
-
-export const store = new Vuex.Store<RootState>({
-  state: {},
-  modules: modules
+export default configureStore({
+  reducer: {
+    messages,
+    emojis,
+    channels,
+    sessions,
+    users
+  }
 });

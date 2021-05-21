@@ -1,13 +1,13 @@
 import "./style/index.scss";
 import "./connection";
-import Vuex from 'vuex';
-import { store } from "./store";
+import Vuex from "vuex";
+import store from "./store/store";
 import DOMPurify from "dompurify";
 
-if (process.isClient) {
+if (typeof window !== "undefined") {
   require("codemirror/addon/display/placeholder");
 
-  DOMPurify.addHook("afterSanitizeAttributes", function (currentNode) {
+  DOMPurify.addHook("afterSanitizeAttributes", function(currentNode) {
     if (currentNode.tagName === "A") {
       currentNode.textContent = currentNode.getAttribute("href");
       currentNode.setAttribute("target", "_blank");
@@ -21,8 +21,8 @@ export default (Vue, { head, isClient, appOptions }): void => {
 
   appOptions.store = store;
 
-  if (isClient && process.env.NODE_ENV === 'production') {
-    require('./registerServiceWorker')
+  if (isClient && process.env.NODE_ENV === "production") {
+    require("./registerServiceWorker");
   }
 
   head.script.push({
@@ -38,7 +38,7 @@ export default (Vue, { head, isClient, appOptions }): void => {
   head.link.push({
     rel: "apple-touch-icon",
     sizes: "180x180",
-    href: "/apple-touch-icon.png",
+    href: "/apple-touch-icon.png"
   });
 
   head.link.push({
@@ -58,16 +58,16 @@ export default (Vue, { head, isClient, appOptions }): void => {
   head.link.push({
     rel: "mask-icon",
     href: "/safari-pinned-tab.svg",
-    color: "#eb496a",
+    color: "#eb496a"
   });
 
   head.meta.push({
     name: "msapplication-TileColor",
-    content: "#eb496a",
+    content: "#eb496a"
   });
 
   head.meta.push({
     name: "theme-color",
     content: "#eb496a"
-  })
+  });
 };

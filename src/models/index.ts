@@ -1,13 +1,13 @@
 export enum StatusType {
   Online = 0,
-  Offline = 1,
+  Offline = 1
 }
 
 export enum UserBadges {
   None = 0,
   Supporter = 1,
   Admin = 2,
-  Bot = 4,
+  Bot = 4
 }
 
 export type User = {
@@ -34,6 +34,11 @@ export type ServerMessage = {
   //  mentions: string[];
 };
 
+export type CreateMessagePayload = {
+  message: Message;
+  channelId: string;
+};
+
 export interface ServerEditMessage extends ServerMessage {
   newContent: string;
   newEmbed?: Embed;
@@ -44,7 +49,7 @@ export type PresenceUpdateArgs = {
   userId: string;
   statusType: StatusType;
   statusText?: string;
-}
+};
 
 export type ScrollPosition = number | "end";
 
@@ -74,12 +79,12 @@ export type Embed = {
   footer?: string;
   imageUrl?: string;
   thumbnailUrl?: string;
-}
+};
 
 export type EmbedAuthor = {
   value: string;
   iconUrl: string;
-}
+};
 
 export type MessagePart = {
   id: string;
@@ -87,22 +92,22 @@ export type MessagePart = {
   embed?: Embed;
   isEmojiOnly: boolean;
   isMention: boolean;
-}
+};
 
 export type Message = {
   id: string;
   author: User;
   timestamp: Date;
   parts: MessagePart[];
-}
+};
 
 export type UserTyping = {
   id: string;
   lastTypingTime: number;
-}
+};
 
 export type MessagePartContent = {
-  content: string
-  mentionType?: "user" | "channel"
-  mentionId?: string
-}
+  content: string;
+  mentionType?: "user" | "channel";
+  mentionId?: string;
+};

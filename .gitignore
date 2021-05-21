@@ -58,6 +58,9 @@ jspm_packages/
 .next
 
 # WebStorm
-.idea/
-dist/
-.temp/
+.idea
+dist
+.temp
+src/.temp
+.cache
+public

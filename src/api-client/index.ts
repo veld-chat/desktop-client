@@ -1,16 +1,13 @@
 import { User } from "../models";
 import axios, { Method } from "axios";
-import { session, SessionState } from "../store";
+import store from "../store/store";
 import { createLogger, LoggerInstance } from "../services/logger";
 
 export function client() {
   const host = localStorage.getItem("gateway") || "api.veld.chat";
-  const token = (session.state as SessionState)?.token || "";
+  const token = store.getState().sessions.token || "";
 
-  return new ApiClient(
-    host,
-    token,
-  )
+  return new ApiClient(host, token);
 }
 
 export class ApiClient {
@@ -33,28 +30,31 @@ export class ApiClient {
   }
 
   async joinChannel(channelName) {
-    return await this.request(
-      `channels/join`, "POST", {
-      channel: channelName,
+    return await this.request(`channels/join`, "POST", {
+      channel: channelName
     });
   }
 
   async sendMessage(channelId: string, content: string) {
-    return await this.request(
-      `channels/${channelId}/messages`, "POST", {
-      content,
+    return await this.request(`channels/${channelId}/messages`, "POST", {
+      content
     });
   }
 
-  private async request<TRes, TReq>(url: string, method: Method, body?: TReq): Promise<TRes> {
+  private async request<TRes, TReq>(
+    url: string,
+    method: Method,
+    body?: TReq
+  ): Promise<TRes> {
     this.logger.log(method, url, body);
+    this.logger.log(this.token);
     try {
       const response = await axios({
         url: `${this.baseUrl}${url}`,
         method,
         headers: {
-          "Authorization": `Bearer ${this.token}`,
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.token}`,
+          "Content-Type": "application/json"
         },
         data: body
       });

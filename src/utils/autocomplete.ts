@@ -1,4 +1,4 @@
-import { store } from "@/store";
+import store from "../store/store";
 
 export interface AutoComplete {
   text: string;
@@ -27,17 +27,21 @@ function add(name: string, list: AutoComplete[], source: AutoComplete[]) {
 }
 
 export function autoComplete(word: string): AutoComplete[] {
+  if (!word) {
+    return [];
+  }
+
   const list = [];
 
   if (word[0] === "/") {
     add(word.substr(1), list, commandItems);
   } else if (word[0] === ":" && word.length > 2) {
-    add(word.substr(1), list, store.state.emoji.autoComplete);
+    add(word.substr(1), list, store.getState().emojis.autoComplete);
   } else if (word[0] === "@") {
     const name = word.substr(1);
     const visited = [];
 
-    for (const item of store.state.users.users) {
+    for (const item of store.getState().users.users) {
       const itemName = item.name.toLowerCase();
 
       if (visited.indexOf(itemName) !== -1) {
@@ -50,8 +54,8 @@ export function autoComplete(word: string): AutoComplete[] {
         list.push({
           text: item.name,
           textLowerCased: itemName,
-          avatar: item.avatarUrl,
-          value: `@${item.name}`,
+          avatar: item.avatarUrl || (Number(item.id) % 5).toString(),
+          value: `@${item.name}`
         });
 
         if (list.length >= 50) {
@@ -62,26 +66,31 @@ export function autoComplete(word: string): AutoComplete[] {
   } else if (word[0] === "#") {
     const channelName = word.substr(1);
 
-    const channels = store.state
-      .channels.channels
-      .filter((channel) => channel.name.includes(channelName))
-      .map((channel) => {
+    const channels = store
+      .getState()
+      .channels.channels.filter(channel => channel.name.includes(channelName))
+      .map(channel => {
         return {
           text: `#${channel.name}`,
           textLowerCased: channel.name,
           value: `{#${channel.id}}`
-        }
+        };
 
         // Limit of 4 max channels, otherwise the list gets too long.
-      }).slice(0, 4);
+      })
+      .slice(0, 4);
 
     // Add the channels that were found to the autocomplete list
-    channels.map((channel) => {
+    channels.map(channel => {
       list.push(channel);
-    })
+    });
   }
 
-  return list.sort((a, b) => (a.textLowerCased > b.textLowerCased)
-    ? 1
-    : ((b.textLowerCased > a.textLowerCased) ? -1 : 0))
+  return list.sort((a, b) =>
+    a.textLowerCased > b.textLowerCased
+      ? 1
+      : b.textLowerCased > a.textLowerCased
+      ? -1
+      : 0
+  );
 }

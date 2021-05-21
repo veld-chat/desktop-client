@@ -1,14 +1,17 @@
-
 export class LoggerInstance {
   isDebug: boolean;
   ignoredCategories: Array<string>;
   category: string;
 
   constructor(category: string) {
-    this.isDebug = process.isClient ? localStorage.getItem("debug") == "1" : false;
-    this.ignoredCategories = process.isClient
-      ? JSON.parse(localStorage.getItem("debug_ignored") || "[]")
-      : [];
+    this.isDebug =
+      typeof window !== "undefined"
+        ? localStorage.getItem("debug") == "1"
+        : false;
+    this.ignoredCategories =
+      typeof window !== "undefined"
+        ? JSON.parse(localStorage.getItem("debug_ignored") || "[]")
+        : [];
     this.category = category;
   }
 
@@ -20,7 +23,7 @@ export class LoggerInstance {
     if (!this.isDebug || this.ignoredCategories.includes(this.category)) {
       return;
     }
-    console.log(`[${this.category}]`, ...message)
+    console.log(`[${this.category}]`, ...message);
   }
 }
 

@@ -11,6 +11,7 @@
     "noImplicitReturns": false,
     "resolveJsonModule": true,
     "allowJs": true,
+    "jsx": "preserve",
     "lib": [
       "dom",
       "es2015",

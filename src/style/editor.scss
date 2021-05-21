@@ -1,12 +1,12 @@
 @import "hypermd";
 
-.controls .CodeMirror {
+.CodeMirror {
   background: none;
   color: inherit;
   font: inherit;
   height: auto;
   width: 100%;
-  margin-bottom: -12px;
+  font-size: var(--chakra-fontSizes-xs);
 
   &-gutters {
     display: none;
@@ -55,4 +55,14 @@
   span.cm-builtin {
     color: darkgray;
   }
+}
+
+.cm-s-default .cm-header {
+  color: unset;
+}
+
+pre {
+  background: var(--chakra-colors-gray-700);
+  padding: 4px 8px 4px 8px;
+  border-radius: 4px;
 }

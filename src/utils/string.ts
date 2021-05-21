@@ -5,13 +5,16 @@ import { Embed, MessagePart, ServerMessage } from "../models";
 import hljs from "highlight.js";
 import { createLogger } from "../services/logger";
 
-if (process.isClient) {
+if (typeof window !== "undefined") {
   hljs.initHighlightingOnLoad();
 }
 
 const logger = createLogger("StringTransformations");
 
-export function processMessage(message: ServerMessage, isMention: boolean): MessagePart {
+export function processMessage(
+  message: ServerMessage,
+  isMention: boolean
+): MessagePart {
   const content = processString(message.content);
 
   return {
@@ -44,8 +47,19 @@ export function processString(input: string) {
         }
       }),
       {
-        ALLOWED_TAGS: ["b", "i", "em", "strong", "a", "br", "p", "code", "span", "pre"],
-        ALLOWED_ATTR: ["href", "class"],
+        ALLOWED_TAGS: [
+          "b",
+          "i",
+          "em",
+          "strong",
+          "a",
+          "br",
+          "p",
+          "code",
+          "span",
+          "pre"
+        ],
+        ALLOWED_ATTR: ["href", "class"]
       }
     )
   );

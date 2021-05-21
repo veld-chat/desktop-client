@@ -13,6 +13,7 @@
 
 .CodeMirror {
   span.hmd-hidden-token {
+
     &.cm-formatting-em,
     &.cm-formatting-strong,
     &.cm-formatting-strikethrough,
@@ -23,11 +24,12 @@
   }
 
   /* tooltip for addon/hover */
-  div.HyperMD-hover > .HyperMD-hover-content {
+  div.HyperMD-hover>.HyperMD-hover-content {
     background-color: #fff;
     color: #000;
     border: 1px solid #000;
     padding: .5em;
+
     p {
       margin: .2em 0;
     }
@@ -51,6 +53,7 @@
   .HyperMD-goback {
     width: 1px;
   }
+
   div.HyperMD-goback-button {
     background-color: #ddd;
     color: #333;
@@ -59,7 +62,8 @@
   }
 
   /* addon/fold */
-  .hmd-link-icon:after { // Link Placeholder
+  .hmd-link-icon:after {
+    // Link Placeholder
     content: "🔗»";
     color: #009;
     text-shadow: 0 0 2px #69F;
@@ -74,9 +78,17 @@
       display: inline-block;
     }
 
-    .hmd-table-column-left { text-align: left }
-    .hmd-table-column-center { text-align: center }
-    .hmd-table-column-right { text-align: right }
+    .hmd-table-column-left {
+      text-align: left
+    }
+
+    .hmd-table-column-center {
+      text-align: center
+    }
+
+    .hmd-table-column-right {
+      text-align: right
+    }
 
     .cm-hmd-table-sep {
       @extend %inline-block;
@@ -86,7 +98,9 @@
   /* addon/fold-math */
   .hmd-fold-math {
     @extend %inline-block;
-    &.hmd-fold-math.math-2 { // aka. display mode
+
+    &.hmd-fold-math.math-2 {
+      // aka. display mode
       width: 100%;
     }
   }
