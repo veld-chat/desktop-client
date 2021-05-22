@@ -6,8 +6,6 @@ import { MessageRow } from "./Message";
 import { Box } from "@chakra-ui/layout";
 import { Alert, AlertTitle, Button } from "@chakra-ui/react";
 import { read } from "../store/reducers/messages";
-import { FixedSizeList } from 'react-window';
-import AutoSizer from "react-virtualized-auto-sizer";
 
 interface Props {
   messages?: Message[];
@@ -17,12 +15,12 @@ interface Props {
 
 const MessageList = ({ channelId, messages, newMessages }: Props) => {
   const [isBottom, setIsBottom] = useState(true);
-  const ref = useRef();
+  const ref = useRef<HTMLDivElement>();
   const dispatch = useDispatch();
 
   const handleScroll = () => {
-    const newIsBottom = (ref.current.scrollHeight - ref.current.offsetHeight) - 
-      ref.current.scrollTop < 1;
+    const newIsBottom = (ref.current?.scrollHeight - ref.current?.offsetHeight) - 
+      ref.current?.scrollTop < 1;
 
     if(newIsBottom && newIsBottom != isBottom) {
       dispatch(read({
@@ -34,7 +32,9 @@ const MessageList = ({ channelId, messages, newMessages }: Props) => {
   };
 
   const scrollToLatest = () => {
-    ref.current?.scrollToItem(messages.length - 1);
+    ref.current?.scrollTo({
+      top: ref.current?.scrollHeight,
+    });
   }
 
   useEffect(() => {
@@ -50,14 +50,14 @@ const MessageList = ({ channelId, messages, newMessages }: Props) => {
   }, [messages, newMessages]);
 
   return <Box h="full" overflowY="hidden" position="relative">
-    <Box onScroll={handleScroll} h="full" overflowY="scroll">
+    <Box ref={ref} onScroll={handleScroll} h="full" overflowY="scroll">
       {messages?.map(c => (<MessageRow key={c.id} message={c} />))}
     </Box>
     {!isBottom && newMessages && (
       <Box>
         <Alert position="absolute" bottom="0" bg="primary.60" borderRadius="lg" justifyContent="space-between">
           <AlertTitle>There are unread messages</AlertTitle>
-          <Button bg="primary" size="xs" onClick={scrollToLatest}>Scroll down</Button>
+          <Button bg="primary.500" size="xs" onClick={scrollToLatest}>Scroll down</Button>
         </Alert>
       </Box>
     )}

@@ -10,6 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
   Text,
+  useDisclosure,
   VStack
 } from "@chakra-ui/react";
 import React, { PropsWithChildren } from "react";
@@ -26,23 +27,32 @@ export const UserRow = ({
   children,
   showStatus
 }: PropsWithChildren<Props>) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
     <>
-      <Popover placement="auto" isLazy lazyBehavior="unmount">
-        <Flex w="full" align="center">
-          {showStatus ? (
-            <UserAvatarWithStatus user={user} size="sm" />
-          ) : (
-            <UserAvatar user={user} size="sm" />
-          )}
-          <Box w="full">
-            <PopoverTrigger>
-              <Text as="span">{user.name}</Text>
-            </PopoverTrigger>
-            {children}
-          </Box>
-        </Flex>
-        <PopoverContent>
+      <Flex w="full" align="center">
+        {showStatus ? (
+          <UserAvatarWithStatus user={user} size="sm" />
+        ) : (
+          <UserAvatar user={user} size="sm" />
+        )}
+        <Box w="full">
+          <Text as="span" onClick={onOpen}>
+            {user.name}
+          </Text>
+          {children}
+        </Box>
+      </Flex>
+      <Popover
+        preventOverflow
+        placement="right"
+        isOpen={isOpen}
+        onClose={onClose}
+        closeOnEsc
+        isLazy
+      >
+        <PopoverContent m="2">
           <PopoverBody>
             <VStack align="stretch" spacing="4">
               <Flex align="center" justify="space-between">

@@ -19,12 +19,16 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { UnControlled as CodeMirrorField } from "react-codemirror2";
-import type { Editor, Pos, Pass } from "codemirror";
+import type { Editor } from "codemirror";
 import { FaPaperPlane } from "react-icons/fa";
 import {
   autoComplete as performAutoComplete,
   AutoComplete
 } from "../utils/autocomplete";
+
+const { Pos, Pass } = typeof window === "undefined" 
+  ? { Pos: 0, Pass: 1 } 
+  : require("codemirror");
 
 interface Props {
   currentChannel?: string;

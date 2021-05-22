@@ -39,7 +39,6 @@ export const messageSlice = createSlice({
       messages.push(data);
     },
     read: (state, action: PayloadAction<ReadMessageAction>) => {
-      console.log("read");
       state.lastMessageRead[action.payload.channelId] =
         action.payload.messageId;
     }
