@@ -104,6 +104,8 @@ const ChatBox = ({ currentChannel }: Props) => {
     editor.setCursor(to.ch + item.value.length + 1);
     editor.focus();
 
+    setAutoComplete([]);
+
     return true;
   };
 
@@ -176,7 +178,7 @@ const ChatBox = ({ currentChannel }: Props) => {
         bottom={34 + editor?.lineCount() * 17 + "px"}
         left="0px"
         w="full"
-        zIndex={autoComplete.length > 0 ? "popover" : 0}
+        zIndex={autoComplete.length > 0 ? "popover" : -1}
       >
         <SlideFade in={autoComplete.length > 0} reverse offsetY="20px">
           <Box
@@ -194,6 +196,10 @@ const ChatBox = ({ currentChannel }: Props) => {
                 ref={i == autoCompleteIndex ? ref : undefined}
                 bg={i == autoCompleteIndex ? "gray.500" : "transparent"}
                 justify="align-between"
+                onClick={() => handleAutoComplete(i)}
+                _hover={{
+                  bg: "gray.600",
+                }}
                 w="full"
               >
                 <Flex m="1">
@@ -218,7 +224,6 @@ const ChatBox = ({ currentChannel }: Props) => {
             scrollbarStyle: "null",
             lineNumbers: false,
             viewportMargin: Infinity,
-            autoCloseBrackets: false,
             lineWrapping: true,
             extraKeys: {
               Enter: handleEnter,

@@ -1,32 +1,33 @@
 import { extendTheme } from "@chakra-ui/react";
+import Button from "./components/Button";
 
 const Alert = {
   parts: ["alert"],
   baseStyle: {
     alert: {
-      backdropFilter: "blur(4px)"
-    }
-  }
+      backdropFilter: "blur(4px)",
+    },
+  },
 };
 
 export default extendTheme({
   components: {
-    Alert
+    Alert,
+    Button,
   },
   fonts: {
     body: "Motiva Sans",
     heading: "Motiva Sans",
-    mono: "Motiva Sans"
   },
   styles: {
     global: {
       a: {
         color: "primary.500",
         _hover: {
-          textDecoration: "underline"
-        }
-      }
-    }
+          textDecoration: "underline",
+        },
+      },
+    },
   },
   colors: {
     white: "#fff",
@@ -40,7 +41,7 @@ export default extendTheme({
       400: "#6D707D",
       300: "#7f8694",
       200: "#cdd3dd",
-      100: "#ffffff"
+      100: "#ffffff",
     },
     green: {
       100: "#d2f8da",
@@ -51,18 +52,18 @@ export default extendTheme({
       600: "#19b237",
       700: "#138529",
       800: "#0c591c",
-      900: "#062c0e"
+      900: "#062c0e",
     },
     blue: {
       100: "#d6e1fb",
       200: "#adc2f8",
       300: "#84a4f4",
       400: "#5b85f1",
-      500: "#3267ed",
+      500: "#327ded",
       600: "#2852be",
       700: "#1e3e8e",
       800: "#14295f",
-      900: "#0a152f"
+      900: "#0a152f",
     },
     red: {
       100: "#fbdae2",
@@ -73,7 +74,7 @@ export default extendTheme({
       600: "#be3a56",
       700: "#8e2b41",
       800: "#5f1d2b",
-      900: "#2f0e16"
-    }
-  }
+      900: "#2f0e16",
+    },
+  },
 });

@@ -3,7 +3,7 @@ import proxyfetch from "../../utils/proxyfetch";
 import { mapToEmbed } from "../../utils/embed-mapper";
 import { client } from "../../api-client";
 import { createLogger } from "../../services/logger";
-import { StatusType, User } from "../../models";
+import { PresenceUpdateArgs, StatusType, User } from "../../models";
 import emojis from "../../base-emojis.json";
 import * as messages from "../reducers/messages";
 import * as users from "../reducers/users";
@@ -17,7 +17,8 @@ export let websocket: WebSocket;
 
 let heartbeatInterval = null;
 let isConnected = false;
-const urlRegex = /((http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)/;
+const urlRegex =
+  /((http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)/;
 let id = "";
 
 interface WebSocketPayload {
@@ -51,7 +52,7 @@ enum MessageType {
   MemberDelete = 11,
   PresenceUpdate = 12,
   Heartbeat = 1000,
-  HeartbeatAck = 1001
+  HeartbeatAck = 1001,
 }
 
 async function ready(data) {
@@ -70,12 +71,12 @@ async function ready(data) {
 
   await store.dispatch(
     users.set(
-      data.users.map(x => ({
+      data.users.map((x) => ({
         ...x,
         status: {
           statusText: null,
-          statusType: StatusType.Online
-        }
+          statusType: StatusType.Online,
+        },
       }))
     )
   );
@@ -107,11 +108,11 @@ async function messageCreate(data) {
   await store.dispatch(messages.create(data));
 }
 
-async function presenceUpdate(data) {
+async function presenceUpdate(data: PresenceUpdateArgs) {
   const user = data.user as User;
   user.status = {
     statusType: data.statusType,
-    statusText: data.statusText
+    statusText: data.statusText,
   };
 
   await store.dispatch(users.update(user));
@@ -129,7 +130,7 @@ async function heartbeat() {
   websocket.send(
     JSON.stringify({
       t: MessageType.Heartbeat,
-      d: null
+      d: null,
     })
   );
 }
@@ -142,16 +143,16 @@ export function connect() {
   const host = localStorage.getItem("gateway") || "api.veld.chat";
 
   const baseEmojis = Object.keys(emojis).map(
-    x =>
+    (x) =>
       ({
         name: x
           .split("_")
-          .map(x => x[0].toUpperCase() + x.substr(1))
+          .map((x) => x[0].toUpperCase() + x.substr(1))
           .join(" "),
         value: `:${x}:`,
         image: `https://twemoji.maxcdn.com/v/13.0.1/72x72/${emojiUnicode(
           emojis[x]
-        )}.png`
+        )}.png`,
       } as Emoji)
   );
 
@@ -167,13 +168,13 @@ export function connect() {
       JSON.stringify({
         t: MessageType.Authorize,
         d: {
-          token: localStorage.getItem("token")
-        }
+          token: localStorage.getItem("token"),
+        },
       })
     );
   };
 
-  websocket.onerror = ev => {
+  websocket.onerror = (ev) => {
     logger.log("error", ev);
   };
 
@@ -185,7 +186,7 @@ export function connect() {
     connect();
   };
 
-  websocket.onmessage = async ev => {
+  websocket.onmessage = async (ev) => {
     const payload = JSON.parse(ev.data) as WebSocketPayload;
     logger.log(
       `received payload ${MessageType[payload.t] || "Unknown"}`,

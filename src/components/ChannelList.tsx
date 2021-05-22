@@ -14,21 +14,33 @@ interface Props {
 const ChannelList = ({ channels, currentChannel }: Props) => {
   return (
     <Box>
-      <Flex w="full" justifyContent="space-between"borderBottom="1px solid" borderBottomColor="gray.300" pb="2" mb="2">
-        <Heading fontSize="md">
-          Channels
-        </Heading>
-        <IconButton aria-label="add channel" size="xs" background="transparent" icon={<FaPlus/>}/>
+      <Flex
+        w="full"
+        justifyContent="space-between"
+        borderBottom="1px solid"
+        borderBottomColor="gray.300"
+        pb="2"
+        mb="2"
+      >
+        <Heading fontSize="md">Channels</Heading>
+        <IconButton
+          aria-label="add channel"
+          size="xs"
+          background="transparent"
+          icon={<FaPlus />}
+        />
       </Flex>
-      {channels?.map(c => (
-        <Flex key={c.id} 
-          px="2" 
-          py="1" 
-          align="center" 
-          borderRadius="md" 
+      {channels?.map((c) => (
+        <Flex
+          key={c.id}
+          px="2"
+          py="1"
+          align="center"
+          borderRadius="sm"
+          h="full"
           background={c.id == currentChannel ? "gray.600" : "transparent"}
         >
-          <Icon as={FaHashtag} h="3" w="3" mr="1"/>
+          <Icon as={FaHashtag} h="4" w="4" mr="1" color="gray.400" />
           <Text>{c.name}</Text>
         </Flex>
       ))}
@@ -39,7 +51,7 @@ const ChannelList = ({ channels, currentChannel }: Props) => {
 const mapStateToProps = (state: RootState, props: Props) => {
   return {
     channels: state.channels.channels,
-    currentChannel: state.channels.currentChannel
+    currentChannel: state.channels.currentChannel,
   };
 };
 

@@ -1,9 +1,9 @@
-import { isEmojiOnly, replaceEmojis } from "./emoji";
 import DOMPurify from "dompurify";
 import marked from "marked";
 import { Embed, MessagePart, ServerMessage } from "../models";
 import hljs from "highlight.js";
 import { createLogger } from "../services/logger";
+import { isEmojiOnly } from "./emoji";
 
 if (typeof window !== "undefined") {
   hljs.initHighlightingOnLoad();
@@ -31,39 +31,36 @@ export function processString(input: string) {
     return input;
   }
 
-  return replaceEmojis(
-    DOMPurify.sanitize(
-      marked(input, {
-        gfm: true,
-        headerIds: false,
-        breaks: true,
-        highlight: (code, lang) => {
-          if (!lang) {
-            return code;
-          }
-          const value = hljs.highlight(lang, code).value;
-          logger.log("Trying to highlight for", lang, value);
-          return value;
-        },
-      }),
-      {
-        ALLOWED_TAGS: [
-          "b",
-          "i",
-          "ul",
-          "li",
-          "em",
-          "strong",
-          "a",
-          "br",
-          "p",
-          "code",
-          "span",
-          "pre",
-        ],
-        ALLOWED_ATTR: ["href", "class"],
-      }
-    )
+  return DOMPurify.sanitize(
+    marked(input, {
+      gfm: true,
+      headerIds: false,
+      breaks: true,
+      highlight: (code, lang) => {
+        if (!lang) {
+          return code;
+        }
+        const value = hljs.highlight(lang, code).value;
+        return value;
+      },
+    }),
+    {
+      ALLOWED_TAGS: [
+        "b",
+        "i",
+        "ul",
+        "li",
+        "em",
+        "strong",
+        "a",
+        "br",
+        "p",
+        "code",
+        "span",
+        "pre",
+      ],
+      ALLOWED_ATTR: ["href", "class"],
+    }
   );
 }
 

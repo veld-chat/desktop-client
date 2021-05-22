@@ -1,9 +1,5 @@
 @import "hypermd";
 
-ul {
-  margin-left: 1em;
-}
-
 .CodeMirror {
   background: none;
   color: inherit;
@@ -63,10 +59,4 @@ ul {
 
 .cm-s-default .cm-header {
   color: unset;
-}
-
-pre {
-  background: var(--chakra-colors-gray-700);
-  padding: 4px 8px 4px 8px;
-  border-radius: 4px;
 }

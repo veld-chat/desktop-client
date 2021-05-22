@@ -4,6 +4,7 @@ import { UserRow } from "./UserRow";
 import { Text } from "@chakra-ui/layout";
 import { Box } from "@chakra-ui/react";
 import { Embed } from "./Embed";
+import { replaceEmojis } from "../utils/emoji";
 
 interface Props {
   message: Message;
@@ -18,7 +19,7 @@ export const MessageRow = ({ message }: Props) => (
             mb="px"
             fontSize="xs"
             fontWeight="normal"
-            dangerouslySetInnerHTML={{ __html: p.content }}
+            dangerouslySetInnerHTML={{ __html: replaceEmojis(p.content) }}
           />
           {p.embed && <Embed value={p.embed} />}
         </>
