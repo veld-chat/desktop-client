@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "module": "commonjs",
+    "target": "es5",
+    "experimentalDecorators": true,
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "noImplicitReturns": false,
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "jsx": "preserve",
+    "lib": [
+      "dom",
+      "es2015",
+      "es2015.collection",
+      "es2015.iterable"
+    ],
+    "paths": {
+      "@/*": [
+        "*"
+      ]
+    }
+  },
+  "include": [
+    "./src/**/*",
+    "./typings/*.d.ts"
+  ]
+}

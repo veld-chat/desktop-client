@@ -1,0 +1,15 @@
+name: learn-github-actions
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - run: yarn
+      - run: yarn electron-release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          APP_VERSION_NUMBER: '1.0.$GITHUB_RUN_ID'

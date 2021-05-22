@@ -1,0 +1,35 @@
+@import "variables";
+
+.button {
+  background-color: var(--mono-600);
+  margin-top: 0.5rem;
+  margin-right: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+
+  &.primary {
+  }
+
+  &.outline {
+    border: 1px solid var(--mono-600);
+    background-color: transparent;
+  }
+}
+
+.input {
+  color: white;
+  background-color: var(--mono-300);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 0.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+  width: 100%;
+  outline: 0;
+  border: 0;
+}
+
+.input-error {
+  font-size: 12px;
+}

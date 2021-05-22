@@ -1,0 +1,31 @@
+:root {
+  --mono-900: #ffffff;
+  --mono-800: #cdd3dd;
+  --mono-700: #7f8694;
+  --mono-600: #6D707D;
+  --mono-500: #3d3e43;
+  --mono-400: #303136;
+  --mono-300: #26272b;
+  --mono-200: #212121;
+  --mono-100: #000000;
+  --accent-200: #3e4af8;
+  --accent-100: #373d97;
+  --warning-200: #ffe229;
+  --warning-100: #98892f;
+  --danger-200: #f83e3e;
+  --danger-100: #94373a;
+  --success-200: #48e921;
+  --success-100: #3c8d2b;
+}
+
+@mixin mobile {
+  @media only screen and (max-width: 1024px) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media only screen and (min-width: 1025px) {
+    @content;
+  }
+}
