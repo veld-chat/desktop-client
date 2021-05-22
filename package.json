@@ -19,7 +19,7 @@
     "electron-dev": "concurrently \"yarn run start\" \"yarn run electron\"",
     "preelectron-pack": "yarn run build",
     "electron-pack": "electron-builder",
-    "electron-release": "node_modules/.bin/electron-builder  --mac --windows --linux --publish always"
+    "electron-release": "node_modules/.bin/electron-builder --publish always"
   },
   "dependencies": {
     "@chakra-ui/gatsby-plugin": "^2.0.0",
