@@ -1,6 +1,6 @@
 import store from "../store/store";
 
-const isOnlyEmojiRegex = /^(\s*<p>)?\s*<img class="emoji"[^>]+>\s*(<\/p>\s*)$/;
+const isOnlyEmojiRegex = /^(:([A-Za-z_0-9]+):)+( ?)+$/;
 const emojiRegex = /:([A-Za-z_0-9]+):/g;
 
 export function replaceEmojis(text: string) {

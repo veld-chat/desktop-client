@@ -15,12 +15,14 @@ export const MessageRow = ({ message }: Props) => (
     <UserRow user={message.author}>
       {message.parts.map((p) => (
         <>
-          <Text
-            mb="px"
-            fontSize="xs"
-            fontWeight="normal"
-            dangerouslySetInnerHTML={{ __html: replaceEmojis(p.content) }}
-          />
+          {p.content && (
+            <Text
+              mb="px"
+              fontSize={p.isEmojiOnly ? "lg" : "xs"}
+              fontWeight="normal"
+              dangerouslySetInnerHTML={{ __html: replaceEmojis(p.content) }}
+            />
+          )}
           {p.embed && <Embed value={p.embed} />}
         </>
       ))}

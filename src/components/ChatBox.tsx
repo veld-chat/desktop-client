@@ -94,6 +94,10 @@ const ChatBox = ({ currentChannel }: Props) => {
     }
 
     const item = autoComplete[index ?? autoCompleteIndex];
+    if (!item) {
+      return false;
+    }
+
     let result = item.value + " ";
 
     if (shift) {

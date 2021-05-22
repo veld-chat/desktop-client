@@ -2,14 +2,11 @@ import DOMPurify from "dompurify";
 import marked from "marked";
 import { Embed, MessagePart, ServerMessage } from "../models";
 import hljs from "highlight.js";
-import { createLogger } from "../services/logger";
 import { isEmojiOnly } from "./emoji";
 
 if (typeof window !== "undefined") {
   hljs.initHighlightingOnLoad();
 }
-
-const logger = createLogger("StringTransformations");
 
 export function processMessage(
   message: ServerMessage,
@@ -17,12 +14,14 @@ export function processMessage(
 ): MessagePart {
   const content = processString(message.content);
 
+  console.log(message.content, isEmojiOnly(message.content));
+
   return {
     id: message.id,
     isMention,
     content,
     embed: processEmbed(message.embed),
-    isEmojiOnly: isEmojiOnly(content),
+    isEmojiOnly: isEmojiOnly(message.content),
   };
 }
 
