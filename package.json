@@ -1,7 +1,12 @@
 {
   "name": "veld-chat-desktop-app",
+  "description": "chat client for the veld.chat chat service",
   "version": "1.0.2",
   "license": "MIT",
+  "build": {
+    "appId": "com.veld.chat",
+    "productName": "Veld Chat"
+  },
   "scripts": {
     "build": "gatsby build",
     "start": "gatsby develop",
@@ -13,18 +18,8 @@
     "electron": "wait-on http://localhost:8000 && electron .",
     "electron-dev": "concurrently \"yarn run start\" \"yarn run electron\"",
     "preelectron-pack": "yarn run build",
-    "electron-pack": "electron-builder"
-  },
-  "build": {
-    "icon": "static/android-chrome-512x512.png",
-    "productName": "Veld Chat",
-    "files": [
-      "public/**/*",
-      "index.ts"
-    ],
-    "win": {},
-    "linux": {},
-    "mac": {}
+    "electron-pack": "electron-builder",
+    "electron-release": "electron-builder  --mac --windows --linux --publish always"
   },
   "dependencies": {
     "@chakra-ui/gatsby-plugin": "^2.0.0",
@@ -36,6 +31,7 @@
     "codemirror": "^5.56.0",
     "dompurify": "^2.0.12",
     "electron-serve": "^1.1.0",
+    "electron-updater": "^4.3.9",
     "emoji-name-map": "^1.2.9",
     "formik": "^2.2.7",
     "framer-motion": "^4.1.16",
