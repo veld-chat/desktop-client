@@ -9,8 +9,7 @@
     "win": {
       "publish": [
         "github"
-      ],
-      "certificateSubjectName": "CN=Veld, O=Veld, STREET=S, L=Amsterdam, S=Noord Holland, PostalCode=1234, C=Netherlands"
+      ]
     },
     "linux": {
       "publish": [
