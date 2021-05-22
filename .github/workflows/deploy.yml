@@ -9,6 +9,7 @@ jobs:
         with:
           node-version: '14'
       - run: yarn
+      - run: yarn global add electron-release
       - run: yarn electron-release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
