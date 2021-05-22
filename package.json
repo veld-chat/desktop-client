@@ -1,11 +1,26 @@
 {
   "name": "veld-chat-desktop-app",
   "description": "chat client for the veld.chat chat service",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "license": "MIT",
   "build": {
     "appId": "com.veld.chat",
-    "productName": "Veld Chat"
+    "productName": "Veld Chat",
+    "win": {
+      "publish": [
+        "github"
+      ]
+    },
+    "linux": {
+      "publish": [
+        "github"
+      ]
+    },
+    "mac": {
+      "publish": [
+        "github"
+      ]
+    }
   },
   "scripts": {
     "build": "gatsby build",
