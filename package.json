@@ -21,6 +21,14 @@
     "electron-pack": "electron-builder",
     "electron-release": "node_modules/.bin/electron-builder --publish always"
   },
+  "publish": {
+    "provider": "github",
+    "repo": "desktop-client",
+    "owner": "veld-chat",
+    "host": "github.com",
+    "protocol": "https",
+    "releaseType": "draft"
+  },
   "dependencies": {
     "@chakra-ui/gatsby-plugin": "^2.0.0",
     "@chakra-ui/react": "^1.6.1",
