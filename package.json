@@ -47,7 +47,7 @@
     "gatsby-transformer-sharp": "^3.5.0",
     "highlight.js": "^10.5.0",
     "hypermd": "^0.3.11",
-    "marked": "^1.1.1",
+    "marked": "^2.0.0",
     "node-abi": "^2.26.0",
     "node-emoji": "^1.10.0",
     "qrcode-with-logos": "^1.0.3",
