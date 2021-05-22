@@ -55,7 +55,7 @@ export function autoComplete(word: string): AutoComplete[] {
           text: item.name,
           textLowerCased: itemName,
           avatar: item.avatarUrl || (Number(item.id) % 5).toString(),
-          value: `@${item.name}`
+          value: `@${item.name}`,
         });
 
         if (list.length >= 50) {
@@ -68,12 +68,12 @@ export function autoComplete(word: string): AutoComplete[] {
 
     const channels = store
       .getState()
-      .channels.channels.filter(channel => channel.name.includes(channelName))
-      .map(channel => {
+      .channels.channels.filter((channel) => channel.name.includes(channelName))
+      .map((channel) => {
         return {
           text: `#${channel.name}`,
           textLowerCased: channel.name,
-          value: `{#${channel.id}}`
+          value: `{#${channel.id}}`,
         };
 
         // Limit of 4 max channels, otherwise the list gets too long.
@@ -81,7 +81,7 @@ export function autoComplete(word: string): AutoComplete[] {
       .slice(0, 4);
 
     // Add the channels that were found to the autocomplete list
-    channels.map(channel => {
+    channels.map((channel) => {
       list.push(channel);
     });
   }

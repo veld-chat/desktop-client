@@ -10,6 +10,7 @@ import { Layout } from "../components/Layout";
 import CurrentUser from "../components/CurrentUser";
 import ChatBox from "../components/ChatBox";
 import CurrentChannelHeader from "../components/CurrentChannelHeader";
+import { Helmet } from "react-helmet";
 
 const IndexPage = () => {
   useEffect(() => {
@@ -18,6 +19,11 @@ const IndexPage = () => {
 
   return (
     <Layout>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Veld Chat</title>
+        <link rel="stylesheet" href="https://use.typekit.net/cep5qnb.css" />
+      </Helmet>
       <SimpleGrid
         h="100vh"
         overflowY="hidden"
