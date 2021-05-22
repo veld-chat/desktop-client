@@ -1,7 +1,7 @@
 {
   "name": "veld-chat-desktop-app",
   "description": "chat client for the veld.chat chat service",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "license": "MIT",
   "build": {
     "appId": "com.veld.chat",
