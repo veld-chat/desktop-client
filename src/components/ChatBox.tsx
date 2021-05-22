@@ -1,7 +1,7 @@
 import "codemirror/lib/codemirror.css";
 import "../style/editor.scss";
 
-if(typeof window !== "undefined") {
+if (typeof window !== "undefined") {
   require("hypermd/mode/hypermd");
 }
 
@@ -23,12 +23,11 @@ import type { Editor } from "codemirror";
 import { FaPaperPlane } from "react-icons/fa";
 import {
   autoComplete as performAutoComplete,
-  AutoComplete
+  AutoComplete,
 } from "../utils/autocomplete";
 
-const { Pos, Pass } = typeof window === "undefined" 
-  ? { Pos: 0, Pass: 1 } 
-  : require("codemirror");
+const { Pos, Pass } =
+  typeof window === "undefined" ? { Pos: 0, Pass: 1 } : require("codemirror");
 
 interface Props {
   currentChannel?: string;
@@ -60,7 +59,7 @@ const ChatBox = ({ currentChannel }: Props) => {
       return {
         list: [],
         from: Pos(cursor.line, start),
-        to: Pos(cursor.line, end)
+        to: Pos(cursor.line, end),
       };
     }
 
@@ -72,7 +71,7 @@ const ChatBox = ({ currentChannel }: Props) => {
       word,
       list,
       from: Pos(cursor.line, start),
-      to: Pos(cursor.line, end)
+      to: Pos(cursor.line, end),
     };
   };
 
@@ -106,11 +105,11 @@ const ChatBox = ({ currentChannel }: Props) => {
     editor.focus();
 
     return true;
-  }
+  };
 
   const handleKeyPress = (_: Editor, e: KeyboardEvent) => {
     setShift(e.shiftKey);
-  }
+  };
 
   const handleEnter = () => {
     if (!handleAutoComplete()) {
@@ -172,42 +171,45 @@ const ChatBox = ({ currentChannel }: Props) => {
       justifyContent="space-between"
       position="relative"
     >
-      <Box position="absolute"
-        bottom="50px"
+      <Box
+        position="absolute"
+        bottom={34 + editor?.lineCount() * 17 + "px"}
         left="0px"
         w="full"
-        zIndex="10"
+        zIndex={autoComplete.length > 0 ? "popover" : 0}
       >
-      <SlideFade in={autoComplete.length > 0} reverse offsetY="20px">
-        <Box
-          w="full" 
-          bg="gray.700" 
-          borderRadius="lg"
-          h="100px"
-          overflowY="auto"
-          p="2"
-        >
-          {autoComplete.map((x, i) => (
-            <Flex 
-              borderRadius="md"
-              id={x.textLowerCased}
-              ref={i == autoCompleteIndex ? ref : undefined}
-              bg={i == autoCompleteIndex ? "gray.500" : "transparent"}
-              justify="align-between"
-              w="full"
-            >
-              <Flex m="1">
-                {x.avatar && <Avatar size="xs" src={x.avatar}/>}
-                {x.image && <Img boxSize="14px" src={x.image}/>}              
-                <Text fontSize="sm" pl="2">{x.text}</Text>
+        <SlideFade in={autoComplete.length > 0} reverse offsetY="20px">
+          <Box
+            w="full"
+            bg="gray.700"
+            borderRadius="lg"
+            h="100px"
+            overflowY="auto"
+            p="2"
+          >
+            {autoComplete.map((x, i) => (
+              <Flex
+                borderRadius="md"
+                id={x.textLowerCased}
+                ref={i == autoCompleteIndex ? ref : undefined}
+                bg={i == autoCompleteIndex ? "gray.500" : "transparent"}
+                justify="align-between"
+                w="full"
+              >
+                <Flex m="1">
+                  {x.avatar && <Avatar size="xs" src={x.avatar} />}
+                  {x.image && <Img boxSize="14px" src={x.image} />}
+                  <Text fontSize="sm" pl="2">
+                    {x.text}
+                  </Text>
+                </Flex>
+                <Text>{x.description}</Text>
               </Flex>
-              <Text>{x.description}</Text>
-            </Flex>
-          ))}
-        </Box>
-      </SlideFade>
+            ))}
+          </Box>
+        </SlideFade>
       </Box>
-      <Box flex="1" fontSize="sm">
+      <Box flex="1" fontSize="sm" overflowX="hidden" whiteSpace="pre-wrap">
         <CodeMirrorField
           options={{
             mode: "hypermd",
@@ -217,18 +219,19 @@ const ChatBox = ({ currentChannel }: Props) => {
             lineNumbers: false,
             viewportMargin: Infinity,
             autoCloseBrackets: false,
+            lineWrapping: true,
             extraKeys: {
               Enter: handleEnter,
               Up: moveUp,
               Down: moveDown,
               Tab: handleTab,
-              "Shift-Enter": handleShiftEnter
-            }
+              "Shift-Enter": handleShiftEnter,
+            },
           }}
           onKeyDown={handleKeyPress}
           onKeyUp={handleKeyPress}
           onCursorActivity={handleCursorChange}
-          editorDidMount={editor => setEditor(editor)}
+          editorDidMount={(editor) => setEditor(editor)}
         />
       </Box>
       <IconButton
@@ -237,6 +240,7 @@ const ChatBox = ({ currentChannel }: Props) => {
         aria-label="send"
         icon={<FaPaperPlane />}
         onClick={sendMessage}
+        zIndex="overlay"
       />
     </Flex>
   );
@@ -244,7 +248,7 @@ const ChatBox = ({ currentChannel }: Props) => {
 
 const mapStateToProps = (state: RootState): Props => {
   return {
-    currentChannel: state.channels.currentChannel
+    currentChannel: state.channels.currentChannel,
   };
 };
 

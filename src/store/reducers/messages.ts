@@ -1,4 +1,4 @@
-import { Message, ServerMessage } from "@/models";
+import { Message, ServerMessage } from "../../models";
 import { processMessage } from "../../utils/string";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
@@ -14,7 +14,7 @@ interface ReadMessageAction {
 
 const initialState: MessagesState = {
   messagesByChannel: {},
-  lastMessageRead: {}
+  lastMessageRead: {},
 };
 
 export const messageSlice = createSlice({
@@ -29,11 +29,18 @@ export const messageSlice = createSlice({
         messages = state.messagesByChannel[action.payload.channelId];
       }
 
+      const lastMessage =
+        messages.length > 0 ? messages[messages.length - 1] : undefined;
+      if (lastMessage?.author.id == action.payload.author.id) {
+        lastMessage.parts.push(part);
+        return;
+      }
+
       const data: Message = {
         author: action.payload.author,
         id: action.payload.id,
         timestamp: action.payload.timestamp,
-        parts: [part]
+        parts: [part],
       };
 
       messages.push(data);
@@ -41,8 +48,8 @@ export const messageSlice = createSlice({
     read: (state, action: PayloadAction<ReadMessageAction>) => {
       state.lastMessageRead[action.payload.channelId] =
         action.payload.messageId;
-    }
-  }
+    },
+  },
 });
 
 // Action creators are generated for each case reducer function

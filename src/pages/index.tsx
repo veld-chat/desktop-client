@@ -1,7 +1,7 @@
 import "../style/index.scss";
 
 import React, { useEffect } from "react";
-import { Box, Flex, SimpleGrid } from "@chakra-ui/react";
+import { Box, Flex, GridItem, SimpleGrid } from "@chakra-ui/react";
 import { connect } from "../store/services/websocket";
 import MemberList from "../components/MemberList";
 import ChannelList from "../components/ChannelList";
@@ -9,6 +9,7 @@ import MessageList from "../components/MessageList";
 import { Layout } from "../components/Layout";
 import CurrentUser from "../components/CurrentUser";
 import ChatBox from "../components/ChatBox";
+import CurrentChannelHeader from "../components/CurrentChannelHeader";
 
 const IndexPage = () => {
   useEffect(() => {
@@ -21,7 +22,44 @@ const IndexPage = () => {
         h="100vh"
         overflowY="hidden"
         templateColumns="280px 1fr 280px"
+        templateRows="50px 1fr"
       >
+        <GridItem
+          colSpan={1}
+          borderBottom="2px"
+          borderBottomColor="gray.700"
+          bg="gray.600"
+        ></GridItem>
+        <GridItem
+          colSpan={2}
+          borderBottom="2px"
+          borderBottomColor="gray.700"
+          bg="gray.600"
+        >
+          <Flex h="full" align="center" justify="space-between">
+            <Flex>
+              <CurrentChannelHeader />
+            </Flex>
+            <Flex>
+              {/* TODO(Veld): handle events from app
+              <Tooltip
+                label="Update Available"
+                aria-label="Update Available"
+                bg="gray.700"
+                color="white"
+              >
+                 <IconButton
+                  aria-label="Update Available"
+                  icon={<FaCloudDownloadAlt />}
+                  color="green.500"
+                  colorScheme="green"
+                  variant="ghost"
+                />
+              </Tooltip>
+              */}
+            </Flex>
+          </Flex>
+        </GridItem>
         <Flex
           h="full"
           p="4"

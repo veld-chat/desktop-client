@@ -11,7 +11,7 @@ import {
   PopoverTrigger,
   Text,
   useDisclosure,
-  VStack
+  VStack,
 } from "@chakra-ui/react";
 import React, { PropsWithChildren } from "react";
 import { UserAvatar } from "./UserAvatar";
@@ -25,13 +25,13 @@ type Props = {
 export const UserRow = ({
   user,
   children,
-  showStatus
+  showStatus,
 }: PropsWithChildren<Props>) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <>
-      <Flex w="full" align="center">
+      <Flex w="full" align={children ? "flex-start" : "flex-end"}>
         {showStatus ? (
           <UserAvatarWithStatus user={user} size="sm" />
         ) : (
@@ -60,8 +60,9 @@ export const UserRow = ({
                   <Avatar
                     mr="2"
                     size="sm"
-                    src={`https://cdn.miki.bot/chat/avatars/${user.avatarUrl ||
-                      Number(user.id) % 5}.png`}
+                    src={`https://cdn.miki.bot/chat/avatars/${
+                      user.avatarUrl || Number(user.id) % 5
+                    }.png`}
                   />
                   {user.name}
                 </Flex>

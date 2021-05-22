@@ -15,19 +15,34 @@ interface Props {
 const CurrentUser = ({ user }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   if (!user) {
-    return <Text>Not logged in!</Text>
+    return <Text>Not logged in!</Text>;
   }
-  
+
   return (
     <Flex align="center">
-      <UserRow showStatus user={user} />
+      <UserRow
+        showStatus
+        user={user}
+        children={
+          user.status?.statusText && (
+            <Text fontSize="xs" color="gray.400">
+              {user.status?.statusText}
+            </Text>
+          )
+        }
+      />
       <Flex>
-        <IconButton bg="transparent" aria-label="settings" onClick={onOpen} icon={<FaCog/>}/>
-        <SettingsModal isOpen={isOpen} onClose={onClose}/>
+        <IconButton
+          bg="transparent"
+          aria-label="settings"
+          onClick={onOpen}
+          icon={<FaCog />}
+        />
+        <SettingsModal isOpen={isOpen} onClose={onClose} />
       </Flex>
     </Flex>
-  ) ;
-}
+  );
+};
 
 const mapStateToProps = (state: RootState) => {
   return {

@@ -22,7 +22,7 @@ export function processMessage(
     isMention,
     content,
     embed: processEmbed(message.embed),
-    isEmojiOnly: isEmojiOnly(content)
+    isEmojiOnly: isEmojiOnly(content),
   };
 }
 
@@ -44,12 +44,14 @@ export function processString(input: string) {
           const value = hljs.highlight(lang, code).value;
           logger.log("Trying to highlight for", lang, value);
           return value;
-        }
+        },
       }),
       {
         ALLOWED_TAGS: [
           "b",
           "i",
+          "ul",
+          "li",
           "em",
           "strong",
           "a",
@@ -57,9 +59,9 @@ export function processString(input: string) {
           "p",
           "code",
           "span",
-          "pre"
+          "pre",
         ],
-        ALLOWED_ATTR: ["href", "class"]
+        ALLOWED_ATTR: ["href", "class"],
       }
     )
   );
