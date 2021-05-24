@@ -14,8 +14,6 @@ export function processMessage(
 ): MessagePart {
   const content = processString(message.content);
 
-  console.log(message.content, isEmojiOnly(message.content));
-
   return {
     id: message.id,
     isMention,
@@ -31,7 +29,7 @@ export function processString(input: string) {
   }
 
   return DOMPurify.sanitize(
-    marked(input, {
+    marked.parseInline(input, {
       gfm: true,
       headerIds: false,
       breaks: true,

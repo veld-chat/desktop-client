@@ -58,7 +58,15 @@ const MessageList = ({ channelId, messages, newMessages }: Props) => {
 
   return (
     <Box h="full" overflowY="hidden" position="relative">
-      <Box ref={ref} onScroll={handleScroll} h="full" overflowY="scroll">
+      <Box
+        ref={ref}
+        onScroll={handleScroll}
+        h="full"
+        overflowX="hidden"
+        whiteSpace="pre-wrap"
+        overflowWrap="break-word"
+        overflowY="scroll"
+      >
         {messages?.map((c) => (
           <MessageRow key={c.id} message={c} />
         ))}

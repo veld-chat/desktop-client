@@ -8,7 +8,7 @@ import ChannelList from "../components/ChannelList";
 import MessageList from "../components/MessageList";
 import { Layout } from "../components/Layout";
 import CurrentUser from "../components/CurrentUser";
-import ChatBox from "../components/ChatBox";
+import ChatBox from "../components/chatbox";
 import CurrentChannelHeader from "../components/CurrentChannelHeader";
 import { Helmet } from "react-helmet";
 

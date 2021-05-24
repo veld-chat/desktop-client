@@ -4,7 +4,7 @@ import { Img } from "@chakra-ui/image";
 import { Box, Button, Flex, Icon, Spinner, Text } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 import QrCodeWithLogo from "qrcode-with-logos";
-import { RootState } from "@/store";
+import { RootState } from "../store";
 import { connect } from "react-redux";
 import { FaExclamationTriangle } from "react-icons/fa";
 
@@ -16,24 +16,23 @@ const UserQrCode = ({ token }: Props) => {
   const [dataUri, setDataUri] = useState("");
   const [showToken, setShowToken] = useState(false);
 
-  console.log(logo);
   useEffect(() => {
     new QrCodeWithLogo({
       content: token,
       logo: {
         src: logo,
-        borderColor: "#ed486c"
+        borderColor: "#ed486c",
       },
       nodeQrCodeOptions: {
         color: {
           dark: "#fff",
-          light: "#ed486c"
+          light: "#ed486c",
         },
-        margin: 3
-      }
+        margin: 3,
+      },
     })
       .getCanvas()
-      .then(x => setDataUri(x.toDataURL()));
+      .then((x) => setDataUri(x.toDataURL()));
   }, []);
 
   return (
@@ -45,7 +44,7 @@ const UserQrCode = ({ token }: Props) => {
           overflow="hidden"
           mr="8"
           style={{
-            filter: !showToken && "blur(8px)"
+            filter: !showToken && "blur(8px)",
           }}
         >
           <Img boxSize="xxs" src={dataUri} borderRadius="lg" />
@@ -74,7 +73,7 @@ const UserQrCode = ({ token }: Props) => {
 
 const mapStateToProps = (state: RootState): Props => {
   return {
-    token: state.sessions.token
+    token: state.sessions.token,
   };
 };
 

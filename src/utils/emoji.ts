@@ -11,8 +11,6 @@ export function replaceEmojis(text: string) {
       ? `<img class="emoji" alt="${e.value}" title="${e.value}" src="${e.image}" />`
       : text;
   });
-
-  return text;
 }
 
 export function isEmojiOnly(text: string) {

@@ -32,7 +32,7 @@ export const MemberList = ({ users }: Props) => {
           (x) => x.name != "guest" || x.status.statusType != StatusType.Offline
         )
         .map((u) => (
-          <Box mb="1">
+          <Box mb="1" key={u.id}>
             <UserRow showStatus user={u}>
               <Text fontSize="xs" color="gray.400">
                 {u.status?.statusText || fromStatus(u.status)}
