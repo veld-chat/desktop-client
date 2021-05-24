@@ -74,6 +74,7 @@ const ChatBox = ({ currentChannel }: Props) => {
   }, []);
 
   const sendMessage = async () => {
+    console.log(currentChannel);
     const content = serialize(value).trim();
     if (content.length == 0) {
       return;
@@ -102,7 +103,7 @@ const ChatBox = ({ currentChannel }: Props) => {
       borderRadius="lg"
       p="2"
       justifyContent="space-between"
-      position="relative"
+      align="center"
     >
       <Box flex="1" fontSize="sm" overflowX="hidden" whiteSpace="pre-wrap">
         <Slate
@@ -111,7 +112,7 @@ const ChatBox = ({ currentChannel }: Props) => {
           onChange={(value: SlateElement[]) => setValue(value)}
         >
           <Editable
-            placeholder={`Message `}
+            placeholder={`Message #${currentChannel.name}`}
             decorate={decorate}
             renderLeaf={renderLeaf}
             onKeyDown={(e) => handleInput(e)}
@@ -132,7 +133,7 @@ const ChatBox = ({ currentChannel }: Props) => {
 
 const mapStateToProps = (state: RootState): Props => {
   return {
-    currentChannel: state.channels[state.channels.currentChannel],
+    currentChannel: state.channels.channelsById[state.channels.currentChannel],
   };
 };
 
