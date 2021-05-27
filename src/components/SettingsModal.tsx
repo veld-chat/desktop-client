@@ -1,7 +1,5 @@
 import React from "react";
 import {
-  Box,
-  Button,
   CloseButton,
   Container,
   Drawer,
@@ -10,16 +8,15 @@ import {
   DrawerHeader,
   DrawerOverlay,
   Flex,
-  Icon,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
   Text,
-  VStack
+  useColorModeValue,
+  VStack,
 } from "@chakra-ui/react";
-import { FaArrowCircleRight, FaUser } from "react-icons/fa";
 import UserPanel from "./settings/UserPanel";
 
 interface Props {
@@ -28,6 +25,8 @@ interface Props {
 }
 
 export const SettingsModal = ({ isOpen, onClose }: Props) => {
+  const graySecondary = useColorModeValue("gray.200", "gray.600");
+
   return (
     <Drawer onClose={onClose} isOpen={isOpen} size="full" motionPreset="scale">
       <DrawerOverlay />
@@ -42,23 +41,21 @@ export const SettingsModal = ({ isOpen, onClose }: Props) => {
               <VStack w="full">
                 <Tab
                   w="full"
-                  borderRadius="lg"
+                  borderRadius="md"
                   key="user"
                   justifyContent="flex-start"
-                  background="gray.600"
+                  background={graySecondary}
                 >
-                  <Icon as={FaUser} mr="2" />
                   User
                 </Tab>
                 <Tab
                   w="full"
-                  borderRadius="lg"
+                  borderRadius="md"
                   justifyContent="flex-start"
                   key="logout"
                   color="red.500"
-                  background="gray.600"
+                  background={graySecondary}
                 >
-                  <Icon as={FaArrowCircleRight} mr="2" />
                   Log out
                 </Tab>
               </VStack>
@@ -67,7 +64,7 @@ export const SettingsModal = ({ isOpen, onClose }: Props) => {
               h="full"
               minH="lg"
               borderRadius="lg"
-              background="gray.600"
+              background={graySecondary}
             >
               <TabPanel>
                 <UserPanel />

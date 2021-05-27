@@ -112,7 +112,7 @@ const ChatBox = ({ currentChannel }: Props) => {
           onChange={(value: SlateElement[]) => setValue(value)}
         >
           <Editable
-            placeholder={`Message #${currentChannel.name}`}
+            placeholder={`Message #${currentChannel?.name}`}
             decorate={decorate}
             renderLeaf={renderLeaf}
             onKeyDown={(e) => handleInput(e)}
