@@ -34,7 +34,9 @@
     "electron-dev": "concurrently \"yarn run start\" \"yarn run electron\"",
     "preelectron-pack": "yarn run build",
     "electron-pack": "electron-builder",
-    "electron-release": "node_modules/.bin/electron-builder --publish always"
+    "electron-release": "node_modules/.bin/electron-builder --publish always",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "publish": {
     "provider": "github",
@@ -93,6 +95,13 @@
     "twemoji": "^13.0.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.14.8",
+    "@storybook/addon-a11y": "^6.3.4",
+    "@storybook/addon-actions": "^6.3.4",
+    "@storybook/addon-essentials": "^6.3.4",
+    "@storybook/addon-links": "^6.3.4",
+    "@storybook/addon-toolbars": "^6.3.4",
+    "@storybook/react": "^6.3.4",
     "@types/codemirror": "^0.0.97",
     "@types/dompurify": "^2.0.3",
     "@types/marked": "^2.0.3",
@@ -102,6 +111,7 @@
     "@types/webpack-env": "^1.15.2",
     "@typescript-eslint/eslint-plugin": "^3.9.0",
     "@typescript-eslint/parser": "^3.9.0",
+    "babel-loader": "^8.2.2",
     "cache-loader": "^4.1.0",
     "clean-webpack-plugin": "^3.0.0",
     "concurrently": "^6.1.0",
@@ -117,6 +127,7 @@
     "node-sass": "^6.0.0",
     "sass-loader": "^9.0.3",
     "source-map-loader": "^1.0.1",
+    "storybook-addon-performance": "^0.16.0",
     "style-loader": "^1.2.1",
     "terser-webpack-plugin": "^4.1.0",
     "ts-loader": "^8.0.2",

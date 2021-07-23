@@ -8,7 +8,7 @@ export const ModalledImg = ({ src, ...rest }: ImgProps) => {
 
   return (
     <>
-      <Img src={src} {...rest} onClick={onOpen} />
+      <Img src={src} objectFit="cover" {...rest} onClick={onOpen} />
       <Modal
         onClose={onClose}
         isOpen={isOpen}

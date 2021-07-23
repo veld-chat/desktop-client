@@ -1,4 +1,10 @@
 import { extendTheme } from "@chakra-ui/react";
+import { mode, Styles } from "@chakra-ui/theme-tools";
+
+import { spacing } from "./foundations/spacing";
+import sizes from "./foundations/sizes";
+import typography from "./foundations/typography";
+
 import Button from "./components/Button";
 
 const Alert = {
@@ -16,20 +22,50 @@ export default extendTheme({
     Button,
   },
   fonts: {
-    body: "Motiva Sans",
-    heading: "Motiva Sans",
+    body: "Open Sans",
+    heading: "Open Sans",
   },
   styles: {
     global: {
       a: {
-        color: "primary.500",
+        color: "accent",
         _hover: {
           textDecoration: "underline",
         },
       },
+      body: {
+        bg: "background.dark",
+      },
     },
   },
   colors: {
+    bright: {
+      100: "rgba(255, 255, 255, 1.0)",
+      80: "rgba(255, 255, 255, 0.8)",
+      60: "rgba(255, 255, 255, 0.6)",
+      40: "rgba(255, 255, 255, 0.4)",
+      20: "rgba(255, 255, 255, 0.2)",
+      10: "rgba(255, 255, 255, 0.1)",
+    },
+    dark: {
+      100: "rgba(0, 0, 0, 1.0)",
+      80: "rgba(0, 0, 0, 0.8)",
+      60: "rgba(0, 0, 0, 0.6)",
+      40: "rgba(0, 0, 0, 0.4)",
+      20: "rgba(0, 0, 0, 0.2)",
+      10: "rgba(0, 0, 0, 0.1)",
+    },
+    background: {
+      dark: "#303136",
+      darkSecondary: "#26282D",
+    },
+    accent: "#F6216E",
+    system: {
+      error: "#EB496A",
+      warning: "#49BFEB",
+      success: "#49EB74",
+      info: "#F9D725",
+    },
     white: "#fff",
     black: "#000",
     gray: {
@@ -77,4 +113,7 @@ export default extendTheme({
       900: "#2f0e16",
     },
   },
+  sizes,
+  space: spacing,
+  ...typography,
 });
