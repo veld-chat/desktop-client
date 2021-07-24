@@ -7,18 +7,22 @@ export default {
   // Two sizes: sm and md
   sizes: {
     sm: {
-      fontSize: "sm",
-      px: 4, // <-- px is short for paddingLeft and paddingRight
-      py: 3, // <-- py is short for paddingTop and paddingBottom
+      fontSize: "paragraph.small",
+      px: "20", // <-- px is short for paddingLeft and paddingRight
+      py: "4", // <-- py is short for paddingTop and paddingBottom
     },
     md: {
-      fontSize: "md",
-      px: 6, // <-- these values are tokens from the design system
-      py: 4, // <-- these values are tokens from the design system
+      fontSize: "paragraph.medium",
+      px: "20", // <-- these values are tokens from the design system
+      py: "4", // <-- these values are tokens from the design system
     },
   },
   // Two variants: outline and solid
-  variants: {},
+  variants: {
+    primary: {
+      bg: "accent",
+    }
+  },
   // The default size and variant values
   defaultProps: {
     size: "md",

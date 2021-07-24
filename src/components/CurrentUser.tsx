@@ -3,8 +3,8 @@ import { User } from "@/models";
 import { connect } from "react-redux";
 import { RootState } from "../store";
 import { UserRow } from "./UserRow";
-import { Text } from "@chakra-ui/layout";
-import { Flex, IconButton, useDisclosure } from "@chakra-ui/react";
+import { Text, HStack } from "@chakra-ui/layout";
+import { Flex, IconButton, useDisclosure, Button } from "@chakra-ui/react";
 import { FaCog } from "react-icons/fa";
 import { SettingsModal } from "./SettingsModal";
 
@@ -15,7 +15,10 @@ interface Props {
 const CurrentUser = ({ user }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   if (!user) {
-    return <Text>Not logged in!</Text>;
+    return <HStack py="8" spacing="16" w="full">
+      <Button w="full">Log In</Button>
+      <Button bg="accent" w="full">Sign Up</Button>
+    </HStack>;
   }
 
   return (

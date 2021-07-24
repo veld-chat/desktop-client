@@ -41,15 +41,11 @@ const IndexPage = () => {
       >
         <GridItem
           colSpan={1}
-          borderBottom="2px"
-          borderBottomColor="gray.700"
-          bg="gray.600"
+          bg="dark.20"
         ></GridItem>
         <GridItem
           colSpan={2}
-          borderBottom="2px"
-          borderBottomColor="gray.700"
-          bg="gray.600"
+          bg="dark.20"
         >
           <Flex h="full" align="center" justify="space-between">
             <Flex>
@@ -76,11 +72,11 @@ const IndexPage = () => {
           </Flex>
         </GridItem>
         <Flex
+          bg="dark.20"
           h="full"
-          p="4"
+          p="16"
           direction="column"
           justify="space-between"
-          background="gray.700"
         >
           <Box flex="1">
             <ChannelList />
@@ -91,9 +87,9 @@ const IndexPage = () => {
         </Flex>
         <Flex
           h="full"
-          background="gray.600"
           direction="column"
           overflow="hidden"
+          p="16"
         >
           <Box px="4" flex="1" mb="4" overflowY="hidden">
             <MessageList />
@@ -102,7 +98,7 @@ const IndexPage = () => {
             <ChatBox />
           </Box>
         </Flex>
-        <Box h="full" p="4" background="gray.700">
+        <Box h="full" p="16" background="dark.20">
           <MemberList />
         </Box>
       </SimpleGrid>

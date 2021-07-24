@@ -20,6 +20,7 @@ export function processMessage(
     content,
     embed: processEmbed(message.embed),
     isEmojiOnly: isEmojiOnly(message.content),
+    reactions: message.reactions,
   };
 }
 

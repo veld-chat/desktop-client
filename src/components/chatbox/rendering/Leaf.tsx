@@ -4,7 +4,7 @@ import { Text } from "@chakra-ui/react";
 export const Leaf = ({ leaf, attributes, children }) => {
   return (
     <Text
-      fontSize="xs"
+      fontSize="paragraph.small"
       textDecoration={leaf.underlined ? "underline" : undefined}
       fontStyle={leaf.italic ? "italic" : undefined}
       fontWeight={leaf.bold ? "bold" : undefined}

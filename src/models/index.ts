@@ -30,6 +30,7 @@ export type ServerMessage = {
   author: User;
   embed?: Embed;
   content: string;
+  reactions: ReactionAggregate[];
   timestamp: Date;
   //  mentions: string[];
 };
@@ -90,8 +91,15 @@ export type MessagePart = {
   id: string;
   content: string;
   embed?: Embed;
+  reactions: ReactionAggregate[];
   isEmojiOnly: boolean;
   isMention: boolean;
+};
+
+export type ReactionAggregate = {
+  emoji: string;
+  count: number;
+  me: boolean;
 };
 
 export type Message = {
