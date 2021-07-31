@@ -25,7 +25,7 @@ const IndexPage = () => {
     connect();
   }, []);
 
-  const [membersOpen, setMembersOpen] = React.useState(false);
+  const [membersOpen, setMembersOpen] = React.useState(true);
 
   return (
     <Layout>
