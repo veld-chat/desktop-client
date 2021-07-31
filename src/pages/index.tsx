@@ -91,6 +91,7 @@ const IndexPage = () => {
         </Flex>
         <Flex
           h="full"
+          mx="16"
           background="gray.600"
           direction="column"
           overflow="hidden"
@@ -98,7 +99,7 @@ const IndexPage = () => {
           <Box px="4" flex="1" mb="4" overflowY="hidden">
             <MessageList />
           </Box>
-          <Box px="4" borderRadius="lg">
+          <Box px="4" mb="16" borderRadius="lg">
             <ChatBox />
           </Box>
         </Flex>

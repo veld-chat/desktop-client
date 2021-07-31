@@ -6,12 +6,12 @@ import {
   Box,
   Button,
   Flex,
+  HStack,
   Icon,
   Input,
   Popover,
   PopoverBody,
   PopoverContent,
-  PopoverTrigger,
   Text,
   useDisclosure,
   VStack,
@@ -19,14 +19,7 @@ import {
 import React, { PropsWithChildren } from "react";
 import { UserAvatar } from "./UserAvatar";
 import { UserAvatarWithStatus } from "./UserAvatarWithStatus";
-import {
-  FaCheck,
-  FaCheckCircle,
-  FaCheckSquare,
-  FaCrown,
-  FaHeart,
-  FaRegCheckSquare,
-} from "react-icons/fa";
+import { FaCheckCircle, FaHeart } from "react-icons/fa";
 
 type Props = {
   user: User;
@@ -42,38 +35,35 @@ export const UserRow = ({
 
   return (
     <>
-      <Flex w="full" align={children ? "flex-start" : "flex-end"}>
+      <HStack spacing="12" w="full" align={children ? "flex-start" : "center"}>
         {showStatus ? (
-          <UserAvatarWithStatus user={user} size="sm" />
+          <UserAvatarWithStatus user={user} size="md" />
         ) : (
-          <UserAvatar user={user} size="sm" />
+          <UserAvatar user={user} size="md" />
         )}
-        <Box w="full">
-          <Box>
-            <Text align="center" as="span" onClick={onOpen}>
-              {user.name}
-              {hasFlag(user.badges, UserBadges.Admin) && (
-                <Icon
-                  as={FaCheckCircle}
-                  ml="1"
-                  w="3"
-                  mb="2px"
-                  color="blue.500"
-                />
-              )}
-              {hasFlag(user.badges, UserBadges.Supporter) && (
-                <Icon as={FaHeart} ml="1" w="3" mb="2px" color="red.500" />
-              )}
-              {hasFlag(user.badges, UserBadges.Bot) && (
-                <Badge bg="red.500" pt="px" color="white" ml="1">
-                  Bot
-                </Badge>
-              )}
-            </Text>
-          </Box>
+        <VStack w="full" spacing="0" align="flex-start">
+          <Text
+            align="center"
+            as="span"
+            lineHeight={children ? "0" : undefined}
+            onClick={onOpen}
+          >
+            {user.name}
+            {hasFlag(user.badges, UserBadges.Admin) && (
+              <Icon as={FaCheckCircle} ml="1" w="3" mb="2px" color="blue.500" />
+            )}
+            {hasFlag(user.badges, UserBadges.Supporter) && (
+              <Icon as={FaHeart} ml="1" w="3" mb="2px" color="red.500" />
+            )}
+            {hasFlag(user.badges, UserBadges.Bot) && (
+              <Badge bg="red.500" pt="px" color="white" ml="1">
+                Bot
+              </Badge>
+            )}
+          </Text>
           {children}
-        </Box>
-      </Flex>
+        </VStack>
+      </HStack>
       <Popover
         preventOverflow
         placement="right"

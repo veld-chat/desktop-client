@@ -1,10 +1,10 @@
 import { extendTheme } from "@chakra-ui/react";
-import { mode, Styles } from "@chakra-ui/theme-tools";
 
 import { spacing } from "./foundations/spacing";
 import sizes from "./foundations/sizes";
 import typography from "./foundations/typography";
 
+import Avatar from "./components/Avatar";
 import Button from "./components/Button";
 
 const Alert = {
@@ -19,6 +19,7 @@ const Alert = {
 export default extendTheme({
   components: {
     Alert,
+    Avatar,
     Button,
   },
   fonts: {

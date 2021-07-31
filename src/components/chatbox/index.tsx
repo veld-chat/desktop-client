@@ -5,10 +5,9 @@ import "../../prismjs/languages/markdown";
 
 import { client } from "../../api-client";
 import { RootState } from "../../store";
-import { Box, Flex, IconButton } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import React, { useCallback, useMemo, useState } from "react";
 import { connect } from "react-redux";
-import { FaPaperPlane } from "react-icons/fa";
 import { Editable, ReactEditor, Slate, withReact } from "slate-react";
 import { createEditor, Text } from "slate";
 import { SlateElement } from "./types";
@@ -97,15 +96,14 @@ const ChatBox = ({ currentChannel }: Props) => {
   return (
     <Flex
       w="full"
-      mb="4"
-      mt="-2"
-      background="gray.500"
-      borderRadius="lg"
-      p="2"
+      background="bright.10"
+      px="16"
+      py="12"
+      borderRadius="4"
       justifyContent="space-between"
       align="center"
     >
-      <Box flex="1" fontSize="sm" overflowX="hidden" whiteSpace="pre-wrap">
+      <Box flex="1" overflowX="auto" whiteSpace="pre-wrap">
         <Slate
           editor={editor}
           value={value}
@@ -119,14 +117,6 @@ const ChatBox = ({ currentChannel }: Props) => {
           />
         </Slate>
       </Box>
-      <IconButton
-        size="xs"
-        background="transparent"
-        aria-label="send"
-        icon={<FaPaperPlane />}
-        onClick={sendMessage}
-        zIndex="overlay"
-      />
     </Flex>
   );
 };
