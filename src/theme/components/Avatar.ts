@@ -8,7 +8,7 @@ function baseStyleBadge(props: Record<string, any>) {
     transform: `unset`,
     borderRadius: "full",
     border: "2px solid",
-    borderColor: mode("white", "background.dark")(props),
+    borderColor: mode("white", "background.darkSecondary")(props),
   };
 }
 
@@ -26,7 +26,7 @@ function baseStyleContainer(props: Record<string, any>) {
   let color = "white";
   if (!isBgDark) color = "gray.800";
 
-  const borderColor = mode("white", "background.dark")(props);
+  const borderColor = mode("white", "dark.80")(props);
 
   return {
     bg,

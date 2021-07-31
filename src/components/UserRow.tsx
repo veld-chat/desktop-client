@@ -1,4 +1,4 @@
-import { User, UserBadges } from "../models";
+import { User, UserBadges, StatusType } from "../models";
 import { hasFlag } from "../utils/flags";
 import { Badge, HStack, Icon, Text, VStack } from "@chakra-ui/react";
 import React, { PropsWithChildren } from "react";
@@ -22,7 +22,16 @@ export const UserRow = ({
 }: PropsWithChildren<Props>) => {
   return (
     <>
-      <HStack w="full" align={children ? "start" : "center"} spacing="12">
+      <HStack
+        w="full"
+        opacity={
+          showStatus && user.status.statusType == StatusType.Offline
+            ? "0.4"
+            : undefined
+        }
+        align={children ? "start" : "center"}
+        spacing="12"
+      >
         {showStatus ? (
           <UserAvatarWithStatus user={user} />
         ) : (

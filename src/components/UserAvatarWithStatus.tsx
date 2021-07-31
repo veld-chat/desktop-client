@@ -1,4 +1,4 @@
-import { Avatar, AvatarBadge, AvatarProps, Box } from "@chakra-ui/react";
+import { Avatar, AvatarBadge, AvatarProps } from "@chakra-ui/react";
 import React from "react";
 import { StatusType, User, UserStatus } from "../models";
 
@@ -15,7 +15,7 @@ const getStatusBadgeColor = (status?: UserStatus) => {
     case StatusType.Busy:
       return "system.error";
     case StatusType.Offline:
-      return "bright.100";
+      return "background.dark";
   }
 };
 
