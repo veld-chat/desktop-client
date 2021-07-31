@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { connect, useDispatch } from "react-redux";
 import { MessageRow } from "./Message";
 import { Box } from "@chakra-ui/layout";
-import { Alert, AlertTitle, Button } from "@chakra-ui/react";
+import { Alert, AlertTitle, Button, VStack } from "@chakra-ui/react";
 import { read } from "../store/reducers/messages";
 
 interface Props {
@@ -58,7 +58,7 @@ const MessageList = ({ channelId, messages, newMessages }: Props) => {
 
   return (
     <Box h="full" overflowY="hidden" position="relative">
-      <Box
+      <VStack
         ref={ref}
         onScroll={handleScroll}
         h="full"
@@ -66,12 +66,14 @@ const MessageList = ({ channelId, messages, newMessages }: Props) => {
         whiteSpace="pre-wrap"
         overflowWrap="break-word"
         overflowY="scroll"
+        align="flex-start"
+        spacing="4"
         mt="24"
       >
         {messages?.map((c) => (
           <MessageRow key={c.id} message={c} />
         ))}
-      </Box>
+      </VStack>
       {!isBottom && newMessages && (
         <Box>
           <Alert
