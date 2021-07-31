@@ -1,7 +1,15 @@
 import logo from "../../static/logo.svg";
 
 import { Img } from "@chakra-ui/image";
-import { Box, Button, Flex, Icon, Spinner, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Icon,
+  Spinner,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 import QrCodeWithLogo from "qrcode-with-logos";
 import { RootState } from "../store";
@@ -42,7 +50,7 @@ const UserQrCode = ({ token }: Props) => {
       ) : (
         <Box
           overflow="hidden"
-          mr="8"
+          mr="32"
           style={{
             filter: !showToken && "blur(8px)",
           }}
@@ -50,23 +58,23 @@ const UserQrCode = ({ token }: Props) => {
           <Img boxSize="xxs" src={dataUri} borderRadius="lg" />
         </Box>
       )}
-      <Box>
+      <VStack spacing="8" align="flex-start">
         <Text maxW="md">
           To authorize your account, we provide you with a QR code that you can
           use to scan on other devices. Keep this code secure, your credentials
           are inside of the code.
         </Text>
         <Button
-          mt="4"
-          px="4"
-          size="sm"
           onClick={() => setShowToken(!showToken)}
           leftIcon={!showToken && <Icon as={FaExclamationTriangle} />}
-          bg={showToken ? "gray.500" : "red.500"}
+          bg={showToken ? "bright.10" : "system.error"}
+          _hover={{
+            bg: `${showToken ? "bright.20" : "system.error"}`,
+          }}
         >
           {showToken ? "Hide Token" : "Show Token"}
         </Button>
-      </Box>
+      </VStack>
     </Flex>
   );
 };

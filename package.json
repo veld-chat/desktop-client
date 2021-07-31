@@ -55,6 +55,7 @@
     "@types/slate": "^0.47.8",
     "axios": "^0.21.1",
     "codemirror": "^5.56.0",
+    "date-fns": "^2.23.0",
     "dompurify": "^2.0.12",
     "electron-serve": "^1.1.0",
     "electron-updater": "^4.3.9",

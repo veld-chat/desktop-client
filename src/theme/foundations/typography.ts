@@ -24,6 +24,11 @@ const typography = {
     "8": "2rem",
     "9": "2.25rem",
     "10": "2.5rem",
+    paragraph: {
+      large: "20px",
+      medium: "16px",
+      small: "14px",
+    },
   },
 
   fontWeights: {

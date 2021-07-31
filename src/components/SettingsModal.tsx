@@ -25,26 +25,23 @@ interface Props {
 }
 
 export const SettingsModal = ({ isOpen, onClose }: Props) => {
-  const graySecondary = useColorModeValue("gray.200", "gray.600");
-
   return (
     <Drawer onClose={onClose} isOpen={isOpen} size="full" motionPreset="scale">
       <DrawerOverlay />
-      <DrawerContent>
+      <DrawerContent bg="background.dark">
         <Container maxW="container.lg">
-          <Flex mb="8" align="center" justify="space-between">
+          <Flex my="16" align="center" justify="space-between">
             <DrawerHeader>Settings</DrawerHeader>
             <CloseButton onClick={onClose} />
           </Flex>
           <Tabs orientation="vertical" variant="unstyled">
-            <TabList minW="180" alignItems="flex-start" mr="2">
+            <TabList minW="180" alignItems="flex-start" mr="16">
               <VStack w="full">
                 <Tab
                   w="full"
                   borderRadius="md"
                   key="user"
                   justifyContent="flex-start"
-                  background={graySecondary}
                 >
                   User
                 </Tab>
@@ -54,7 +51,6 @@ export const SettingsModal = ({ isOpen, onClose }: Props) => {
                   justifyContent="flex-start"
                   key="logout"
                   color="red.500"
-                  background={graySecondary}
                 >
                   Log out
                 </Tab>
@@ -63,8 +59,9 @@ export const SettingsModal = ({ isOpen, onClose }: Props) => {
             <TabPanels
               h="full"
               minH="lg"
+              px="16"
               borderRadius="lg"
-              background={graySecondary}
+              background="bright.10"
             >
               <TabPanel>
                 <UserPanel />

@@ -1,13 +1,15 @@
 export enum StatusType {
   Online = 0,
-  Offline = 1
+  Offline = 1,
+  Away = 2,
+  Busy = 3,
 }
 
 export enum UserBadges {
   None = 0,
   Supporter = 1,
   Admin = 2,
-  Bot = 4
+  Bot = 4,
 }
 
 export type User = {

@@ -5,10 +5,10 @@ const parts = ["container", "excessLabel", "badge", "label"];
 
 function baseStyleBadge(props: Record<string, any>) {
   return {
-    transform: "translate(25%, 25%)",
+    transform: `unset`,
     borderRadius: "full",
-    border: "0.2em solid",
-    borderColor: mode("white", "gray.800")(props),
+    border: "2px solid",
+    borderColor: mode("white", "background.dark")(props),
   };
 }
 
@@ -26,7 +26,7 @@ function baseStyleContainer(props: Record<string, any>) {
   let color = "white";
   if (!isBgDark) color = "gray.800";
 
-  const borderColor = mode("white", "gray.800")(props);
+  const borderColor = mode("white", "background.dark")(props);
 
   return {
     bg,

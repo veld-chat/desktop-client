@@ -4,25 +4,28 @@ import { StatusType, User, UserStatus } from "../models";
 
 type Props = AvatarProps & {
   user?: User;
-  src?: string;
 };
 
 const getStatusBadgeColor = (status?: UserStatus) => {
   switch (status?.statusType || StatusType.Online) {
     case StatusType.Online:
-      return "status.success";
+      return "system.success";
+    case StatusType.Away:
+      return "system.warning";
+    case StatusType.Busy:
+      return "system.error";
     case StatusType.Offline:
       return "bright.100";
   }
 };
 
-export const UserAvatarWithStatus = ({ src, user, ...rest }: Props) => (
+export const UserAvatarWithStatus = ({ user, ...rest }: Props) => (
   <Avatar
     {...rest}
     src={`https://cdn.miki.bot/chat/avatars/${
       user.avatarUrl || Number(user.id) % 5
     }.png`}
   >
-    <AvatarBadge bg={getStatusBadgeColor(user.status)} boxSize="1.125em" />
+    <AvatarBadge bg={getStatusBadgeColor(user.status)} boxSize="12px" />
   </Avatar>
 );

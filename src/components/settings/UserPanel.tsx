@@ -1,6 +1,6 @@
 import { User } from "@/models";
 import { RootState } from "@/store";
-import { Box, Flex, Heading, IconButton, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, HStack, IconButton, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { connect } from "react-redux";
@@ -17,13 +17,14 @@ const UserPanel = ({ user }: Props) => {
 
   return (
     <Box m="6">
-      <Heading fontSize="xl" mb="6">
+      <Heading fontSize="xl" my="24">
         User Profile
       </Heading>
       <Flex
         borderRadius="lg"
-        bg="gray.700"
-        p="4"
+        bg="bright.10"
+        py="12"
+        px="16"
         my="2"
         justify="space-between"
         align="center"
@@ -32,22 +33,21 @@ const UserPanel = ({ user }: Props) => {
           <UserInfoForm onClose={() => setIsEditingUser(false)} user={user} />
         ) : (
           <>
-            <Flex>
+            <HStack spacing="16">
               <UserAvatar user={user} />
               <Box>
                 <Text>{user.name}</Text>
               </Box>
-            </Flex>
+            </HStack>
             <IconButton
               aria-label="edit profile"
               icon={<FaEdit />}
               onClick={() => setIsEditingUser(true)}
-              size="sm"
             />
           </>
         )}
       </Flex>
-      <Heading fontSize="xl" my="6">
+      <Heading fontSize="xl" my="24">
         Authorization
       </Heading>
       <UserQrCode />
@@ -57,7 +57,7 @@ const UserPanel = ({ user }: Props) => {
 
 const mapStateToProps = (state: RootState, props: Props): Props => {
   return {
-    user: state.users.usersById[state.sessions.user]
+    user: state.users.usersById[state.sessions.user],
   };
 };
 

@@ -66,6 +66,7 @@ const MessageList = ({ channelId, messages, newMessages }: Props) => {
         whiteSpace="pre-wrap"
         overflowWrap="break-word"
         overflowY="scroll"
+        mt="24"
       >
         {messages?.map((c) => (
           <MessageRow key={c.id} message={c} />

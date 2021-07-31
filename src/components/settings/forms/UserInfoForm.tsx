@@ -5,7 +5,7 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
-  Input
+  Input,
 } from "@chakra-ui/react";
 import React from "react";
 import { User } from "../../../models";
@@ -21,13 +21,13 @@ export const UserInfoForm = ({ user, onClose }: Props) => {
   return (
     <Formik
       initialValues={{
-        name: user.name
+        name: user.name,
       }}
-      onSubmit={values => {
+      onSubmit={(values) => {
         client().editUser(values.name);
       }}
     >
-      {props => (
+      {(props) => (
         <Box>
           {/* <Field>
           <FormControl>
@@ -46,7 +46,7 @@ export const UserInfoForm = ({ user, onClose }: Props) => {
               )}
             </Field>
             <ButtonGroup mt="8">
-              <Button bg="red.500" isLoading={props.isSubmitting} type="submit">
+              <Button isLoading={props.isSubmitting} type="submit">
                 Save
               </Button>
               <Button onClick={onClose}>Cancel</Button>

@@ -1,7 +1,14 @@
 import "../style/index.scss";
 
 import React, { useEffect } from "react";
-import { Box, Flex, GridItem, SimpleGrid } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  GridItem,
+  Icon,
+  IconButton,
+  SimpleGrid,
+} from "@chakra-ui/react";
 import { connect } from "../store/services/websocket";
 import MemberList from "../components/MemberList";
 import ChannelList from "../components/ChannelList";
@@ -11,11 +18,14 @@ import CurrentUser from "../components/CurrentUser";
 import ChatBox from "../components/chatbox";
 import CurrentChannelHeader from "../components/CurrentChannelHeader";
 import { Helmet } from "react-helmet";
+import { FaUser, FaUserAlt, FaUsers } from "react-icons/fa";
 
 const IndexPage = () => {
   useEffect(() => {
     connect();
   }, []);
+
+  const [membersOpen, setMembersOpen] = React.useState(false);
 
   return (
     <Layout>
@@ -36,32 +46,23 @@ const IndexPage = () => {
       <SimpleGrid
         h="100vh"
         overflowY="hidden"
-        templateColumns="280px 1fr 280px"
+        templateColumns="280px 1fr"
         templateRows="50px 1fr"
       >
         <GridItem colSpan={1} bg="dark.20"></GridItem>
-        <GridItem colSpan={2} bg="dark.20">
+        <GridItem colSpan={1} bg="dark.20" px="16">
           <Flex h="full" align="center" justify="space-between">
             <Flex>
               <CurrentChannelHeader />
             </Flex>
             <Flex>
-              {/* TODO(Veld): handle events from app
-              <Tooltip
-                label="Update Available"
-                aria-label="Update Available"
-                bg="gray.700"
-                color="white"
-              >
-                 <IconButton
-                  aria-label="Update Available"
-                  icon={<FaCloudDownloadAlt />}
-                  color="green.500"
-                  colorScheme="green"
-                  variant="ghost"
-                />
-              </Tooltip>
-              */}
+              <IconButton
+                bg="transparent"
+                color={membersOpen ? "bright.100" : "bright.40"}
+                icon={<Icon as={FaUserAlt} boxSize="16" />}
+                aria-label={membersOpen ? "Hide Members" : "Show Members"}
+                onClick={() => setMembersOpen(!membersOpen)}
+              />
             </Flex>
           </Flex>
         </GridItem>
@@ -79,23 +80,27 @@ const IndexPage = () => {
             <CurrentUser />
           </Box>
         </Flex>
-        <Flex
-          h="full"
-          mx="16"
-          background="gray.600"
-          direction="column"
-          overflow="hidden"
-        >
-          <Box px="4" flex="1" mb="4" overflowY="hidden">
-            <MessageList />
-          </Box>
-          <Box px="4" mb="16" borderRadius="lg">
-            <ChatBox />
-          </Box>
+        <Flex h="full" direction="row" overflow="hidden">
+          <Flex
+            mx="16"
+            h="full"
+            justify="space-between"
+            direction="column"
+            flex="1"
+          >
+            <Box px="4" mb="4" overflowY="hidden">
+              <MessageList />
+            </Box>
+            <Box px="4" mb="16" borderRadius="lg">
+              <ChatBox />
+            </Box>
+          </Flex>
+          {membersOpen && (
+            <Box h="full" w="240px" p="16" background="dark.20">
+              <MemberList />
+            </Box>
+          )}
         </Flex>
-        <Box h="full" p="16" background="dark.20">
-          <MemberList />
-        </Box>
       </SimpleGrid>
     </Layout>
   );
