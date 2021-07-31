@@ -15,14 +15,18 @@ interface Props {
 const CurrentUser = ({ user }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   if (!user) {
-    return <HStack py="8" spacing="16" w="full">
-      <Button w="full">Log In</Button>
-      <Button bg="accent" w="full">Sign Up</Button>
-    </HStack>;
+    return (
+      <HStack py="8" spacing="16" w="full">
+        <Button w="full">Log In</Button>
+        <Button bg="accent" w="full">
+          Sign Up
+        </Button>
+      </HStack>
+    );
   }
 
   return (
-    <Flex align="center">
+    <Flex justify="center" mt="8" align="center">
       <UserRow
         showStatus
         user={user}

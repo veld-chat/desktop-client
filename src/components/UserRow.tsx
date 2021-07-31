@@ -39,7 +39,7 @@ export const UserRow = ({
         )}
         <VStack w="full" spacing="4" align="start">
           <HStack spacing="6">
-            <HStack spacing="2">
+            <HStack spacing="4">
               <Text as="span" lineHeight={children ? "12px" : undefined}>
                 {user.name}
               </Text>
