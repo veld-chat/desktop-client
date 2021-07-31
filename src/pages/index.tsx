@@ -18,7 +18,7 @@ import CurrentUser from "../components/CurrentUser";
 import ChatBox from "../components/chatbox";
 import CurrentChannelHeader from "../components/CurrentChannelHeader";
 import { Helmet } from "react-helmet";
-import { FaUser, FaUserAlt, FaUsers } from "react-icons/fa";
+import { FaDiscord, FaUser, FaUserAlt, FaUsers } from "react-icons/fa";
 
 const IndexPage = () => {
   useEffect(() => {
@@ -60,6 +60,14 @@ const IndexPage = () => {
                 bg="transparent"
                 color={membersOpen ? "bright.100" : "bright.40"}
                 icon={<Icon as={FaUserAlt} boxSize="16" />}
+                aria-label={membersOpen ? "Hide Members" : "Show Members"}
+                onClick={() => setMembersOpen(!membersOpen)}
+              />
+              <IconButton
+                as="a"
+                href="https://discord.gg/wbn7WxWeb2"
+                bg="transparent"
+                icon={<Icon as={FaDiscord} boxSize="16" />}
                 aria-label={membersOpen ? "Hide Members" : "Show Members"}
                 onClick={() => setMembersOpen(!membersOpen)}
               />

@@ -25,7 +25,7 @@ export const UserRow = ({
       <HStack
         w="full"
         opacity={
-          showStatus && user.status.statusType == StatusType.Offline
+          showStatus && user?.status?.statusType == StatusType.Offline
             ? "0.4"
             : undefined
         }

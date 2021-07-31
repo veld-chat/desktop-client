@@ -25,7 +25,7 @@ export const MemberList = ({ users }: Props) => {
   }
 
   return (
-    <VStack align="flex-start" spacing="4">
+    <VStack align="flex-start" spacing="8">
       {[...users]
         .sort(sortUserByStatusThenName)
         .filter(
