@@ -1,6 +1,6 @@
 import { Channel } from "@/models";
 import { RootState } from "@/store";
-import { Box, Flex, Heading, Icon, IconButton, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, Icon, HStack, Text, VStack } from "@chakra-ui/react";
 import React from "react";
 import { FaHashtag, FaPlus } from "react-icons/fa";
 import { connect } from "react-redux";
@@ -13,38 +13,28 @@ interface Props {
 
 const ChannelList = ({ channels, currentChannel }: Props) => {
   return (
-    <Box>
+    <VStack spacing="8">
       <Flex
         w="full"
         justifyContent="space-between"
-        borderBottom="1px solid"
-        borderBottomColor="gray.300"
-        pb="2"
-        mb="2"
       >
-        <Heading fontSize="md">Channels</Heading>
-        <IconButton
-          aria-label="add channel"
-          size="xs"
-          background="transparent"
-          icon={<FaPlus />}
-        />
+        <Heading fontSize="md">CHANNELS</Heading>
       </Flex>
       {channels?.map((c) => (
-        <Flex
+        <HStack
           key={c.id}
-          px="2"
-          py="1"
           align="center"
-          borderRadius="sm"
-          h="full"
-          background={c.id == currentChannel ? "gray.600" : "transparent"}
+          borderRadius="4"
+          spacing="8"
+          w="full"
+          bg={currentChannel == c.id ? "bright.10" : undefined}
+          p={currentChannel == c.id ? "4" : undefined}
         >
-          <Icon as={FaHashtag} h="4" w="4" mr="1" color="gray.400" />
+          <Icon as={FaHashtag} h="16" w="16" mr="1" color="bright.80" />
           <Text>{c.name}</Text>
-        </Flex>
+        </HStack>
       ))}
-    </Box>
+    </VStack>
   );
 };
 

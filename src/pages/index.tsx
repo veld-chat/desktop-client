@@ -39,18 +39,8 @@ const IndexPage = () => {
         templateColumns="280px 1fr 280px"
         templateRows="50px 1fr"
       >
-        <GridItem
-          colSpan={1}
-          borderBottom="2px"
-          borderBottomColor="gray.700"
-          bg="gray.600"
-        ></GridItem>
-        <GridItem
-          colSpan={2}
-          borderBottom="2px"
-          borderBottomColor="gray.700"
-          bg="gray.600"
-        >
+        <GridItem colSpan={1} bg="dark.20"></GridItem>
+        <GridItem colSpan={2} bg="dark.20">
           <Flex h="full" align="center" justify="space-between">
             <Flex>
               <CurrentChannelHeader />
@@ -76,11 +66,11 @@ const IndexPage = () => {
           </Flex>
         </GridItem>
         <Flex
+          bg="dark.20"
           h="full"
-          p="4"
+          p="16"
           direction="column"
           justify="space-between"
-          background="gray.700"
         >
           <Box flex="1">
             <ChannelList />
@@ -103,7 +93,7 @@ const IndexPage = () => {
             <ChatBox />
           </Box>
         </Flex>
-        <Box h="full" p="4" background="gray.700">
+        <Box h="full" p="16" background="dark.20">
           <MemberList />
         </Box>
       </SimpleGrid>

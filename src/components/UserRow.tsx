@@ -1,21 +1,6 @@
 import { User, UserBadges } from "../models";
 import { hasFlag } from "../utils/flags";
-import {
-  Avatar,
-  Badge,
-  Box,
-  Button,
-  Flex,
-  HStack,
-  Icon,
-  Input,
-  Popover,
-  PopoverBody,
-  PopoverContent,
-  Text,
-  useDisclosure,
-  VStack,
-} from "@chakra-ui/react";
+import { Badge, HStack, Icon, Text, VStack } from "@chakra-ui/react";
 import React, { PropsWithChildren } from "react";
 import { UserAvatar } from "./UserAvatar";
 import { UserAvatarWithStatus } from "./UserAvatarWithStatus";
@@ -31,23 +16,16 @@ export const UserRow = ({
   children,
   showStatus,
 }: PropsWithChildren<Props>) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
   return (
     <>
-      <HStack spacing="12" w="full" align={children ? "flex-start" : "center"}>
+      <HStack w="full" align={children ? "start" : "center"} spacing="12">
         {showStatus ? (
-          <UserAvatarWithStatus user={user} size="md" />
+          <UserAvatarWithStatus user={user} />
         ) : (
-          <UserAvatar user={user} size="md" />
+          <UserAvatar user={user} />
         )}
-        <VStack w="full" spacing="0" align="flex-start">
-          <Text
-            align="center"
-            as="span"
-            lineHeight={children ? "0" : undefined}
-            onClick={onOpen}
-          >
+        <VStack w="full" lineHeight="16px" spacing="4" align="start">
+          <Text as="span">
             {user.name}
             {hasFlag(user.badges, UserBadges.Admin) && (
               <Icon as={FaCheckCircle} ml="1" w="3" mb="2px" color="blue.500" />
@@ -64,38 +42,6 @@ export const UserRow = ({
           {children}
         </VStack>
       </HStack>
-      <Popover
-        preventOverflow
-        placement="right"
-        isOpen={isOpen}
-        onClose={onClose}
-        closeOnEsc
-        isLazy
-      >
-        <PopoverContent m="2">
-          <PopoverBody>
-            <VStack align="stretch" spacing="4">
-              <Flex align="center" justify="space-between">
-                <Flex align="center">
-                  <Avatar
-                    mr="2"
-                    size="sm"
-                    src={`https://cdn.miki.bot/chat/avatars/${
-                      user.avatarUrl || Number(user.id) % 5
-                    }.png`}
-                  />
-                  {user.name}
-                </Flex>
-                <Button bg="red.500" size="sm">
-                  Add as friend
-                </Button>
-              </Flex>
-              <Text>This is a test status. Hello World!</Text>
-              <Input size="sm" placeholder={`Message ${user.name}`} />
-            </VStack>
-          </PopoverBody>
-        </PopoverContent>
-      </Popover>
     </>
   );
 };

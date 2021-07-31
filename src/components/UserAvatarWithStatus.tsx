@@ -1,13 +1,5 @@
-import {
-  Avatar,
-  AvatarBadge,
-  AvatarProps,
-  Box,
-  ComponentWithAs,
-  Icon,
-} from "@chakra-ui/react";
+import { Avatar, AvatarBadge, AvatarProps, Box } from "@chakra-ui/react";
 import React from "react";
-import { FaCircle } from "react-icons/fa";
 import { StatusType, User, UserStatus } from "../models";
 
 type Props = AvatarProps & {
@@ -18,16 +10,18 @@ type Props = AvatarProps & {
 const getStatusBadgeColor = (status?: UserStatus) => {
   switch (status?.statusType || StatusType.Online) {
     case StatusType.Online:
-      return "green.500";
+      return "status.success";
     case StatusType.Offline:
-      return "gray.500";
+      return "bright.100";
   }
 };
 
 export const UserAvatarWithStatus = ({ src, user, ...rest }: Props) => (
   <Avatar
     {...rest}
-    src={`https://cdn.miki.bot/chat/avatars/${src || Number(user.id) % 5}.png`}
+    src={`https://cdn.miki.bot/chat/avatars/${
+      user.avatarUrl || Number(user.id) % 5
+    }.png`}
   >
     <AvatarBadge bg={getStatusBadgeColor(user.status)} boxSize="1.125em" />
   </Avatar>

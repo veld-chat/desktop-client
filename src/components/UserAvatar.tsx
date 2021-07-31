@@ -1,4 +1,4 @@
-import { Avatar, AvatarProps, ComponentWithAs } from "@chakra-ui/react";
+import { Avatar, AvatarProps } from "@chakra-ui/react";
 import React from "react";
 import { User } from "../models";
 

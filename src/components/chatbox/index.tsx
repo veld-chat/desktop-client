@@ -97,13 +97,18 @@ const ChatBox = ({ currentChannel }: Props) => {
     <Flex
       w="full"
       background="bright.10"
+      borderRadius="4"
       px="16"
       py="12"
-      borderRadius="4"
       justifyContent="space-between"
       align="center"
     >
-      <Box flex="1" overflowX="auto" whiteSpace="pre-wrap">
+      <Box
+        flex="1"
+        fontSize="paragraph.small"
+        overflowX="hidden"
+        whiteSpace="pre-wrap"
+      >
         <Slate
           editor={editor}
           value={value}
