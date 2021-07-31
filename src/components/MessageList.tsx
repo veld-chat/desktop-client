@@ -62,12 +62,11 @@ const MessageList = ({ channelId, messages, newMessages }: Props) => {
         ref={ref}
         onScroll={handleScroll}
         h="full"
-        overflowX="hidden"
         whiteSpace="pre-wrap"
         overflowWrap="break-word"
+        overflowX="hidden"
         overflowY="scroll"
         align="flex-start"
-        spacing="4"
         mt="24"
       >
         {messages?.map((c) => (
