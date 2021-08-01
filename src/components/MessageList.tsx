@@ -13,7 +13,6 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { read } from "../store/reducers/messages";
-import { client } from "../api-client";
 import IntroductionModal from "./IntroductionModal";
 
 interface Props {
@@ -70,7 +69,7 @@ const MessageList = ({ user, channelId, messages, newMessages }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <Box h="full" w="full" overflowY="hidden" position="relative">
+    <Box h="full" w="full" overflowY="hidden" pb="16" position="relative">
       <VStack
         ref={ref}
         onScroll={handleScroll}

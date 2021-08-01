@@ -1,12 +1,7 @@
 import DOMPurify from "dompurify";
-import marked from "marked";
 import { Embed, MessagePart, ServerMessage } from "../models";
-import hljs from "highlight.js";
 import { isEmojiOnly } from "./emoji";
-
-if (typeof window !== "undefined") {
-  hljs.initHighlightingOnLoad();
-}
+import markdown from "./markdown-parser";
 
 export function processMessage(
   message: ServerMessage,
@@ -29,37 +24,23 @@ export function processString(input: string) {
     return input;
   }
 
-  return DOMPurify.sanitize(
-    marked.parseInline(input, {
-      gfm: true,
-      headerIds: false,
-      breaks: true,
-      highlight: (code, lang) => {
-        if (!lang) {
-          return code;
-        }
-        const value = hljs.highlight(lang, code).value;
-        return value;
-      },
-    }),
-    {
-      ALLOWED_TAGS: [
-        "b",
-        "i",
-        "ul",
-        "li",
-        "em",
-        "strong",
-        "a",
-        "br",
-        "p",
-        "code",
-        "span",
-        "pre",
-      ],
-      ALLOWED_ATTR: ["href", "class"],
-    }
-  );
+  return DOMPurify.sanitize(markdown.parseInline(input), {
+    ALLOWED_TAGS: [
+      "b",
+      "i",
+      "ul",
+      "li",
+      "em",
+      "strong",
+      "a",
+      "br",
+      "p",
+      "code",
+      "span",
+      "pre",
+    ],
+    ALLOWED_ATTR: ["href", "target", "class"],
+  });
 }
 
 export function processEmbed(embed: Embed): Embed {

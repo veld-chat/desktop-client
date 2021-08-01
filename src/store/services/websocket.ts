@@ -105,6 +105,7 @@ async function messageCreate(data) {
       data.embed = await mapToEmbed(res);
     }
   }
+
   await store.dispatch(messages.create(data));
 }
 
