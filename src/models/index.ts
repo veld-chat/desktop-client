@@ -49,7 +49,7 @@ export interface ServerEditMessage extends ServerMessage {
 }
 
 export type PresenceUpdateArgs = {
-  userId: string;
+  user: User;
   statusType: StatusType;
   statusText?: string;
 };

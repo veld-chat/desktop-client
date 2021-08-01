@@ -73,7 +73,6 @@ const ChatBox = ({ currentChannel }: Props) => {
   }, []);
 
   const sendMessage = async () => {
-    console.log(currentChannel);
     const content = serialize(value).trim();
     if (content.length == 0) {
       return;

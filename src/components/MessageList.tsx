@@ -1,20 +1,31 @@
-import { Message } from "../models";
+import { Message, User } from "../models";
 import { RootState } from "../store";
 import React, { useEffect, useRef, useState } from "react";
 import { connect, useDispatch } from "react-redux";
 import { MessageRow } from "./Message";
 import { Box } from "@chakra-ui/layout";
-import { Alert, AlertTitle, Button, VStack } from "@chakra-ui/react";
+import {
+  Alert,
+  AlertTitle,
+  Button,
+  Text,
+  useDisclosure,
+  VStack,
+} from "@chakra-ui/react";
 import { read } from "../store/reducers/messages";
+import { client } from "../api-client";
+import IntroductionModal from "./IntroductionModal";
 
 interface Props {
+  user?: User;
   messages?: Message[];
   channelId?: string;
   newMessages?: boolean;
 }
 
-const MessageList = ({ channelId, messages, newMessages }: Props) => {
+const MessageList = ({ user, channelId, messages, newMessages }: Props) => {
   const [isBottom, setIsBottom] = useState(true);
+
   const ref = useRef<HTMLDivElement>();
   const dispatch = useDispatch();
 
@@ -56,8 +67,10 @@ const MessageList = ({ channelId, messages, newMessages }: Props) => {
     scrollToLatest();
   }, [messages, newMessages]);
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
-    <Box h="full" overflowY="hidden" position="relative">
+    <Box h="full" w="full" overflowY="hidden" position="relative">
       <VStack
         ref={ref}
         onScroll={handleScroll}
@@ -67,8 +80,15 @@ const MessageList = ({ channelId, messages, newMessages }: Props) => {
         overflowX="hidden"
         overflowY="scroll"
         align="flex-start"
-        mt="24"
       >
+        <VStack w="full" align="center" maxW="480px" py="48" mx="auto">
+          <Text>
+            <strong>Welcome to Veld.Chat!</strong> Say Hi to everyone!
+          </Text>
+          {user && user.name == "guest" && (
+            <Button onClick={onOpen}>👋 Introduce yourself</Button>
+          )}
+        </VStack>
         {messages?.map((c) => (
           <MessageRow key={c.id} message={c} />
         ))}
@@ -78,7 +98,7 @@ const MessageList = ({ channelId, messages, newMessages }: Props) => {
           <Alert
             position="absolute"
             bottom="0"
-            bg="gray.700"
+            bg="background.darkSecondary"
             borderRadius="lg"
             justifyContent="space-between"
             zIndex="toast"
@@ -90,6 +110,11 @@ const MessageList = ({ channelId, messages, newMessages }: Props) => {
           </Alert>
         </Box>
       )}
+      <IntroductionModal
+        channelId={channelId}
+        isOpen={isOpen}
+        onClose={onClose}
+      />
     </Box>
   );
 };
@@ -99,6 +124,7 @@ const mapStateToProps = (state: RootState): Props => {
     state.messages.messagesByChannel[state.channels.currentChannel];
 
   return {
+    user: state.users.usersById[state.sessions.user],
     messages: channelMessages,
     channelId: state.channels.currentChannel,
     newMessages:

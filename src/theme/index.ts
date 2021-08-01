@@ -9,6 +9,7 @@ import Alert from "./components/Alert";
 import Avatar from "./components/Avatar";
 import Badge from "./components/Badge";
 import Button from "./components/Button";
+import Modal from "./components/Modal";
 
 export default extendTheme({
   colors,
@@ -17,6 +18,7 @@ export default extendTheme({
     Avatar,
     Badge,
     Button,
+    Modal,
   },
   fonts: {
     body: "Open Sans",

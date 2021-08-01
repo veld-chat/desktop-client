@@ -3,6 +3,8 @@ export default {
   baseStyle: {
     fontWeight: "bold",
     borderRadius: "base", // <-- border radius is same for all variants and sizes
+    height: "0px",
+    minHeight: "0px",
   },
   // Two sizes: sm and md
   sizes: {
@@ -21,7 +23,7 @@ export default {
   variants: {
     primary: {
       bg: "accent",
-    }
+    },
   },
   // The default size and variant values
   defaultProps: {

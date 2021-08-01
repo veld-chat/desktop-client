@@ -18,7 +18,7 @@ import CurrentUser from "../components/CurrentUser";
 import ChatBox from "../components/chatbox";
 import CurrentChannelHeader from "../components/CurrentChannelHeader";
 import { Helmet } from "react-helmet";
-import { FaDiscord, FaUser, FaUserAlt, FaUsers } from "react-icons/fa";
+import { FaDiscord, FaUserAlt } from "react-icons/fa";
 
 const IndexPage = () => {
   useEffect(() => {
@@ -49,8 +49,19 @@ const IndexPage = () => {
         templateColumns="280px 1fr"
         templateRows="50px 1fr"
       >
-        <GridItem colSpan={1} bg="dark.20"></GridItem>
-        <GridItem colSpan={1} bg="dark.20" px="16">
+        <GridItem
+          colSpan={1}
+          bg="dark.20"
+          borderBottom="1px solid"
+          borderBottomColor="dark.40"
+        ></GridItem>
+        <GridItem
+          colSpan={1}
+          bg="dark.20"
+          px="16"
+          borderBottom="1px solid"
+          borderBottomColor="dark.40"
+        >
           <Flex h="full" align="center" justify="space-between">
             <Flex>
               <CurrentChannelHeader />
@@ -74,17 +85,17 @@ const IndexPage = () => {
             </Flex>
           </Flex>
         </GridItem>
-        <Flex
-          bg="dark.20"
-          h="full"
-          p="16"
-          direction="column"
-          justify="space-between"
-        >
-          <Box flex="1">
+        <Flex bg="dark.10" h="full" direction="column" justify="space-between">
+          <Box p="16" flex="1">
             <ChannelList />
           </Box>
-          <Box borderTop="solid 1px" pt="4" borderTopColor="gray.400">
+          <Box
+            p="16"
+            borderTop="solid 1px"
+            borderTopColor="dark.40"
+            pt="16"
+            bg="dark.10"
+          >
             <CurrentUser />
           </Box>
         </Flex>
@@ -96,7 +107,7 @@ const IndexPage = () => {
             direction="column"
             flex="1"
           >
-            <Box px="4" mb="4" overflowY="hidden">
+            <Box px="4" overflowY="hidden">
               <MessageList />
             </Box>
             <Box px="4" mb="16" borderRadius="lg">
@@ -104,7 +115,7 @@ const IndexPage = () => {
             </Box>
           </Flex>
           {membersOpen && (
-            <Box h="full" w="240px" p="16" background="dark.20">
+            <Box h="full" w="240px" p="16" background="dark.10">
               <MemberList />
             </Box>
           )}

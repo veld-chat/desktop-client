@@ -14,6 +14,7 @@ interface Props {
 
 const CurrentUser = ({ user }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
   if (!user) {
     return (
       <HStack py="8" spacing="16" w="full">
@@ -53,7 +54,7 @@ const CurrentUser = ({ user }: Props) => {
 
 const mapStateToProps = (state: RootState) => {
   return {
-    user: state.users.usersById[state.sessions?.user],
+    user: state.users.usersById[state.sessions.user],
   };
 };
 

@@ -17,8 +17,7 @@ export let websocket: WebSocket;
 
 let heartbeatInterval = null;
 let isConnected = false;
-const urlRegex =
-  /((http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)/;
+const urlRegex = /((http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)/;
 let id = "";
 
 interface WebSocketPayload {
@@ -58,14 +57,6 @@ enum MessageType {
 async function ready(data) {
   logger.log("ready", data);
 
-  id = data.user.id;
-  await store.dispatch(sessions.setUser(data.user.id));
-  await store.dispatch(sessions.setToken(data.token));
-
-  if (data.channels.filter(Boolean).length === 0) {
-    const channel = await client().joinChannel("main");
-    data.channels.push(channel);
-  }
   await store.dispatch(channels.set(data.channels));
   await store.dispatch(channels.setCurrentChannel(data.channels[0]?.id ?? 0));
 
@@ -81,7 +72,16 @@ async function ready(data) {
     )
   );
 
+  id = data.user.id;
+  await store.dispatch(sessions.setUser(data.user.id));
+  await store.dispatch(sessions.setToken(data.token));
+
   localStorage.setItem("token", data.token);
+  if (data.channels.filter(Boolean).length === 0) {
+    const channel = await client().joinChannel("main");
+    data.channels.push(channel);
+  }
+
   heartbeatInterval = setInterval(heartbeat, 15000);
 
   console.log(`Logged in as ${data.user.name} (${data.user.id})`);
@@ -119,9 +119,6 @@ async function presenceUpdate(data: PresenceUpdateArgs) {
 }
 
 async function userUpdate(data) {
-  if (id == data.id) {
-    await store.dispatch(sessions.setUser(data));
-  }
   await store.dispatch(users.update(data));
 }
 
@@ -189,7 +186,7 @@ export function connect() {
   websocket.onmessage = async (ev) => {
     const payload = JSON.parse(ev.data) as WebSocketPayload;
     logger.log(
-      `received payload ${MessageType[payload.t] || "Unknown"}`,
+      `received payload ${MessageType[payload.t] || "Unknown"} (${payload.t})`,
       payload.d
     );
 
