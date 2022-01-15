@@ -75,7 +75,7 @@
     "highlight.js": "^10.5.0",
     "hypermd": "^0.3.11",
     "is-hotkey": "^0.2.0",
-    "marked": "^2.0.5",
+    "marked": "^4.0.10",
     "node-abi": "^2.26.0",
     "node-emoji": "^1.10.0",
     "prismjs": "^1.23.0",
